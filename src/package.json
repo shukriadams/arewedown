@@ -16,6 +16,7 @@
         "request": "2.88.0",
         "cron": "1.7.1",
         "express": "4.17.1",
+        "nodemailer": "5.1.1",
         "fs-extra": "8.1.0",
         "winston-wrapper": "https://github.com/shukriadams/winston-wrapper.git#0.0.1"
     },

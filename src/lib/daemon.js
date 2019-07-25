@@ -1,9 +1,15 @@
 const CronJob = require('cron').CronJob,
+    nodemailer = require('nodemailer'),
+    path = require('path'),
     request = require('request');
     fs = require('fs-extra'),
-    Logger = require('winston-wrapper');
+    Logger = require('winston-wrapper'),
+    flagFolder = './flags';
 
-let cronJobs = [];
+fs.ensureDirSync(flagFolder);
+
+let cronJobs = [],
+    _settings = null;
 
 class CronProcess
 {
@@ -65,15 +71,53 @@ class CronProcess
                 this.isPassing = true;
                 this.errorMessage = null;
             }
-
-            this.lastRun = new Date();
-
         } catch(ex){
             this.logError(ex);
             console.log(ex);
             console.log('failed');
             this.isPassing = false;
             this.errorMessage = ex;
+        }
+
+        this.lastRun = new Date();
+
+        let flag = path.join(flagFolder, this.name);
+
+        if (this.isPassing){
+            if (await fs.exists(flag)){
+                await fs.remove(flag);
+                console.log(`Flag removed for ${this.name}`);
+            }
+        } else {
+
+            if (!await fs.exists(flag)){
+                await fs.outputFile(flag, '');
+                console.log(`Flag created for ${this.name}`);
+    
+                if (_settings.smtp){
+                    let message = `${this.name} is down`;
+
+                    for (let recipient of _settings.recipients){
+                        let transporter = nodemailer.createTransport({
+                            host: _settings.smtp.server,
+                            port: _settings.smtp.port,
+                            secure: _settings.smtp.secure
+                        });
+                        
+                        let mailOptions = {
+                            from: _settings.fromEmail,
+                            to: recipient, 
+                            subject: _settings.emailSubject,
+                            text: message
+                        };
+                    
+                        let mailResult = await transporter.sendMail(mailOptions)
+                        console.log(`Sent email to ${recipient} for process ${this.name}`);
+                        this.logInfo(mailResult);
+                    }
+                }
+
+            }
         }
     }
 
@@ -95,8 +139,11 @@ module.exports = {
     
     cronJobs,
 
-    start : (jobs)=>{
-        for (const job of jobs){
+    start : (settings)=>{
+        
+        _settings = settings;
+
+        for (const job of settings.jobs){
             const cronjob = new CronProcess(job.name, job.url, job.interval, job.expect, job.test );
             cronJobs.push(cronjob);
             cronjob.start();

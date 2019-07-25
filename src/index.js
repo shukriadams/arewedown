@@ -17,7 +17,7 @@ const
     if (!settings.port)
         console.log('Port not defined in settings, falling back to default');
 
-    daemon.start(settings.jobs);
+    daemon.start(settings);
 
     app.get('/status', function(req, res){
 
