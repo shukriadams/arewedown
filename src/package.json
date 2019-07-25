@@ -1,0 +1,19 @@
+{
+    "name": "amidown",
+    "version": "0.0.1",
+    "description": "A simple uip/down checking service.",
+    "private": false,
+    "author": "shukri.adams@gmail.com",
+    "license": "MIT",
+    "engines": {
+        "node": ">=0.10.x"
+    },
+    "scripts": {
+        "start": "node start"
+    },
+    "dependencies": {
+        "cron": "1.7.1",
+        "express": "4.17.1 "
+    },
+    "devDependencies": {}
+}
