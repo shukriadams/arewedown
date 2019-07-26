@@ -1,5 +1,6 @@
 let fs = require('fs-extra'),
     jsonfile = require('jsonfile'),
+    sanitize = require('sanitize-filename'),
     settings = {},
     settingsFile = './settings.json';
 
@@ -41,5 +42,28 @@ settings.jobs = settings.jobs || [];
 settings.port = settings.port || 3000;
 settings.failCode = settings.failCode || 450;
 settings.logPath = settings.logPath || './logs'
+
+// remove jobs with missing properties or names which cannot be written to filesystem
+const jobCount = settings.jobs.length;
+settings.jobs = settings.jobs.filter((job)=>{
+    let safe = sanitize(job.name) === job.name;
+    if (!safe)
+        console.log(`WARNING - ${job.name} is not filesystem-compatible, this job cannot be loaded.`);
+        
+    return !!job.url && !!job.interval && !!job.name && safe
+});
+
+if (jobCount !== settings.jobs.length)
+    console.log('WARNING - jobs with missing names, urls or interval were removed. Please ensure that all jobs are properly configured');
+
+// ensure that job name can be written to filesystem
+for(let job of settings.jobs){
+    let sanitized = sanitize(job.name);
+    if (sanitized !== job.name){
+        console.log(`WARNING - ${job.name} cannot be written to filesystem, and will be changed to ${sanitized}`);
+        job.name = sanitized;
+    }
+}
+
 
 module.exports = settings;

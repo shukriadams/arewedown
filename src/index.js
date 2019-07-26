@@ -27,12 +27,11 @@ const
             result += '<br />'
         }
 
-        if (passed) {
+        if (passed) 
+        {
             result += 'PASSED'
-
         } else {
-            result = `ONE ORE MORE JOBS FAILED <br/> ${result}`;
-            result += 'ONE ORE MORE JOBS FAILED'
+            result = `ONE OR MORE JOBS FAILED <br /> ${result} <br /> ONE OR MORE JOBS FAILED`;
             res.status(settings.failCode);
         }
 

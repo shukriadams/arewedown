@@ -15,6 +15,7 @@ let cronJobs = [];
 class CronProcess
 {
     constructor(name, url, interval, expect, test){
+
         this.logInfo = Logger.instance().info.info;
         this.logError = Logger.instance().error.error;
         this.interval = interval;
@@ -23,9 +24,10 @@ class CronProcess
         this.name = name;
         this.url = url;
         this.isPassing = false;
-        this.errorMessage = null;
+        this.errorMessage = 'Checking has not run yet';
         this.busy = false;
         this.lastRun = new Date();
+        
     }
 
     start(){
@@ -44,7 +46,6 @@ class CronProcess
                 await this.work();
 
             } catch (ex){
-                console.log(ex);
                 this.logError(ex);
             } finally {
                 this.busy = false;
@@ -56,6 +57,10 @@ class CronProcess
         try {
             const response = await this.downloadString();
 
+            this.errorMessage = null;
+            this.isPassing = true;
+            this.lastRun = new Date();
+
             if (this.test){
 
                 if (this.test === 'gt')
@@ -66,66 +71,85 @@ class CronProcess
 
                 if (this.test === 'eq')
                     this.isPassing = response < this.expect;
-
-                if (!this.isPassing)
-                    this.errorMessage = `Got ${response}, expected ${this.expect}`
-
-            } else {
-                this.isPassing = true;
-                this.errorMessage = null;
             }
+
+            if (!this.isPassing)
+                this.errorMessage = `Got ${response}, expected ${this.expect}`
+
         } catch(ex){
-            this.logError(ex);
-            console.log(ex);
-            console.log('failed');
+            this.errorMessage = ex.errno === 'ENOTFOUND' ? `${this.url} could not be reached.` :this.errorMessage = ex;
             this.isPassing = false;
-            this.errorMessage = ex;
         }
 
-        this.lastRun = new Date();
+        if (this.errorMessage)
+            this.logInfo(this.errorMessage);
+        else 
+            this.logInfo(`${this.name} check passed`);
 
-        let flag = path.join(flagFolder, this.name);
+
+        let flag = path.join(flagFolder, this.name),
+            statusChanged = false,
+            historyFolder = path.join(flagFolder, `${this.name}_history`);
+        
 
         if (this.isPassing){
             if (await fs.exists(flag)){
                 await fs.remove(flag);
-                console.log(`Flag removed for ${this.name}`);
+                await fs.ensureDir(historyFolder);
+
+                jsonfile.writeFileSync(path.join(historyFolder, `${this.lastRun.getTime()}.json`), {
+                    status : 'up',
+                    date : this.lastRun
+                });
+                
+                this.logInfo(`Status changed, flag removed for ${this.name}`);
+                statusChanged = true;
             }
         } else {
 
             if (!await fs.exists(flag)){
+
+                await fs.ensureDir(historyFolder);
                 
                 jsonfile.writeFileSync(flag, {
                     date : new Date()
                 });
 
-                console.log(`Flag created for ${this.name}`);
-    
-                if (settings.smtp){
-                    let message = `${this.name} is down`;
+                jsonfile.writeFileSync(path.join(historyFolder, `${this.lastRun.getTime()}.json`), {
+                    status : 'down',
+                    date : new Date()
+                });
 
-                    for (let recipient of settings.recipients){
-                        let transporter = nodemailer.createTransport({
-                            host: settings.smtp.server,
-                            port: settings.smtp.port,
-                            secure: settings.smtp.secure
-                        });
-                        
-                        let mailOptions = {
-                            from: settings.fromEmail,
-                            to: recipient, 
-                            subject: settings.emailSubject,
-                            text: message
-                        };
-                    
-                        let mailResult = await transporter.sendMail(mailOptions)
-                        console.log(`Sent email to ${recipient} for process ${this.name}`);
-                        this.logInfo(mailResult);
-                    }
-                }
-
+                this.logInfo(`Status changed, flag created for ${this.name}`);
+                statusChanged = true;
             }
         }
+
+        if (statusChanged){
+            if (settings.smtp){
+                let message = this.isPassing ? `${this.name} is up` : `${this.name} is down`;
+    
+                for (let recipient of settings.recipients){
+                    let transporter = nodemailer.createTransport({
+                        host: settings.smtp.server,
+                        port: settings.smtp.port,
+                        secure: settings.smtp.secure
+                    });
+                    
+                    let mailOptions = {
+                        from: settings.fromEmail,
+                        to: recipient, 
+                        subject: this.isPassing ? `${this.name} is up` : `${this.name} is down`,
+                        text: message
+                    };
+                
+                    let mailResult = await transporter.sendMail(mailOptions)
+                    this.logInfo(`Sent email to ${recipient} for process ${this.name}`);
+                    this.logInfo(mailResult);
+                }
+            }
+        }
+
     }
 
     async downloadString(){
