@@ -9,7 +9,7 @@
         "node": ">=0.10.x"
     },
     "scripts": {
-        "start": "node start"
+        "start": "node index"
     },
     "dependencies": {
         "jsonfile": "5.0.0",
