@@ -2,22 +2,13 @@ const
     http = require('http'),
     Express = require('express'),
     app = Express(),
-    jsonfile = require('jsonfile'),
-    settingsFile = './settings.json',
+    settings = require('./lib/settings') ,
+    Logger = require('winston-wrapper'),
     daemon = require('./lib/daemon');
 
 (async function(){
-    if (!fs.existsSync(settingsFile))
-        return console.log('settings.json not found');
-
-    const settings = jsonfile.readFileSync(settingsFile);
-    const port = settings.port || 3000;
-    const failCode = settings.failCode || 450;
-
-    if (!settings.port)
-        console.log('Port not defined in settings, falling back to default');
-
-    daemon.start(settings);
+    Logger.initialize(settings.logPath);
+    daemon.start();
 
     app.get('/status', function(req, res){
 
@@ -42,14 +33,14 @@ const
         } else {
             result = `ONE ORE MORE JOBS FAILED <br/> ${result}`;
             result += 'ONE ORE MORE JOBS FAILED'
-            res.status(failCode);
+            res.status(settings.failCode);
         }
 
         res.send(result);
     });
 
     const server = http.createServer(app);
-    server.listen(port);
+    server.listen(settings.port);
 
-    console.log(`Listening on port ${port}`);
+    console.log(`Listening on port ${settings.port}`);
 })()

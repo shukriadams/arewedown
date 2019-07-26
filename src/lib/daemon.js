@@ -1,15 +1,16 @@
 const CronJob = require('cron').CronJob,
     nodemailer = require('nodemailer'),
+    jsonfile = require('jsonfile'),
     path = require('path'),
     request = require('request');
     fs = require('fs-extra'),
     Logger = require('winston-wrapper'),
+    settings = require('./settings'),
     flagFolder = './flags';
 
 fs.ensureDirSync(flagFolder);
 
-let cronJobs = [],
-    _settings = null;
+let cronJobs = [];
 
 class CronProcess
 {
@@ -28,7 +29,9 @@ class CronProcess
     }
 
     start(){
-        this.logInfo('starting ' + this.interval)
+        
+        this.logInfo('Starting service' + this.interval)
+
         this.cron = new CronJob(this.interval, async()=>{
             try
             {
@@ -91,23 +94,27 @@ class CronProcess
         } else {
 
             if (!await fs.exists(flag)){
-                await fs.outputFile(flag, '');
+                
+                jsonfile.writeFileSync(flag, {
+                    date : new Date()
+                });
+
                 console.log(`Flag created for ${this.name}`);
     
-                if (_settings.smtp){
+                if (settings.smtp){
                     let message = `${this.name} is down`;
 
-                    for (let recipient of _settings.recipients){
+                    for (let recipient of settings.recipients){
                         let transporter = nodemailer.createTransport({
-                            host: _settings.smtp.server,
-                            port: _settings.smtp.port,
-                            secure: _settings.smtp.secure
+                            host: settings.smtp.server,
+                            port: settings.smtp.port,
+                            secure: settings.smtp.secure
                         });
                         
                         let mailOptions = {
-                            from: _settings.fromEmail,
+                            from: settings.fromEmail,
                             to: recipient, 
-                            subject: _settings.emailSubject,
+                            subject: settings.emailSubject,
                             text: message
                         };
                     
@@ -139,10 +146,7 @@ module.exports = {
     
     cronJobs,
 
-    start : (settings)=>{
-        
-        _settings = settings;
-
+    start : ()=>{
         for (const job of settings.jobs){
             const cronjob = new CronProcess(job.name, job.url, job.interval, job.expect, job.test );
             cronJobs.push(cronjob);

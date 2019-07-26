@@ -1,6 +1,6 @@
 # AM I DOWN
 
-Simple HTTP status checking service, which can itself be tied to an even simpler service like Uptime Robot.
+Simple HTTP status checking service, which can itself be tied to an even simpler service like Uptime Robot. In keeping with the spirit of infrastructure as code, all config is stored as text (JSON) files, and the service itself is fully Dockerized.
 
 # Setup
 
