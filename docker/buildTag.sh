@@ -8,7 +8,7 @@ fi
 
 # clone working copy of repo at the latest tag
 rm -rf .clone &&
-git clone --depth 1 --branch $TAG git@github.com:shukriadams/amidown.git .clone &&
+git clone --depth 1 --branch $TAG https://github.com/shukriadams/amidown.git .clone &&
 
 # copy source code and keys into build container and compile it.
 mkdir -p ./.keys && 

@@ -5,3 +5,9 @@ vagrant/ubuntu-xenial-16.04-cloudimg-console.log
 src/settings.json
 src/__logs/
 src/flags/
+docker/logs/
+docker/.keys/
+docker/flags
+docker/build.tar.gz
+docker/.clone/
+docker/settings.json
