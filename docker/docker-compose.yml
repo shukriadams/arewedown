@@ -4,11 +4,9 @@ services:
     image: shukriadams/amidown:latest
     container_name: amidown
     restart: unless-stopped
-    environment:
-      verbose : 'true'
     volumes:
       - ./settings.json:/var/app/settings.json
       - ./flags:/var/app/flags/:rw
-      - ./logs:/var/app/__logs/:rw
+      - ./logs:/var/app/logs/:rw
     ports:
     - "7018:3018"
