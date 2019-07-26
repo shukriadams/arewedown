@@ -1,0 +1,24 @@
+{
+    "name": "amidown",
+    "version": "0.0.1",
+    "description": "A simple uip/down checking service.",
+    "private": false,
+    "author": "shukri.adams@gmail.com",
+    "license": "MIT",
+    "engines": {
+        "node": ">=0.10.x"
+    },
+    "scripts": {
+        "start": "node index"
+    },
+    "dependencies": {
+        "jsonfile": "5.0.0",
+        "request": "2.88.0",
+        "cron": "1.7.1",
+        "express": "4.17.1",
+        "nodemailer": "5.1.1",
+        "fs-extra": "8.1.0",
+        "winston-wrapper": "https://github.com/shukriadams/winston-wrapper.git#0.0.1"
+    },
+    "devDependencies": {}
+}

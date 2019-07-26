@@ -1,0 +1,12 @@
+version: "2"
+services:
+  amidown:
+    image: shukriadams/amidown:latest
+    container_name: amidown
+    restart: unless-stopped
+    volumes:
+      - ./settings.json:/var/app/settings.json
+      - ./flags:/var/app/flags/:rw
+      - ./logs:/var/app/logs/:rw
+    ports:
+    - "7018:3018"

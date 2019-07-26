@@ -1,0 +1,8 @@
+version: "2"
+services:
+  buildcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile-build
+    container_name: buildcontainer
+    restart: unless-stopped
