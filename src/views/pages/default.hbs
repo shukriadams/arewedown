@@ -1,18 +1,33 @@
 {{#extend "layout"}}
     {{#content "body"}}
-        
-        {{#each jobs}}
-            <div class="job {{#if isPassing}}job--passing{{/if}}">
-                name : {{name}}
-                url : {{url}}
-                last checked : {{ago lastRun}}
-                status : {{status}}
-                {{#if statusDate}}
-                    status date : {{ago statusDate}}    
-                {{/if}}
-                {{isPassing}}
+
+        <div class="table">
+            <div class="table-row table-header">
+                <div class="table-cell">Job</div>
+                <div class="table-cell">URL</div>
+                <div class="table-cell">Checked</div>
+                <div class="table-cell">Status</div>
             </div>
-        {{/each}}
+            {{#each jobs}}
+                <div class="table-row job {{#if isPassing}}job--passing{{/if}}">
+                    <div class="table-cell">
+                        {{name}}
+                    </div>
+                    <div class="table-cell">
+                        {{url}}
+                    </div>
+                    <div class="table-cell">
+                        {{ago lastRun}}
+                    </div>
+                    <div class="table-cell">
+                        {{status}} 
+                        {{#unless isPassing}}
+                            since {{ago statusDate}}
+                        {{/unless}}
+                    </div>
+                </div>
+            {{/each}}
+        </div>        
         
     {{/content}}
 {{/extend}}

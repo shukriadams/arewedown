@@ -10,7 +10,7 @@ module.exports = function(app){
     
     app.get('/', async function(req, res){
         let view = handlebars.getView('default');
-        let allJobsPassed = daemon.cronJobs.find((job)=>{
+        let allJobsPassed = daemon.cronJobs.filter((job)=>{
             return job.isPassing ? null : job;
         }).length === 0;
 
@@ -29,6 +29,7 @@ module.exports = function(app){
         }
 
         return res.send(view({
+            clientRefreshInterval : settings.clientRefreshInterval,
             allJobsPassed,
             jobs : daemon.cronJobs
         }));

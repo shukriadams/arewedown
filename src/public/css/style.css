@@ -1,5 +1,33 @@
+:root {
+    --color-white: #ffffff;
+    --color-ebonyClay : #262c3a;
+    --color-petiteOrchid: #db8f8f;
+    --dimension-headerHeight: 64px;
+    --dimension-universalUnit: 8px;
+}
+
 html {
 
+}
+
+h1 {
+    margin: 0;
+    padding:0;
+}
+
+header {
+    background-color: var(--color-ebonyClay);
+    color: var(--color-white);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+}
+
+main  {
+    margin-top: var(--dimension-headerHeight);
+    padding: var(--dimension-universalUnit);
 }
 
 body {
@@ -9,11 +37,31 @@ body {
 }
 
 .layout {
-    background-color: orange;
+    background-color: var(--color-petiteOrchid);
 }
 
 .layout--passing {
     background-color: transparent;
+}
+
+.layout-titleScaffold{
+    height: var(--dimension-headerHeight);
+    position: relative;
+}
+
+.layout-title {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.layout-scaffold {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1024px;
+    padding-left: var(--dimension-universalUnit);
+    padding-right: var(--dimension-universalUnit);
 }
 
 .job {
@@ -22,4 +70,24 @@ body {
 
 .job--passing {
     background-color: transparent;
+}
+
+.table {
+    display: table;
+}
+
+.table-header{
+    background-color: var(--color-ebonyClay);
+    color: var(--color-white);
+    display: table-header-group;
+    font-weight: bold;
+}
+
+.table-row {
+    display: table-row;
+}
+
+.table-cell {
+    display: table-cell;
+    padding: var(--dimension-universalUnit);
 }

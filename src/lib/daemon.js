@@ -51,7 +51,7 @@ class CronProcess
             } finally {
                 this.busy = false;
             }
-        }, null, true);
+        }, null, true, null, null, true /*runonitit*/);
     }
 
     async work(){
