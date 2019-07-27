@@ -91,21 +91,27 @@ class CronProcess
         let flag = path.join(flagFolder, this.name),
             statusChanged = false,
             historyLogFolder = path.join(flagFolder, `${this.name}_history`);
-        
 
         if (this.isPassing){
+            await fs.ensureDir(historyLogFolder);
+
+            jsonfile.writeFileSync(path.join(historyLogFolder, `status.json`), {
+                status : 'up',
+                url : this.url,
+                date : this.lastRun
+            });
+
             if (await fs.exists(flag)){
 
                 // site is back up after fail was previous detected, clean up flag and write log
                 await fs.remove(flag);
-                await fs.ensureDir(historyLogFolder);
 
                 jsonfile.writeFileSync(path.join(historyLogFolder, `${this.lastRun.getTime()}.json`), {
                     status : 'up',
                     url : this.url,
                     date : this.lastRun
                 });
-                
+
                 this.logInfo(`Status changed, flag removed for ${this.name}`);
                 statusChanged = true;
             }
@@ -113,10 +119,9 @@ class CronProcess
 
             if (!await fs.exists(flag)){
 
-                // site is down, write fail flag and log
-
                 await fs.ensureDir(historyLogFolder);
-                
+
+                // site is down, write fail flag and log
                 jsonfile.writeFileSync(flag, {
                     url : this.url,
                     date : new Date()
@@ -126,6 +131,12 @@ class CronProcess
                     status : 'down',
                     url : this.url,
                     date : new Date()
+                });
+                
+                jsonfile.writeFileSync(path.join(historyLogFolder, `status.json`), {
+                    status : 'down',
+                    url : this.url,
+                    date : this.lastRun
                 });
 
                 this.logInfo(`Status changed, flag created for ${this.name}`);

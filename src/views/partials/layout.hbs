@@ -1,0 +1,17 @@
+<html>
+    <head>
+        {{{block "basehead"}}}
+
+        <link rel="stylesheet" href="/css/style.css" type="text/css">
+    </head>
+    <body class="layout {{#if allJobsPassed}}layout--passing{{/if}}">
+        <h1>am i down?</h1>
+        
+        {{#if allJobsPassed}}WARNING : some jobs failed!{{/if}}
+        
+        {{{block "body"}}}
+
+        {{#if allJobsPassed}}WARNING : some jobs failed!{{/if}}
+
+    </body>
+</html>

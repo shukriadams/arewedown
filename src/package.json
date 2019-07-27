@@ -1,7 +1,7 @@
 {
     "name": "amidown",
     "version": "0.0.1",
-    "description": "A simple uip/down checking service.",
+    "description": "A simple up/down checking service.",
     "private": false,
     "author": "shukri.adams@gmail.com",
     "license": "MIT",
@@ -12,7 +12,10 @@
         "start": "node index"
     },
     "dependencies": {
+        "handlebars-layouts": "3.1.4",
+        "handlebars": "4.0.14",
         "jsonfile": "5.0.0",
+        "s-ago": "2.0.1",
         "request": "2.88.0",
         "cron": "1.7.1",
         "sendgrid": "5.1.0",

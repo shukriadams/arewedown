@@ -4,45 +4,23 @@ const
     app = Express(),
     settings = require('./lib/settings') ,
     Logger = require('winston-wrapper'),
-    daemon = require('./lib/daemon');
+    daemon = require('./lib/daemon'),
+    fs = require('fs-extra'),
+    path = require('path'),
+    routeFiles = fs.readdirSync(path.join(__dirname, 'routes'));
 
 (async function(){
 
-    app.get('/', function(req, res){
+    // static content
+    app.use(Express.static('./public'));
 
-        let passed = true,
-            result = '';
+    // load routes
+    for (let routeFile of routeFiles){
+        const name = routeFile.match(/(.*).js/).pop(),
+            routes = require(`./routes/${name}`);
 
-        for(let job of daemon.cronJobs){
-            
-            result += `${job.name} last ran ${job.lastRun}`;
-
-            if (job.isPassing){
-                result += ' passed '
-            } else {
-                passed = false;
-                result += ' failed '
-            }
-
-            result += '<br />'
-        }
-
-        if (passed) 
-        {
-            result += 'PASSED'
-        } 
-        else 
-        {
-            result = `ONE OR MORE JOBS FAILED <br /> ${result} <br /> ONE OR MORE JOBS FAILED`;
-            res.status(settings.partialFailCode);
-        }
-
-        res.send(result);
-    });
-
-    app.get('/status', function(req, res){
-        res.send('AM I Down service running');
-    });
+        routes(app);
+    }
 
     Logger.initialize(settings.logPath);
     daemon.start();
