@@ -14,6 +14,12 @@ module.exports = function(app){
             return job.isPassing ? null : job;
         }).length === 0;
 
+        daemon.cronJobs.sort((a,b)=>{
+            return a.isPassing? 1 :
+                b.isPassing? -1 :
+                0;
+        });
+
         for (let cronJob of daemon.cronJobs){
             const statusFilePath = path.join(__dirname, './../flags', `${cronJob.name}_history` , 'status.json');
             

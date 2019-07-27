@@ -10,20 +10,44 @@
             </div>
             {{#each jobs}}
                 <div class="table-row job {{#if isPassing}}job--passing{{/if}}">
+
                     <div class="table-cell">
-                        {{name}}
+                        <div class="table-cellLabel">
+                            Job
+                        </div>
+                        <div class="table-cellValue">
+                            {{name}}
+                        </div>
                     </div>
+
                     <div class="table-cell">
-                        {{url}}
+                        <div class="table-cellLabel">
+                            Url
+                        </div>
+                        <div class="table-cellValue">
+                            {{url}}
+                        </div>
                     </div>
+
                     <div class="table-cell">
-                        {{ago lastRun}}
+                        <div class="table-cellLabel">
+                            Checked
+                        </div>
+                        <div class="table-cellValue">
+                            {{ago lastRun}}
+                        </div>
                     </div>
+
                     <div class="table-cell">
-                        {{status}} 
-                        {{#unless isPassing}}
-                            since {{ago statusDate}}
-                        {{/unless}}
+                        <div class="table-cellLabel">
+                            Status
+                        </div>
+                        <div class="table-cellValue">
+                            {{status}} 
+                            {{#unless isPassing}}
+                                since {{ago statusDate}}
+                            {{/unless}}
+                        </div>
                     </div>
                 </div>
             {{/each}}

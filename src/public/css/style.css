@@ -1,7 +1,8 @@
 :root {
     --color-white: #ffffff;
     --color-ebonyClay : #262c3a;
-    --color-petiteOrchid: #db8f8f;
+    --color-tanHide: #FB9C60;
+    --color-persianRed: #D03939;
     --dimension-headerHeight: 64px;
     --dimension-universalUnit: 8px;
 }
@@ -37,7 +38,7 @@ body {
 }
 
 .layout {
-    background-color: var(--color-petiteOrchid);
+    background-color: var(--color-tanHide);
 }
 
 .layout--passing {
@@ -65,7 +66,7 @@ body {
 }
 
 .job {
-    background-color: red;
+    background-color: var(--color-persianRed);
 }
 
 .job--passing {
@@ -74,20 +75,82 @@ body {
 
 .table {
     display: table;
+    max-width: 100%;
+    width: 100%;
 }
 
-.table-header{
+.table-header {
     background-color: var(--color-ebonyClay);
     color: var(--color-white);
     display: table-header-group;
     font-weight: bold;
 }
 
+.table-cellLabel{
+    color: var(--color-ebonyClay);
+    display: none;
+    font-weight: bold;    
+}
+
 .table-row {
     display: table-row;
 }
 
+.table-smallrow{
+    display: inline;
+}
+
 .table-cell {
+    border: var(--color-ebonyClay) 1px solid;
     display: table-cell;
     padding: var(--dimension-universalUnit);
 }
+
+
+@media all and (min-width: 501px) {
+    .table-cell:not(:last-of-type) {
+        border-right: none;
+    }
+    
+    .table-row:last-of-type .table-cell {
+        border-top: none;
+    }
+}
+
+@media all and (max-width: 500px) {
+    .table-cellLabel{
+        display: block;
+        padding: var(--dimension-universalUnit);
+    }
+
+    .table-cellValue{
+        display: block;
+        padding: var(--dimension-universalUnit);
+    }
+
+    .table-cell {
+        display: block;
+        border : none;
+        border-left: var(--color-ebonyClay) 1px solid;
+        border-right: var(--color-ebonyClay) 1px solid;
+        padding: 0;
+        white-space: nowrap;
+    }
+
+    .table-cell:first-of-type {
+        border-top: var(--color-ebonyClay) 1px solid;
+    }
+
+    .table-row:last-of-type .table-cell:last-of-type {
+        border-bottom: var(--color-ebonyClay) 1px solid;
+    }
+
+    .table-header {
+        display: none;
+    }
+}
+
+
+
+
+
