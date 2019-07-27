@@ -15,6 +15,7 @@
         "jsonfile": "5.0.0",
         "request": "2.88.0",
         "cron": "1.7.1",
+        "sendgrid": "5.1.0",
         "express": "4.17.1",
         "sanitize-filename": "1.6.1",
         "nodemailer": "5.1.1",

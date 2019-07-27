@@ -1,8 +1,9 @@
 const CronJob = require('cron').CronJob,
-    nodemailer = require('nodemailer'),
     jsonfile = require('jsonfile'),
+    sendgrid = require('./sendgrid'),
+    smtp = require('./smtp'),
+    httpHelper = require('./httpHelper'),
     path = require('path'),
-    request = require('request');
     fs = require('fs-extra'),
     Logger = require('winston-wrapper'),
     settings = require('./settings'),
@@ -55,7 +56,7 @@ class CronProcess
 
     async work(){
         try {
-            const response = await this.downloadString();
+            const response = await httpHelper.downloadString(this.url);
 
             this.errorMessage = null;
             this.isPassing = true;
@@ -77,7 +78,7 @@ class CronProcess
                 this.errorMessage = `Got ${response}, expected ${this.expect}`
 
         } catch(ex){
-            this.errorMessage = ex.errno === 'ENOTFOUND' ? `${this.url} could not be reached.` :this.errorMessage = ex;
+            this.errorMessage = ex.errno === 'ENOTFOUND' || ex.errno === 'EAI_AGAIN' ? `${this.url} could not be reached.` :this.errorMessage = ex;
             this.isPassing = false;
         }
 
@@ -89,16 +90,19 @@ class CronProcess
 
         let flag = path.join(flagFolder, this.name),
             statusChanged = false,
-            historyFolder = path.join(flagFolder, `${this.name}_history`);
+            historyLogFolder = path.join(flagFolder, `${this.name}_history`);
         
 
         if (this.isPassing){
             if (await fs.exists(flag)){
-                await fs.remove(flag);
-                await fs.ensureDir(historyFolder);
 
-                jsonfile.writeFileSync(path.join(historyFolder, `${this.lastRun.getTime()}.json`), {
+                // site is back up after fail was previous detected, clean up flag and write log
+                await fs.remove(flag);
+                await fs.ensureDir(historyLogFolder);
+
+                jsonfile.writeFileSync(path.join(historyLogFolder, `${this.lastRun.getTime()}.json`), {
                     status : 'up',
+                    url : this.url,
                     date : this.lastRun
                 });
                 
@@ -109,14 +113,18 @@ class CronProcess
 
             if (!await fs.exists(flag)){
 
-                await fs.ensureDir(historyFolder);
+                // site is down, write fail flag and log
+
+                await fs.ensureDir(historyLogFolder);
                 
                 jsonfile.writeFileSync(flag, {
+                    url : this.url,
                     date : new Date()
                 });
 
-                jsonfile.writeFileSync(path.join(historyFolder, `${this.lastRun.getTime()}.json`), {
+                jsonfile.writeFileSync(path.join(historyLogFolder, `${this.lastRun.getTime()}.json`), {
                     status : 'down',
+                    url : this.url,
                     date : new Date()
                 });
 
@@ -125,44 +133,24 @@ class CronProcess
             }
         }
 
+        // send email if site status has change changed
         if (statusChanged){
-            if (settings.smtp){
-                let message = this.isPassing ? `${this.name} is up` : `${this.name} is down`;
-    
+
+            let subject = this.isPassing ? `${this.name} is up` : `${this.name} is down`,
+                message = this.isPassing ? `${this.name} is up` : `${this.name} is down`;
+
+            let sendMethod = settings.smtp ? smtp :
+                settings.sendgrid ? sendgrid : 
+                null;
+
+            if (sendMethod){
                 for (let recipient of settings.recipients){
-                    let transporter = nodemailer.createTransport({
-                        host: settings.smtp.server,
-                        port: settings.smtp.port,
-                        secure: settings.smtp.secure
-                    });
-                    
-                    let mailOptions = {
-                        from: settings.fromEmail,
-                        to: recipient, 
-                        subject: this.isPassing ? `${this.name} is up` : `${this.name} is down`,
-                        text: message
-                    };
-                
-                    let mailResult = await transporter.sendMail(mailOptions)
-                    this.logInfo(`Sent email to ${recipient} for process ${this.name}`);
-                    this.logInfo(mailResult);
+                    let result = await sendMethod(recipient, subject, message);
+                    this.logInfo(`Sent email to ${recipient} for process ${this.name} with result : ${result}` );
                 }
             }
         }
 
-    }
-
-    async downloadString(){
-        return new Promise((resolve, reject)=>{
-            request( {uri: this.url }, 
-                function(error, response, body) {
-                    if (error)
-                        return reject(error);
-
-                    resolve(body);
-                }
-            )
-        });
     }
 }
 

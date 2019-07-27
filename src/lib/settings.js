@@ -10,8 +10,8 @@ else
     console.log('settings.json not found, reverting to default settings');
 
 // enforce settings structure
-if (!settings.smtp)
-    console.log('WARNING - no SMTP config found, emails will not be sent');
+if (!settings.smtp && !settings.sendgrid)
+    console.log('WARNING - no SMTP or SENDGRID config found, emails will not be sent');
 
 if (settings.smtp){
     if (settings.smtp.server  === undefined)
@@ -22,6 +22,11 @@ if (settings.smtp){
 
     if (settings.smtp.secure === undefined)
         console.log('settings.json is missing expected value for "settings.smtp.secure"');
+}
+
+if (settings.sendgrid){
+    if (settings.sendgrid.key === undefined)
+        console.log('settings.json is missing expected value for "settings.sendgrid.key"');
 }
 
 settings.recipients = settings.recipients || [];
@@ -36,11 +41,11 @@ if (!settings.fromEmail)
 settings.fromEmail = settings.fromEmail || 'noreplay@example.com'
 
 if (!settings.jobs) 
-    console.log('WARNING - no jobs set');
+    console.log('WARNING - no jobs set, nothing will be monitored.');
 
 settings.jobs = settings.jobs || [];
 settings.port = settings.port || 3000;
-settings.failCode = settings.failCode || 450;
+settings.partialFailCode = settings.partialFailCode || 230;
 settings.logPath = settings.logPath || './logs'
 
 // remove jobs with missing properties or names which cannot be written to filesystem

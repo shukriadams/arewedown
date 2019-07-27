@@ -7,16 +7,16 @@ const
     daemon = require('./lib/daemon');
 
 (async function(){
-    Logger.initialize(settings.logPath);
-    daemon.start();
 
-    app.get('/status', function(req, res){
+    app.get('/', function(req, res){
 
-        let passed = true;
-        let result = '';
+        let passed = true,
+            result = '';
 
         for(let job of daemon.cronJobs){
+            
             result += `${job.name} last ran ${job.lastRun}`;
+
             if (job.isPassing){
                 result += ' passed '
             } else {
@@ -30,14 +30,23 @@ const
         if (passed) 
         {
             result += 'PASSED'
-        } else {
+        } 
+        else 
+        {
             result = `ONE OR MORE JOBS FAILED <br /> ${result} <br /> ONE OR MORE JOBS FAILED`;
-            res.status(settings.failCode);
+            res.status(settings.partialFailCode);
         }
 
         res.send(result);
     });
 
+    app.get('/status', function(req, res){
+        res.send('AM I Down service running');
+    });
+
+    Logger.initialize(settings.logPath);
+    daemon.start();
+    
     const server = http.createServer(app);
     server.listen(settings.port);
 
