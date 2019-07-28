@@ -102,7 +102,7 @@ body {
 }
 
 .table-cell {
-    border: var(--color-ebonyClay) 1px solid;
+    border: var(--color-riverBed) 1px solid;
     display: table-cell;
     padding: var(--dimension-universalUnit);
 
@@ -112,6 +112,12 @@ body {
     word-break: break-all;
     word-wrap: break-word;
     overflow: hidden;
+}
+
+.layout-renderTime{
+    color: gray;
+    font-style: italic;
+    padding-top: var(--dimension-universalUnit);
 }
 
 @media all and (min-width: 501px) {
@@ -138,17 +144,17 @@ body {
     .table-cell {
         display: block;
         border : none;
-        border-left: var(--color-ebonyClay) 1px solid;
-        border-right: var(--color-ebonyClay) 1px solid;
+        border-left: var(--color-riverBed) 1px solid;
+        border-right: var(--color-riverBed) 1px solid;
         padding: 0;
     }
 
     .table-cell:first-of-type {
-        border-top: var(--color-ebonyClay) 1px solid;
+        border-top: var(--color-riverBed) 1px solid;
     }
 
     .table-row:last-of-type .table-cell:last-of-type {
-        border-bottom: var(--color-ebonyClay) 1px solid;
+        border-bottom: var(--color-riverBed) 1px solid;
     }
 
     .table-header {

@@ -24,7 +24,7 @@
                             Checked
                         </div>
                         <div class="table-cellValue">
-                            {{ago lastRun}}
+                            <div class="date-time" data-value="{{lastRun}}"></div>
                         </div>
                     </div>
 
@@ -41,7 +41,12 @@
                     </div>
                 </div>
             {{/each}}
-        </div>        
-        
+        </div>
+
+        <div class="layout-renderTime">
+            Page rendered <span class="date-time renderTime" data-value="{{renderDate}}"></span>,
+            updating in <span class="layout-updateTime"></span>.
+        </div>
+
     {{/content}}
 {{/extend}}

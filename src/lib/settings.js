@@ -45,7 +45,7 @@ if (!settings.jobs)
 
 settings.jobs = settings.jobs || [];
 settings.port = settings.port || 3000;
-settings.clientRefreshInterval = settings.clientRefreshInterval || 60000; 
+settings.clientRefreshInterval = settings.clientRefreshInterval || 10000; 
 settings.partialFailCode = settings.partialFailCode || 230;
 settings.logPath = settings.logPath || './logs'
 

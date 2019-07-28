@@ -33,6 +33,15 @@ Handlebars.registerHelper('ago', function(date){
     return ago(date);
 });
 
+Handlebars.registerHelper('time', function(date){
+    if (typeof date === 'string')
+        date = new Date(date);
+
+    return date.toLocaleTimeString();
+});
+
+
+
 Handlebars.registerHelper(layouts(Handlebars));
 
 

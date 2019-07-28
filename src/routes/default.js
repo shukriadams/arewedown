@@ -9,18 +9,20 @@ const settings = require('./../lib/settings'),
 module.exports = function(app){
     
     app.get('/', async function(req, res){
-        let view = handlebars.getView('default');
-        let allJobsPassed = daemon.cronJobs.filter((job)=>{
+        let view = handlebars.getView('default'),
+            cronJobs = daemon.cronJobs.slice(0); // clone array, we don't want to change source
+
+        const allJobsPassed = cronJobs.filter((job)=>{
             return job.isPassing ? null : job;
         }).length === 0;
 
-        daemon.cronJobs.sort((a,b)=>{
+        cronJobs.sort((a,b)=>{
             return a.isPassing? 1 :
                 b.isPassing? -1 :
                 0;
         });
 
-        for (let cronJob of daemon.cronJobs){
+        for (let cronJob of cronJobs){
             const statusFilePath = path.join(__dirname, './../flags', `${cronJob.name}_history` , 'status.json');
             
             cronJob.status = 'unknown'
@@ -34,40 +36,12 @@ module.exports = function(app){
             cronJob.statusDate = new Date(status.date);
         }
 
-        return res.send(view({
+        res.send(view({
             clientRefreshInterval : settings.clientRefreshInterval,
             allJobsPassed,
-            jobs : daemon.cronJobs
+            renderDate: new Date(),
+            jobs : cronJobs
         }));
-
-        let passed = true,
-            result = '';
-
-        for(let job of daemon.cronJobs){
-            
-            result += `${job.name} last ran ${job.lastRun}`;
-
-            if (job.isPassing){
-                result += ' passed '
-            } else {
-                passed = false;
-                result += ' failed '
-            }
-
-            result += '<br />'
-        }
-
-        if (passed) 
-        {
-            result += 'PASSED'
-        } 
-        else 
-        {
-            result = `ONE OR MORE JOBS FAILED <br /> ${result} <br /> ONE OR MORE JOBS FAILED`;
-            res.status(settings.partialFailCode);
-        }
-
-        res.send(result);
     });
 
     app.get('/status', function(req, res){
