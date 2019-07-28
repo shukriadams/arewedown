@@ -24,7 +24,13 @@
                             Checked
                         </div>
                         <div class="table-cellValue">
-                            <div class="date-time" data-value="{{lastRun}}"></div>
+                            <div>
+                                Last check <span class="date-ago" data-value="{{lastRun}}"></span>s ago
+                            </div>
+                            {{#if next}}
+                                Next check in 
+                                <span class="date-next" data-value="{{nextRun}}"></span>s
+                            {{/if}}
                         </div>
                     </div>
 
@@ -44,8 +50,8 @@
         </div>
 
         <div class="layout-renderTime">
-            Page rendered <span class="date-time renderTime" data-value="{{renderDate}}"></span>,
-            updating in <span class="layout-updateTime"></span>.
+             <span class="renderTime" data-value="{{renderDate}}"></span>
+            Page will update in <span class="layout-updateTime"></span>.
         </div>
 
     {{/content}}

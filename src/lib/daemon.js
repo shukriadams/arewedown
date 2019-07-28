@@ -28,7 +28,15 @@ class CronProcess
         this.errorMessage = 'Checking has not run yet';
         this.busy = false;
         this.lastRun = new Date();
-        
+        this.nextRun = null;
+
+        this.calcNextRun();
+    }
+
+    calcNextRun(){
+        if (this.cron){
+            this.nextRun = new Date(this.cron.nextDates().toString());
+        }
     }
 
     start(){
@@ -61,6 +69,7 @@ class CronProcess
             this.errorMessage = null;
             this.isPassing = true;
             this.lastRun = new Date();
+            this.calcNextRun();
 
             if (this.test){
 

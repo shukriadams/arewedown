@@ -34,6 +34,10 @@ module.exports = function(app){
             const status = jsonfile.readFileSync(statusFilePath);
             cronJob.status = status.status;
             cronJob.statusDate = new Date(status.date);
+            if (cronJob.nextRun){
+                //console.log(cronJob.nextRun.getTime());
+                cronJob.next = Math.floor((cronJob.nextRun.getTime() - new Date().getTime()) / 1000) + 's'; 
+            }
         }
 
         res.send(view({

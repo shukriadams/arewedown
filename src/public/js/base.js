@@ -12,12 +12,21 @@ if (clientRefreshInterval){
 }
 
 function showTimes(){
-    let dateTime = document.querySelectorAll('.date-time');
-    for (let item of dateTime){
-        let date = new Date(item.getAttribute('data-value'));
+    let agos = document.querySelectorAll('.date-ago');
+
+    for (let ago of agos){
+        let date = new Date(ago.getAttribute('data-value'));
         let seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
-        item.innerHTML = `${seconds}s ago`;
+        ago.innerHTML = seconds;
     }
+
+    let nexts = document.querySelectorAll('.date-next');
+
+    for (let next of nexts){
+        let date = new Date(next.getAttribute('data-value'));
+        let seconds = Math.floor((date.getTime() - new Date().getTime()) / 1000);
+        next.innerHTML = seconds;
+    }    
 }
 
 function showUpdateTime(){
