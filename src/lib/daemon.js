@@ -72,19 +72,19 @@ class CronProcess
             this.calcNextRun();
 
             if (this.test){
-
-                if (this.test === 'gt')
-                    this.isPassing = response > this.expect;
-    
-                if (this.test === 'lt')
-                    this.isPassing = response < this.expect;
-
-                if (this.test === 'eq')
-                    this.isPassing = response < this.expect;
+                try {
+                    let test = require(`./../tests/${this.test}`);
+                    let result = test.call(this, response, this);
+                    this.isPassing = result === true;
+                } catch(ex){
+                    this.isPassing = false;
+                    this.errorMessage = ex;
+                }
+            } else {
+                if (!this.isPassing)
+                    this.errorMessage = `Got ${response}, expected ${this.expect}`
             }
 
-            if (!this.isPassing)
-                this.errorMessage = `Got ${response}, expected ${this.expect}`
 
         } catch(ex){
             this.errorMessage = ex.errno === 'ENOTFOUND' || ex.errno === 'EAI_AGAIN' ? `${this.url} could not be reached.` :this.errorMessage = ex;

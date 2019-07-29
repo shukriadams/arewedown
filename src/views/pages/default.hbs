@@ -3,7 +3,7 @@
 
         <div class="table">
             <div class="table-row table-header">
-                <div class="table-cell">Job</div>
+                <div class="table-cell">Target</div>
                 <div class="table-cell">Checked</div>
                 <div class="table-cell">Status</div>
             </div>
@@ -12,7 +12,7 @@
 
                     <div class="table-cell">
                         <div class="table-cellLabel">
-                            Job
+                            Target
                         </div>
                         <div class="table-cellValue">
                             {{name}} 
@@ -27,13 +27,7 @@
                             Checked
                         </div>
                         <div class="table-cellValue">
-                            <div>
-                                Checked <span class="date-ago" data-value="{{lastRun}}"></span>s ago
-                            </div>
-                            {{#if next}}
-                                Next in 
-                                <span class="date-next" data-value="{{nextRun}}"></span>s
-                            {{/if}}
+                            <span class="date-ago" data-value="{{lastRun}}"></span>s ago{{#if next}}, next check in <span class="date-next" data-value="{{nextRun}}"></span>s{{/if}}
                         </div>
                     </div>
 
@@ -45,6 +39,9 @@
                             {{status}} 
                             {{#unless isPassing}}
                                 since {{ago statusDate}}
+                                <div>
+                                    {{errorMessage}}
+                                </div>
                             {{/unless}}
                         </div>
                     </div>
