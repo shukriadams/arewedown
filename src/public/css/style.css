@@ -46,6 +46,10 @@ body {
     background-color: transparent;
 }
 
+.layout-url{
+    color: white;
+}
+
 .layout-titleScaffold{
     height: var(--dimension-headerHeight);
     position: relative;
@@ -68,11 +72,18 @@ body {
 
 .job {
     background-color: var(--color-persianRed);
+    
+    
 }
 
 .job--passing {
     background-color: transparent;
 }
+
+.job--passing .layout-url{
+    color: gray;
+}
+
 
 .table {
     display: table;

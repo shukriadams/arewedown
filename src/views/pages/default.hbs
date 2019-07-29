@@ -15,7 +15,10 @@
                             Job
                         </div>
                         <div class="table-cellValue">
-                            {{name}} - {{url}}
+                            {{name}} 
+                            <div class="layout-url">
+                                {{url}}
+                            </div>
                         </div>
                     </div>
 
@@ -25,10 +28,10 @@
                         </div>
                         <div class="table-cellValue">
                             <div>
-                                Last check <span class="date-ago" data-value="{{lastRun}}"></span>s ago
+                                Checked <span class="date-ago" data-value="{{lastRun}}"></span>s ago
                             </div>
                             {{#if next}}
-                                Next check in 
+                                Next in 
                                 <span class="date-next" data-value="{{nextRun}}"></span>s
                             {{/if}}
                         </div>

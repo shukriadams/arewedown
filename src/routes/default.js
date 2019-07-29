@@ -17,9 +17,12 @@ module.exports = function(app){
         }).length === 0;
 
         cronJobs.sort((a,b)=>{
+            return a.isPassing - b.isPassing || a.name.localeCompare(b.name)
+            /*
             return a.isPassing? 1 :
                 b.isPassing? -1 :
                 0;
+            */
         });
 
         for (let cronJob of cronJobs){
