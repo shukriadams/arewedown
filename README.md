@@ -1,6 +1,9 @@
-# ARE WE DOWN
+# ARE WE DOWN?
 
-Simple HTTP status checking service, which can itself be tied to an even simpler service like Uptime Robot. In keeping with the spirit of infrastructure as code, all config is stored as text (JSON) files, and the service itself is fully Dockerized.
+- Simple HTTP status checking service
+- Entirely self-hosted, so good for running behind a firewall on a closed domain.
+- Custom rules can be easily added via Javascript extension scripts.
+- Has a minimal single-page dashboard that should run on almost any browser or lower device, ideal for Raspberry Pi's.
 
 ## Vagrant
 

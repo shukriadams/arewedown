@@ -55,6 +55,11 @@ settings.jobs = settings.jobs.filter((job)=>{
     let safe = sanitize(job.name) === job.name;
     if (!safe)
         console.log(`WARNING - ${job.name} is not filesystem-compatible, this job cannot be loaded.`);
+    
+    if (!job.test && !job.url){
+        safe = false
+        console.log(`WARNING - ${job.name} specifies no test, yet has no url, this job cannot be loaded.`);
+    }
         
     return !!job.url && !!job.interval && !!job.name && safe
 });

@@ -15,7 +15,7 @@ let cronJobs = [];
 
 class CronProcess
 {
-    constructor(name, url, interval, expect, test){
+    constructor(name, url, interval, expect, test, args){
 
         this.logInfo = Logger.instance().info.info;
         this.logError = Logger.instance().error.error;
@@ -24,6 +24,7 @@ class CronProcess
         this.test = test;
         this.name = name;
         this.url = url;
+        this.args = args;
         this.isPassing = false;
         this.errorMessage = 'Checking has not run yet';
         this.busy = false;
@@ -64,25 +65,23 @@ class CronProcess
 
     async work(){
         try {
-            const response = await httpHelper.downloadString(this.url);
 
             this.errorMessage = null;
             this.isPassing = true;
             this.lastRun = new Date();
-            this.calcNextRun();
 
             if (this.test){
                 try {
                     let test = require(`./../tests/${this.test}`);
-                    let result = test.call(this, response, this);
+                    let result = test.call(this, this, this.args);
                     this.isPassing = result === true;
                 } catch(ex){
                     this.isPassing = false;
                     this.errorMessage = ex;
                 }
             } else {
-                if (!this.isPassing)
-                    this.errorMessage = `Got ${response}, expected ${this.expect}`
+                // do simple http get
+                await httpHelper.downloadString(this.url);
             }
 
 
@@ -91,6 +90,9 @@ class CronProcess
             this.isPassing = false;
         }
 
+        this.calcNextRun();
+
+        
         if (this.errorMessage)
             this.logInfo(this.errorMessage);
         else 
@@ -180,7 +182,7 @@ module.exports = {
 
     start : ()=>{
         for (const job of settings.jobs){
-            const cronjob = new CronProcess(job.name, job.url, job.interval, job.expect, job.test );
+            const cronjob = new CronProcess(job.name, job.url, job.interval, job.expect, job.test, job.args );
             cronJobs.push(cronjob);
             cronjob.start();
         }
