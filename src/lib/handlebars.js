@@ -33,6 +33,14 @@ Handlebars.registerHelper('ago', function(date){
     return ago(date);
 });
 
+Handlebars.registerHelper('secondsFromNow', function(futureDate){
+    if (typeof futureDate === 'string')
+        futureDate = new Date(futureDate);
+
+    
+    return Math.floor((futureDate.getTime() - Date.now()) / 1000);
+});
+
 Handlebars.registerHelper('time', function(date){
     if (typeof date === 'string')
         date = new Date(date);

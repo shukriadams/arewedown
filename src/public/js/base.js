@@ -1,6 +1,10 @@
 var clientRefreshInterval = document.querySelector('body').getAttribute('data-clientRefreshInterval');
 var updateInSeconds = document.querySelector('.layout-updateTime');
-var renderTime = new Date(document.querySelector('.renderTime').getAttribute('data-value'));
+var renderTime = null; //new Date(document.querySelector('.renderTime').getAttribute('data-value'));
+
+var nowHolder = document.querySelector('.now');
+var now = new Date();
+nowHolder.innerHTML = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
 
 if (clientRefreshInterval)
     clientRefreshInterval = parseInt(clientRefreshInterval);
@@ -43,9 +47,9 @@ function showUpdateTime(){
 
 setInterval(function(){
     showTimes();
-    showUpdateTime();
+    //showUpdateTime();
 }, 1000);
 
 showTimes();
-showUpdateTime();
+//showUpdateTime();
 

@@ -15,16 +15,11 @@ let cronJobs = [];
 
 class CronProcess
 {
-    constructor(name, url, interval, expect, test, args, recipients){
+    constructor(config){
 
+        this.config = config;
         this.logInfo = Logger.instance().info.info;
         this.logError = Logger.instance().error.error;
-        this.interval = interval;
-        this.expect = expect;
-        this.test = test;
-        this.name = name;
-        this.url = url;
-        this.args = args;
         this.isPassing = false;
         this.errorMessage = 'Checking has not run yet';
         this.busy = false;
@@ -33,17 +28,21 @@ class CronProcess
         this.recipients = [];
 
         // recipients is optional. It is a list of strings which must correspond to "name" values in objects in settings.people array.
-        if (!recipients)
-            recipients = [];
+        if (!this.config.recipients)
+            this.config.recipients = [];
             
-        if (recipients && typeof recipients === 'string'){
-            recipients = recipients.split(',');
+        if (this.config.recipients && typeof this.config.recipients === 'string'){
+            this.config.recipients = this.config.recipients.split(',');
         }
 
-        for (let recipientName of recipients){
+
+        for (let recipientName of this.config.recipients){
             let recipientObject = settings.people.find((r)=> { return r.name === recipientName ? r : null; });
+
+            console.log('>>>>', recipientName);
+
             if (!recipientObject){
-                this.logError(`Recipient name "${recipientName}" in job ${this.name} could not be matched to a recipient in settings. This person will not receive notifications.`);
+                this.logError(`Recipient name "${recipientName}" in job ${this.config.name} could not be matched to a recipient in settings. This person will not receive notifications.`);
                 continue;
             }
 
@@ -61,13 +60,13 @@ class CronProcess
 
     start(){
         
-        this.logInfo('Starting service' + this.interval)
+        this.logInfo('Starting service' + this.config.interval)
 
-        this.cron = new CronJob(this.interval, async()=>{
+        this.cron = new CronJob(this.config.interval, async()=>{
             try
             {
                 if (this.busy){
-                    this.logInfo(`${this.name} check was busy from previous run, skipping`);
+                    this.logInfo(`${this.config.name} check was busy from previous run, skipping`);
                     return;
                 }
         
@@ -89,24 +88,24 @@ class CronProcess
             this.isPassing = true;
             this.lastRun = new Date();
 
-            if (this.test){
+            if (this.config.test){
                 try {
-                    let test = require(`./../tests/${this.test}`);
-                    let result = await test.call(this, this, this.args);
+                    let test = require(`./../tests/${this.config.test}`);
+                    let result = await test.call(this, this);
                     this.isPassing = result === true;
                 } catch(ex){
-                    this.logError(`Unhandled exception in user test ${this.test} : ${ex}`);
+                    this.logError(`Unhandled exception in user test ${this.config.test} : ${ex}`);
                     this.isPassing = false;
                     this.errorMessage = ex;
                 }
             } else {
                 // do a simple http get
-                await httpHelper.downloadString(this.url);
+                await httpHelper.downloadString(this.config.url);
             }
 
 
         } catch(ex){
-            this.errorMessage = ex.errno === 'ENOTFOUND' || ex.errno === 'EAI_AGAIN' ? `${this.url} could not be reached.` :this.errorMessage = ex;
+            this.errorMessage = ex.errno === 'ENOTFOUND' || ex.errno === 'EAI_AGAIN' ? `${this.config.url} could not be reached.` :this.errorMessage = ex;
             this.isPassing = false;
         }
 
@@ -115,20 +114,17 @@ class CronProcess
         
         if (this.errorMessage)
             this.logInfo(this.errorMessage);
-        else 
-            this.logInfo(`${this.name} check passed`);
 
-
-        let flag = path.join(flagFolder, this.name),
+        let flag = path.join(flagFolder, this.config.name),
             statusChanged = false,
-            historyLogFolder = path.join(flagFolder, `${this.name}_history`);
+            historyLogFolder = path.join(flagFolder, `${this.config.name}_history`);
 
         if (this.isPassing){
             await fs.ensureDir(historyLogFolder);
 
             jsonfile.writeFileSync(path.join(historyLogFolder, `status.json`), {
                 status : 'up',
-                url : this.url,
+                url : this.config.url,
                 date : this.lastRun
             });
 
@@ -139,11 +135,11 @@ class CronProcess
 
                 jsonfile.writeFileSync(path.join(historyLogFolder, `${this.lastRun.getTime()}.json`), {
                     status : 'up',
-                    url : this.url,
+                    url : this.config.url,
                     date : this.lastRun
                 });
 
-                this.logInfo(`Status changed, flag removed for ${this.name}`);
+                this.logInfo(`Status changed, flag removed for ${this.config.name}`);
                 statusChanged = true;
             }
         } else {
@@ -154,23 +150,23 @@ class CronProcess
 
                 // site is down, write fail flag and log
                 jsonfile.writeFileSync(flag, {
-                    url : this.url,
+                    url : this.config.url,
                     date : new Date()
                 });
 
                 jsonfile.writeFileSync(path.join(historyLogFolder, `${this.lastRun.getTime()}.json`), {
                     status : 'down',
-                    url : this.url,
+                    url : this.config.url,
                     date : new Date()
                 });
                 
                 jsonfile.writeFileSync(path.join(historyLogFolder, `status.json`), {
                     status : 'down',
-                    url : this.url,
+                    url : this.config.url,
                     date : this.lastRun
                 });
 
-                this.logInfo(`Status changed, flag created for ${this.name}`);
+                this.logInfo(`Status changed, flag created for ${this.config.name}`);
                 statusChanged = true;
             }
         }
@@ -178,8 +174,8 @@ class CronProcess
         // send email if site status has change changed
         if (statusChanged){
 
-            let subject = this.isPassing ? `${this.name} is up` : `${this.name} is down`,
-                message = this.isPassing ? `${this.name} is up` : `${this.name} is down`;
+            let subject = this.isPassing ? `${this.config.name} is up` : `${this.config.name} is down`,
+                message = this.isPassing ? `${this.config.name} is up` : `${this.config.name} is down`;
 
             let sendMethod = settings.smtp ? smtp :
                 settings.sendgrid ? sendgrid : 
@@ -187,11 +183,13 @@ class CronProcess
 
             if (sendMethod){
                 for (let recipient of this.recipients){
-                    if (!recipient.email)
-                        continue;
+                    // handle email
+                    if (recipient.email){
+                        let result = await sendMethod(recipient.email, subject, message);
+                        this.logInfo(`Sent email to ${recipient.email} for process ${this.config.name} with result : ${result}` );
+                    }
 
-                    let result = await sendMethod(recipient.email, subject, message);
-                    this.logInfo(`Sent email to ${recipient.email} for process ${this.name} with result : ${result}` );
+                    // handle slack
                 }
             }
         }
@@ -205,7 +203,7 @@ module.exports = {
 
     start : ()=>{
         for (const job of settings.jobs){
-            const cronjob = new CronProcess(job.name, job.url, job.interval, job.expect, job.test, job.args, job.recipients );
+            const cronjob = new CronProcess(job);
             cronJobs.push(cronjob);
             cronjob.start();
         }

@@ -128,7 +128,6 @@ body {
 }
 
 .layout-renderTime{
-    color: gray;
     font-style: italic;
     padding-top: var(--dimension-universalUnit);
 }

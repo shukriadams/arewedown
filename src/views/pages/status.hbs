@@ -15,19 +15,21 @@
                             Target
                         </div>
                         <div class="table-cellValue">
-                            {{name}} 
-                            <div class="layout-url">
-                                <a target="_blank" href="{{url}}">{{url}}</a>
-                            </div>
+                            {{config.name}} 
+                            {{#if config.url}}
+                                <div class="layout-url">
+                                    <a target="_blank" href="{{url}}">{{url}}</a>
+                                </div>
+                            {{/if}}
                         </div>
                     </div>
 
                     <div class="table-cell">
                         <div class="table-cellLabel">
-                            Checked
+                            Checked 
                         </div>
                         <div class="table-cellValue">
-                            <span class="date-ago" data-value="{{lastRun}}"></span>s ago{{#if next}}, next check in <span class="date-next" data-value="{{nextRun}}"></span>s{{/if}}
+                            {{ago lastRun}}
                         </div>
                     </div>
 
@@ -36,7 +38,7 @@
                             Status
                         </div>
                         <div class="table-cellValue">
-                            {{status}} 
+                            {{status}}
                             {{#unless isPassing}}
                                 since {{ago statusDate}}
                                 <div>
@@ -50,8 +52,7 @@
         </div>
 
         <div class="layout-renderTime">
-             <span class="renderTime" data-value="{{renderDate}}"></span>
-            Page will update in <span class="layout-updateTime"></span>.
+            Page rendered <span class="now"></span>.
         </div>
 
     {{/content}}

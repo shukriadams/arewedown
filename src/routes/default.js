@@ -25,7 +25,7 @@ module.exports = function(app){
         }).length === 0;
 
         cronJobs.sort((a,b)=>{
-            return a.isPassing - b.isPassing || a.name.localeCompare(b.name)
+            return a.isPassing - b.isPassing || a.config.name.localeCompare(b.config.name)
             /*
             return a.isPassing? 1 :
                 b.isPassing? -1 :
@@ -34,7 +34,7 @@ module.exports = function(app){
         });
 
         for (let cronJob of cronJobs){
-            const statusFilePath = path.join(__dirname, './../flags', `${cronJob.name}_history` , 'status.json');
+            const statusFilePath = path.join(__dirname, './../flags', `${cronJob.config.name}_history` , 'status.json');
             
             cronJob.status = 'unknown'
             cronJob.statusDate = null;
@@ -45,16 +45,19 @@ module.exports = function(app){
             const status = jsonfile.readFileSync(statusFilePath);
             cronJob.status = status.status;
             cronJob.statusDate = new Date(status.date);
+
             if (cronJob.nextRun){
                 //console.log(cronJob.nextRun.getTime());
                 cronJob.next = Math.floor((cronJob.nextRun.getTime() - new Date().getTime()) / 1000) + 's'; 
             }
         }
 
+        const now = new Date();
+
         res.send(view({
             clientRefreshInterval : settings.clientRefreshInterval,
             allJobsPassed,
-            renderDate: new Date(),
+            renderDate: `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`,
             jobs : cronJobs
         }));
     });

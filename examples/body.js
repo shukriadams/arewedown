@@ -22,6 +22,6 @@ async function downloadString(url){
 };
     
 module.exports = async function(job){
-    let response = await downloadString(job.url);
+    let response = await downloadString(job.config.url);
     return response.body === 'some expected text';
 }
