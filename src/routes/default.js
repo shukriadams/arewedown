@@ -8,8 +8,16 @@ const settings = require('./../lib/settings'),
 
 module.exports = function(app){
     
+        
     app.get('/', async function(req, res){
-        let view = handlebars.getView('default'),
+        let view = handlebars.getView('default');
+        res.send(view({
+            clientRefreshInterval : settings.clientRefreshInterval,
+        }));
+    });
+
+    app.get('/status', async function(req, res){
+        let view = handlebars.getView('status'),
             cronJobs = daemon.cronJobs.slice(0); // clone array, we don't want to change source
 
         const allJobsPassed = cronJobs.filter((job)=>{
@@ -51,7 +59,8 @@ module.exports = function(app){
         }));
     });
 
-    app.get('/status', function(req, res){
-        res.send('AM I Down service running');
+
+    app.get('/isalive', function(req, res){
+        res.send('ARE WE DOWN? service is running');
     });
 }

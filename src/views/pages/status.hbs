@@ -1,0 +1,58 @@
+{{#extend "layout"}}
+    {{#content "body"}}
+
+        <div class="table">
+            <div class="table-row table-header">
+                <div class="table-cell">Target</div>
+                <div class="table-cell">Checked</div>
+                <div class="table-cell">Status</div>
+            </div>
+            {{#each jobs}}
+                <div class="table-row job {{#if isPassing}}job--passing{{/if}}">
+
+                    <div class="table-cell">
+                        <div class="table-cellLabel">
+                            Target
+                        </div>
+                        <div class="table-cellValue">
+                            {{name}} 
+                            <div class="layout-url">
+                                <a target="_blank" href="{{url}}">{{url}}</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-cell">
+                        <div class="table-cellLabel">
+                            Checked
+                        </div>
+                        <div class="table-cellValue">
+                            <span class="date-ago" data-value="{{lastRun}}"></span>s ago{{#if next}}, next check in <span class="date-next" data-value="{{nextRun}}"></span>s{{/if}}
+                        </div>
+                    </div>
+
+                    <div class="table-cell">
+                        <div class="table-cellLabel">
+                            Status
+                        </div>
+                        <div class="table-cellValue">
+                            {{status}} 
+                            {{#unless isPassing}}
+                                since {{ago statusDate}}
+                                <div>
+                                    {{errorMessage}}
+                                </div>
+                            {{/unless}}
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+
+        <div class="layout-renderTime">
+             <span class="renderTime" data-value="{{renderDate}}"></span>
+            Page will update in <span class="layout-updateTime"></span>.
+        </div>
+
+    {{/content}}
+{{/extend}}

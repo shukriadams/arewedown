@@ -5,11 +5,6 @@ var renderTime = new Date(document.querySelector('.renderTime').getAttribute('da
 if (clientRefreshInterval)
     clientRefreshInterval = parseInt(clientRefreshInterval);
 
-if (clientRefreshInterval){
-    setTimeout(function(){
-        window.location = window.location;
-    }, clientRefreshInterval);
-}
 
 function showTimes(){
     let agos = document.querySelectorAll('.date-ago');
@@ -38,6 +33,9 @@ function showTimes(){
 }
 
 function showUpdateTime(){
+    if (!clientRefreshInterval)
+        return;
+        
     const updateTime = new Date(renderTime.getTime() + clientRefreshInterval);
     const updateSeconds = Math.floor((updateTime.getTime() - new Date().getTime())/ 1000);
     updateInSeconds.innerHTML = `${updateSeconds}s`;

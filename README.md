@@ -3,7 +3,7 @@
 - Simple HTTP status checking service
 - Entirely self-hosted, so good for running behind a firewall on a closed domain.
 - Custom rules can be easily added via Javascript extension scripts.
-- Has a minimal single-page dashboard that should run on almost any browser or lower device, ideal for Raspberry Pi's.
+- Has a minimal single-page dashboard that should run on almost any browser or low-spec device, ideal for Raspberry Pi's in kiosk mode.
 
 ## Vagrant
 

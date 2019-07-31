@@ -100,7 +100,7 @@ class CronProcess
                     this.errorMessage = ex;
                 }
             } else {
-                // do simple http get
+                // do a simple http get
                 await httpHelper.downloadString(this.url);
             }
 
