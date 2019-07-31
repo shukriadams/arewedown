@@ -39,8 +39,6 @@ class CronProcess
         for (let recipientName of this.config.recipients){
             let recipientObject = settings.people.find((r)=> { return r.name === recipientName ? r : null; });
 
-            console.log('>>>>', recipientName);
-
             if (!recipientObject){
                 this.logError(`Recipient name "${recipientName}" in job ${this.config.name} could not be matched to a recipient in settings. This person will not receive notifications.`);
                 continue;
