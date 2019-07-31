@@ -41,9 +41,9 @@ class CronProcess
         }
 
         for (let recipientName of recipients){
-            let recipientObject = settings.recipients.find((r)=> { return r.name === recipientName ? r : null; });
+            let recipientObject = settings.people.find((r)=> { return r.name === recipientName ? r : null; });
             if (!recipientObject){
-                this.logError(`Recipient name ${recipientName} in job ${this.name} could not be matched to a recipient in settings. This person will not receive notifications.`);
+                this.logError(`Recipient name "${recipientName}" in job ${this.name} could not be matched to a recipient in settings. This person will not receive notifications.`);
                 continue;
             }
 
