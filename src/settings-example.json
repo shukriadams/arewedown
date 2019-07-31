@@ -17,5 +17,5 @@
         { "name" : "My site", "recipients" :  "me,bob" , "url" : "http://thing.example.com/", "interval" : "*/10 * * * * *" },
 
         { "name" : "My other site", "recipients" :  ["me"] , "interval" : "*/10 * * * * *", "args" : { "some_arg" : "whatever" } }
-    ]
+    ] 
 }

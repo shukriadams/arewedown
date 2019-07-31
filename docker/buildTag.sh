@@ -16,7 +16,7 @@ fi
 
 # clone working copy of repo at the latest tag
 rm -rf .clone &&
-git clone --depth 1 --branch $TAG https://github.com/shukriadams/amidown.git .clone &&
+git clone --depth 1 --branch $TAG https://github.com/shukriadams/arewedown.git .clone &&
 
 
 # kill any existing build container
@@ -49,9 +49,9 @@ docker exec buildcontainer sh -c 'cd /tmp/stage/ && npm install --production --n
 docker exec buildcontainer sh -c 'tar -czvf /tmp/build.tar.gz /tmp/stage' &&
 docker cp buildcontainer:/tmp/build.tar.gz . &&
 
-docker build -t shukriadams/amidown . &&
-docker tag shukriadams/amidown:latest shukriadams/amidown:$TAG &&
-docker push shukriadams/amidown:latest &&
-docker push shukriadams/amidown:$TAG &&
+docker build -t shukriadams/arewedown . &&
+docker tag shukriadams/arewedown:latest shukriadams/arewedown:$TAG &&
+docker push shukriadams/arewedown:latest &&
+docker push shukriadams/arewedown:$TAG &&
 
 echo "Build done";
