@@ -22,8 +22,10 @@
         "express": "4.17.1",
         "sanitize-filename": "1.6.1",
         "nodemailer": "5.1.1",
+        "custom-env": "1.0.0",
         "fs-extra": "8.1.0",
         "winston-wrapper": "https://github.com/shukriadams/winston-wrapper.git#0.0.1"
     },
-    "devDependencies": {}
+    "devDependencies": {
+    }
 }

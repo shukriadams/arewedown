@@ -1,6 +1,7 @@
 const request = require('request');
 
 module.exports = {
+
     downloadString : async function(url){
         return new Promise((resolve, reject)=>{
             request( { uri: url }, 
@@ -12,5 +13,10 @@ module.exports = {
                 }
             )
         });
+    },
+
+    downloadJSON : async function(url){
+        let raw = await this.downloadString(url);
+        return JSON.parse(raw.body);
     }
 }

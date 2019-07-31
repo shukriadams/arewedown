@@ -1,3 +1,6 @@
+// force import .env settings
+require('custom-env').env();
+
 const 
     http = require('http'),
     Express = require('express'),

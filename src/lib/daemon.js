@@ -15,7 +15,7 @@ let cronJobs = [];
 
 class CronProcess
 {
-    constructor(name, url, interval, expect, test, args){
+    constructor(name, url, interval, expect, test, args, recipients){
 
         this.logInfo = Logger.instance().info.info;
         this.logError = Logger.instance().error.error;
@@ -30,6 +30,25 @@ class CronProcess
         this.busy = false;
         this.lastRun = new Date();
         this.nextRun = null;
+        this.recipients = [];
+
+        // recipients is optional. It is a list of strings which must correspond to "name" values in objects in settings.people array.
+        if (!recipients)
+            recipients = [];
+            
+        if (recipients && typeof recipients === 'string'){
+            recipients = recipients.split(',');
+        }
+
+        for (let recipientName of recipients){
+            let recipientObject = settings.recipients.find((r)=> { return r.name === recipientName ? r : null; });
+            if (!recipientObject){
+                this.logError(`Recipient name ${recipientName} in job ${this.name} could not be matched to a recipient in settings. This person will not receive notifications.`);
+                continue;
+            }
+
+            this.recipients.push(recipientObject);
+        }
 
         this.calcNextRun();
     }
@@ -73,9 +92,10 @@ class CronProcess
             if (this.test){
                 try {
                     let test = require(`./../tests/${this.test}`);
-                    let result = test.call(this, this, this.args);
+                    let result = await test.call(this, this, this.args);
                     this.isPassing = result === true;
                 } catch(ex){
+                    this.logError(`Unhandled exception in user test ${this.test} : ${ex}`);
                     this.isPassing = false;
                     this.errorMessage = ex;
                 }
@@ -166,9 +186,12 @@ class CronProcess
                 null;
 
             if (sendMethod){
-                for (let recipient of settings.recipients){
-                    let result = await sendMethod(recipient, subject, message);
-                    this.logInfo(`Sent email to ${recipient} for process ${this.name} with result : ${result}` );
+                for (let recipient of this.recipients){
+                    if (!recipient.email)
+                        continue;
+
+                    let result = await sendMethod(recipient.email, subject, message);
+                    this.logInfo(`Sent email to ${recipient.email} for process ${this.name} with result : ${result}` );
                 }
             }
         }
@@ -182,7 +205,7 @@ module.exports = {
 
     start : ()=>{
         for (const job of settings.jobs){
-            const cronjob = new CronProcess(job.name, job.url, job.interval, job.expect, job.test, job.args );
+            const cronjob = new CronProcess(job.name, job.url, job.interval, job.expect, job.test, job.args, job.recipients );
             cronJobs.push(cronjob);
             cronjob.start();
         }

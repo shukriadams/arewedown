@@ -61,7 +61,7 @@ settings.jobs = settings.jobs.filter((job)=>{
         console.log(`WARNING - ${job.name} specifies no test, yet has no url, this job cannot be loaded.`);
     }
         
-    return !!job.url && !!job.interval && !!job.name && safe
+    return !!job.interval && !!job.name && safe
 });
 
 if (jobCount !== settings.jobs.length)
