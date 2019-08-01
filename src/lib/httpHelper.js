@@ -4,14 +4,21 @@ module.exports = {
 
     downloadString : async function(url){
         return new Promise((resolve, reject)=>{
+            let code = null;
+
             request( { uri: url }, 
                 function(error, response) {
                     if (error)
                         return reject(error);
 
+                    if (code && code !== 200)
+                        return reject(`Error : server responded with code ${code}.`);
+
                     resolve(response);
                 }
-            )
+            ).on('response', function(response) {
+                code = response.statusCode;
+            })
         });
     },
 
