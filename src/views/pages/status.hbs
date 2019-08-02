@@ -2,11 +2,6 @@
     {{#content "body"}}
 
         <div class="table">
-            <div class="table-row table-header">
-                <div class="table-cell">Target</div>
-                <div class="table-cell">Checked</div>
-                <div class="table-cell">Status</div>
-            </div>
             {{#each jobs}}
                 <div class="table-row job {{#if isPassing}}job--passing{{/if}}">
 
@@ -14,13 +9,8 @@
                         <div class="table-cellLabel">
                             Target
                         </div>
-                        <div class="table-cellValue">
+                        <div class="table-cellValue name">
                             {{config.name}} 
-                            {{#if config.url}}
-                                <div class="layout-url">
-                                    <a target="_blank" href="{{url}}">{{url}}</a>
-                                </div>
-                            {{/if}}
                         </div>
                     </div>
 
