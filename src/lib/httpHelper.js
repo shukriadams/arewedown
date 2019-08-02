@@ -11,7 +11,7 @@ module.exports = {
                     if (error)
                         return reject(error);
 
-                    if (code && code > 200 && code < 299) // allow all code 2**
+                    if (code && code < 200 && code > 299) // allow all code 2**
                         return reject(`Error : server responded with code ${code}.`);
 
                     resolve(response);
