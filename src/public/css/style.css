@@ -9,7 +9,6 @@
     --color-orange: #ff5722;
     --color-vermillion: #FA3C00;
     --color-fire: #A82800;
-    --color-cedarWood: #751C00;
     --color-mirage: #19222d;
     --color-ebonyClay : #262c3a;
     --dimension-headerHeight: 64px;
@@ -32,7 +31,7 @@ h1 {
 }
 
 header {
-    background-color: var(--color-cedarWood);
+    background-color: var(--color-vermillion);
     color: var(--color-white);
     font-size: 24px;
     position: fixed;
@@ -48,11 +47,13 @@ header {
 main {
     flex: 1;
     padding-top: var(--dimension-headerHeight);
+    padding-bottom: var(--dimension-universalUnit);
     position: relative;
+    text-align: center;
 }
 
 footer {
-    background-color: var(--color-cedarWood);
+    background-color: var(--color-vermillion);
     color: var(--color-white);
 }
 
@@ -91,9 +92,10 @@ footer {
 
 .layout-title {
     position: absolute;
-    left: var(--dimension-universalUnit);
+    left: 50%;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
+    
 }
 
 .layout-scaffold {
@@ -122,6 +124,8 @@ footer {
     font-weight: bold;
     font-size: 20px;
     background-color: var(--color-vermillion);
+    max-height: 65px;
+    overflow: hidden;    
 }
 
 .job.job--passing .table-cell--header {
@@ -162,6 +166,7 @@ footer {
 .layout-renderTime{
     font-style: italic;
     padding: var(--dimension-universalUnit) 0;
+    text-align: center;
 }
 
 .icon-passing{
