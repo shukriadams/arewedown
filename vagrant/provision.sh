@@ -14,5 +14,5 @@ sudo usermod -aG docker vagrant
 echo "cd /vagrant/src" >> /home/vagrant/.bashrc
 
 # set hostname, makes console easier to identify
-sudo echo "amidown" > /etc/hostname
-sudo echo "127.0.0.1 amidown" >> /etc/hosts
+sudo echo "arewedown" > /etc/hostname
+sudo echo "127.0.0.1 arewedown" >> /etc/hosts

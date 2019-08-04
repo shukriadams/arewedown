@@ -26,6 +26,5 @@
         "fs-extra": "8.1.0",
         "winston-wrapper": "https://github.com/shukriadams/winston-wrapper.git#0.0.1"
     },
-    "devDependencies": {
-    }
+    "devDependencies": {}
 }

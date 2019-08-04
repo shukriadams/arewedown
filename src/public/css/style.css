@@ -7,20 +7,28 @@
     --color-riverBed: #404757;
 
     --color-mountainMeadow: #22b66e;
-    --color-aquamarine: #7CF4B9;
+    --color-salem: #139556;
     --color-dodgerBlue: #3da6fa;
     --color-tanHide: #FB9C60;
     --color-orange: #ff5722;
+    --color-vermillion: #FA3C00;
     --color-mirage: #19222d;
     --dimension-headerHeight: 64px;
     --dimension-universalUnit: 8px;
 }
 
 html {
+    height: 100%;
+}
 
+body {
+    padding : 0;
+    margin : 0;
+    font-family: 'Source Sans Pro', sans-serif;
 }
 
 h1 {
+    color: var(--color-dodgerBlue);
     margin: 0;
     padding:0;
 }
@@ -38,21 +46,24 @@ header {
     white-space: nowrap; 
 }
 
-main  {
-    margin-top: var(--dimension-headerHeight);
-    padding: var(--dimension-universalUnit);
+.content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-body {
-    color: var(--color-dodgerBlue);
-    padding : 0;
-    margin : 0;
-    font-family: 'Source Sans Pro', sans-serif;
+main {
+    flex: 1;
+    padding-top: var(--dimension-headerHeight);
+    position: relative;
+}
+
+footer {
+    background-color: var(--color-ebonyClay);
 }
 
 .layout {
     background-color: var(--color-mirage);
-
 }
 
 .layout--passing {
@@ -95,15 +106,18 @@ body {
     color: gray;
 }
 
-.name {
+.table-cell--header {
     font-weight: bold;
     font-size: 20px;
-    border-bottom: var(--color-tanHide) solid 1px;
-    padding-bottom: var(--dimension-universalUnit);
+    background-color: var(--color-vermillion);
 }
 
-.job.job--passing .name {
-    border-bottom-color: var(--color-aquamarine);
+.job.job--passing .table-cell--header {
+    background-color: var(--color-salem);
+}
+
+.table {
+    height: 100%;
 }
 
 .table-header {
@@ -113,20 +127,17 @@ body {
     font-weight: bold;
 }
 
-.table-cellLabel{
-    color: var(--color-ebonyClay);
-    display: none;
-    font-weight: bold;    
-}
-
 .table-row {
+    border-radius: 5px;
     display: inline-block;
-    width: 400px;
-    width: 400px;
+    width: 240px;
+    height: 180px;
+    overflow: hidden;
     max-width: 100%;
-    color: var(--color-riverBed);
+    color: var(--color-mirage);
     margin-top: var(--dimension-universalUnit);
     margin-left: var(--dimension-universalUnit);
+    position: relative;
 }
 
 .table-smallrow{
@@ -134,10 +145,10 @@ body {
 }
 
 .table-cell {
-    padding: var(--dimension-universalUnit);
 }
 
 .table-cellValue {
+    padding: var(--dimension-universalUnit);
     word-break: break-all;
     word-wrap: break-word;
     overflow: hidden;
@@ -148,27 +159,32 @@ body {
     padding-top: var(--dimension-universalUnit);
 }
 
+.icon-passing{
+    height: 80px;
+    width: 80px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.noJobs{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+}
+
 @media all and (min-width: 501px) {
    
 
 }
 
 @media all and (max-width: 500px) {
-    .table-cellLabel{
-        display: block;
-        padding: var(--dimension-universalUnit);
-    }
-
-    .table-cellValue{
-        display: block;
-        padding: var(--dimension-universalUnit);
-    }
-
     .table-cell {
         display: block;
         border : none;
-        border-left: var(--color-riverBed) 1px solid;
-        border-right: var(--color-riverBed) 1px solid;
         padding: 0;
     }
 

@@ -22,3 +22,7 @@ To use
 - chown 1000 -R flags
 - if you want to persists logs, create logs folder and chown as above
 - use docker/docker-compose-yml as base for your docker-compose file.
+
+## Credits
+
+Icons by FeatherIcons (https://github.com/feathericons/feather)

@@ -1,49 +1,32 @@
 {{#extend "layout"}}
     {{#content "body"}}
-
         <div class="table">
-            {{#each jobs}}
-                <div class="table-row job {{#if isPassing}}job--passing{{/if}}">
+            {{#if jobs.length}}
+                {{#each jobs}}
+                    <div class="table-row job {{#if isPassing}}job--passing{{/if}}">
 
-                    <div class="table-cell">
-                        <div class="table-cellLabel">
-                            Target
+                        <div class="table-cell table-cell--header">
+                            <div class="table-cellValue name">
+                                {{config.name}} 
+                            </div>
                         </div>
-                        <div class="table-cellValue name">
-                            {{config.name}} 
+
+                        <div class="table-cell">
+                            <div class="table-cellValue">
+                                {{#if isPassing}}
+                                    <img class="icon-passing" src="/icons/passing.svg" alt="Passing" />
+                                {{else}}
+                                    {{errorMessage}} since {{ago statusDate}}.
+                                {{/if}}
+                            </div>
                         </div>
                     </div>
-
-                    <div class="table-cell">
-                        <div class="table-cellLabel">
-                            Checked 
-                        </div>
-                        <div class="table-cellValue">
-                            {{ago lastRun}}
-                        </div>
-                    </div>
-
-                    <div class="table-cell">
-                        <div class="table-cellLabel">
-                            Status
-                        </div>
-                        <div class="table-cellValue">
-                            {{status}}
-                            {{#unless isPassing}}
-                                since {{ago statusDate}}
-                                <div>
-                                    {{errorMessage}}
-                                </div>
-                            {{/unless}}
-                        </div>
-                    </div>
+                {{/each}}
+            {{else}}
+                <div class="noJobs">
+                    No jobs set.
                 </div>
-            {{/each}}
+            {{/if}}
         </div>
-
-        <div class="layout-renderTime">
-            Page rendered <span class="now"></span>.
-        </div>
-
     {{/content}}
 {{/extend}}
