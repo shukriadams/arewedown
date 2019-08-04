@@ -2,17 +2,16 @@
 
 :root {
     --color-white: #ffffff;
-    --color-ebonyClay : #262c3a;
-    --color-persianRed: #D03939;
-    --color-riverBed: #404757;
 
     --color-mountainMeadow: #22b66e;
     --color-salem: #139556;
     --color-dodgerBlue: #3da6fa;
-    --color-tanHide: #FB9C60;
     --color-orange: #ff5722;
     --color-vermillion: #FA3C00;
+    --color-fire: #A82800;
+    --color-cedarWood: #751C00;
     --color-mirage: #19222d;
+    --color-ebonyClay : #262c3a;
     --dimension-headerHeight: 64px;
     --dimension-universalUnit: 8px;
 }
@@ -28,13 +27,13 @@ body {
 }
 
 h1 {
-    color: var(--color-dodgerBlue);
     margin: 0;
     padding:0;
 }
 
 header {
-    background-color: var(--color-ebonyClay);
+    background-color: var(--color-cedarWood);
+    color: var(--color-white);
     font-size: 24px;
     position: fixed;
     top: 0;
@@ -46,12 +45,6 @@ header {
     white-space: nowrap; 
 }
 
-.content {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
 main {
     flex: 1;
     padding-top: var(--dimension-headerHeight);
@@ -59,15 +52,32 @@ main {
 }
 
 footer {
-    background-color: var(--color-ebonyClay);
+    background-color: var(--color-cedarWood);
+    color: var(--color-white);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .layout {
+    background-color: var(--color-fire);
+}
+
+.layout.layout--passing {
     background-color: var(--color-mirage);
 }
 
-.layout--passing {
-    background-color: var(--color-mirage);
+.layout.layout--passing header {
+    background-color: var(--color-ebonyClay);
+    color: var(--color-dodgerBlue);
+}
+
+.layout.layout--passing footer {
+    background-color: var(--color-ebonyClay);
+    color: var(--color-dodgerBlue);
 }
 
 .layout-url{
@@ -96,10 +106,12 @@ footer {
 
 .job {
     background-color: var(--color-orange);
+    color: var(--color-white);
 }
 
 .job--passing {
     background-color:var(--color-mountainMeadow);
+    color: var(--color-mirage);
 }
 
 .job--passing .layout-url{
@@ -120,13 +132,6 @@ footer {
     height: 100%;
 }
 
-.table-header {
-    background-color: var(--color-riverBed);
-    color: var(--color-dodgerBlue);
-    display: table-header-group;
-    font-weight: bold;
-}
-
 .table-row {
     border-radius: 5px;
     display: inline-block;
@@ -134,7 +139,7 @@ footer {
     height: 180px;
     overflow: hidden;
     max-width: 100%;
-    color: var(--color-mirage);
+    
     margin-top: var(--dimension-universalUnit);
     margin-left: var(--dimension-universalUnit);
     position: relative;
@@ -156,7 +161,7 @@ footer {
 
 .layout-renderTime{
     font-style: italic;
-    padding-top: var(--dimension-universalUnit);
+    padding: var(--dimension-universalUnit) 0;
 }
 
 .icon-passing{
