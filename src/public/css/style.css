@@ -1,18 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap');
 
-:root {
-    --color-white: #ffffff;
+/*
+    This layout would have been much easier with Flex, but it needed to be backwards-compatible with older browsers.
+*/
 
-    --color-mountainMeadow: #22b66e;
-    --color-salem: #139556;
-    --color-dodgerBlue: #3da6fa;
-    --color-orange: #ff5722;
-    --color-vermillion: #FA3C00;
-    --color-fire: #A82800;
-    --color-mirage: #19222d;
-    --color-ebonyClay : #262c3a;
-    --dimension-headerHeight: 64px;
-    --dimension-universalUnit: 8px;
+* {
+    box-sizing: border-box;
 }
 
 html {
@@ -23,6 +16,7 @@ body {
     padding : 0;
     margin : 0;
     font-family: 'Source Sans Pro', sans-serif;
+    height: 100%;
 }
 
 h1 {
@@ -31,8 +25,8 @@ h1 {
 }
 
 header {
-    background-color: var(--color-vermillion);
-    color: var(--color-white);
+    background-color: #FA3C00;
+    color: #ffffff;
     font-size: 24px;
     position: fixed;
     top: 0;
@@ -45,48 +39,51 @@ header {
 }
 
 main {
-    flex: 1;
-    padding-top: var(--dimension-headerHeight);
-    padding-bottom: var(--dimension-universalUnit);
+    padding-top: 64px; /* header height */
     position: relative;
     text-align: center;
+    height: 100%;
 }
 
 footer {
-    background-color: var(--color-vermillion);
-    color: var(--color-white);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: #FA3C00;
+    color: #ffffff;
+    width: 100%;
+    z-index: 1;
 }
 
-.content {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+/* need this to create space at bottom of content area to prevent floating footer from overlapping */
+.push{
+    height: 50px;
 }
 
 .layout {
-    background-color: var(--color-fire);
+    background-color: #A82800;
 }
 
 .layout.layout--passing {
-    background-color: var(--color-mirage);
+    background-color: #19222d;
 }
 
 .layout.layout--passing header {
-    background-color: var(--color-ebonyClay);
-    color: var(--color-dodgerBlue);
+    background-color: #262c3a;
+    color: #3da6fa;
 }
 
 .layout.layout--passing footer {
-    background-color: var(--color-ebonyClay);
-    color: var(--color-dodgerBlue);
+    background-color: #262c3a;
+    color: #3da6fa;
 }
 
 .layout-url{
-    color: var(--color-dodgerBlue);
+    color: #3da6fa;
 }
 
 .layout-titleScaffold{
-    height: var(--dimension-headerHeight);
+    height: 64px; /* header height */
     position: relative;
 }
 
@@ -102,18 +99,18 @@ footer {
     margin-left: auto;
     margin-right: auto;
     --max-width: 1024px;
-    padding-left: var(--dimension-universalUnit);
-    padding-right: var(--dimension-universalUnit);
+    padding-left: 8px /* universal Unit */;
+    padding-right: 8px /* universal Unit */;
 }
 
 .job {
-    background-color: var(--color-orange);
-    color: var(--color-white);
+    background-color: #ff5722;
+    color: #ffffff;
 }
 
 .job--passing {
-    background-color:var(--color-mountainMeadow);
-    color: var(--color-mirage);
+    background-color: #22b66e;
+    color: #19222d;
 }
 
 .job--passing .layout-url{
@@ -123,17 +120,13 @@ footer {
 .table-cell--header {
     font-weight: bold;
     font-size: 20px;
-    background-color: var(--color-vermillion);
+    background-color: #FA3C00;
     max-height: 65px;
     overflow: hidden;    
 }
 
 .job.job--passing .table-cell--header {
-    background-color: var(--color-salem);
-}
-
-.table {
-    height: 100%;
+    background-color: #139556;
 }
 
 .table-row {
@@ -144,8 +137,8 @@ footer {
     overflow: hidden;
     max-width: 100%;
     
-    margin-top: var(--dimension-universalUnit);
-    margin-left: var(--dimension-universalUnit);
+    margin-top: 8px /* universal Unit */;
+    margin-left: 8px /* universal Unit */;
     position: relative;
 }
 
@@ -154,7 +147,7 @@ footer {
 }
 
 .table-cellValue {
-    padding: var(--dimension-universalUnit);
+    padding: 8px /* universal Unit */;
     word-break: break-all;
     word-wrap: break-word;
     overflow: hidden;
@@ -162,7 +155,7 @@ footer {
 
 .layout-renderTime{
     font-style: italic;
-    padding: var(--dimension-universalUnit) 0;
+    padding: 8px /* universal Unit */ 0;
     text-align: center;
 }
 
