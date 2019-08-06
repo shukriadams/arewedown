@@ -1,23 +1,26 @@
 {{#extend "layout"}}
     {{#content "body"}}
-        <div class="table">
+        <div>
             {{#if jobs.length}}
                 {{#each jobs}}
                     <div class="table-row job {{#if isPassing}}job--passing{{/if}}">
 
                         <div class="table-cell table-cell--header">
-                            <div class="table-cellValue name">
+                            <div class="name">
                                 {{config.name}} 
                             </div>
                         </div>
 
+                        <div class="table-cell table-cell--content">
+                            {{#if isPassing}}
+                                <img class="icon-passing" src="/icons/passing.svg" alt="Passing" />
+                            {{else}}
+                                    {{ago statusDate}} - {{errorMessage}}
+                            {{/if}}
+                        </div>
                         <div class="table-cell">
-                            <div class="table-cellValue">
-                                {{#if isPassing}}
-                                    <img class="icon-passing" src="/icons/passing.svg" alt="Passing" />
-                                {{else}}
-                                    {{errorMessage}} ({{ago statusDate}})
-                                {{/if}}
+                            <div class="nextCheck">
+                                Next check : <span data-formatDate="{{nextRun}}"></span>
                             </div>
                         </div>
                     </div>

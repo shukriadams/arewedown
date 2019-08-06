@@ -1,6 +1,7 @@
 var clientRefreshInterval = document.querySelector('body').getAttribute('data-clientRefreshInterval');
 var updateInSeconds = document.querySelector('.layout-updateTime');
 var renderTime = null; //new Date(document.querySelector('.renderTime').getAttribute('data-value'));
+var dateFields = document.querySelectorAll('[data-formatDate]');
 
 var nowHolder = document.querySelector('.now');
 var now = new Date();
@@ -9,6 +10,14 @@ nowHolder.innerHTML = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
 if (clientRefreshInterval)
     clientRefreshInterval = parseInt(clientRefreshInterval);
 
+
+for (var i = 0 ; i < dateFields.length ; i ++)
+{
+    let dateField = dateFields[i];
+    let date = new Date(dateField.getAttribute('data-formatDate'));
+    let formatted = date.toLocaleTimeString();
+    dateField.innerHTML = formatted;
+}
 
 function showTimes(){
     let agos = document.querySelectorAll('.date-ago');

@@ -82,8 +82,6 @@ class CronProcess
     async work(){
         try {
 
-            this.errorMessage = null;
-            this.isPassing = true;
             this.lastRun = new Date();
 
             if (this.config.test){
@@ -99,6 +97,8 @@ class CronProcess
             } else {
                 // do a simple http get
                 await httpHelper.downloadString(this.config.url);
+                this.isPassing = true;
+                this.errorMessage = null;
             }
 
 

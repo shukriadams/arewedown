@@ -10,8 +10,8 @@ module.exports = {
                 function(error, response) {
                     if (error)
                         return reject(error);
-
-                    if (code && code < 200 && code >= 300) // allow all code 2**
+                    
+                    if (code && (code < 200 || code >= 300)) // allow all code 2**
                         return reject(`Error : server responded with code ${code}.`);
 
                     resolve(response);

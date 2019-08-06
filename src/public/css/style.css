@@ -146,7 +146,7 @@ footer {
     display: inline;
 }
 
-.table-cellValue {
+.table-cell {
     padding: 8px /* universal Unit */;
     word-break: break-all;
     word-wrap: break-word;
@@ -174,6 +174,23 @@ footer {
     left: 50%;
     transform: translate(-50%, -50%);
     font-weight: bold;
+}
+
+.nextCheck {
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.errorMessage {
+    margin-bottom: 20px;
+}
+
+.table-cell--content{  
+    height: 118px;
+    max-height: 118px;
+    overflow: hidden;
 }
 
 @media all and (min-width: 501px) {
