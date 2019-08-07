@@ -5,6 +5,10 @@
 - Custom rules can be easily added via Javascript extension scripts.
 - Has a minimal single-page dashboard that will run on almost any browser or low-spec device, ideal for Raspberry Pi's in kiosk mode. 
 
+## Get it
+
+A docker image is available @ https://hub.docker.com/r/shukriadams/arewedown
+
 ## Vagrant
 
 Vagrant will scaffold up a full dev runtime in a VM, and is my preferred way of managing project setup. This project was confirmed working on Vagrant 2.2.4 and VirtualBox 6.0.6.
