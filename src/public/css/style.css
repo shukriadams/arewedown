@@ -78,11 +78,7 @@ footer {
     color: #3da6fa;
 }
 
-.layout-url{
-    color: #3da6fa;
-}
-
-.layout-titleScaffold{
+.layout-titleScaffold {
     height: 64px; /* header height */
     position: relative;
 }
@@ -92,13 +88,11 @@ footer {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    
 }
 
 .layout-scaffold {
     margin-left: auto;
     margin-right: auto;
-    --max-width: 1024px;
     padding-left: 8px /* universal Unit */;
     padding-right: 8px /* universal Unit */;
 }
@@ -111,10 +105,6 @@ footer {
 .job--passing {
     background-color: #22b66e;
     color: #19222d;
-}
-
-.job--passing .layout-url{
-    color: gray;
 }
 
 .table-cell--header {
@@ -153,13 +143,13 @@ footer {
     overflow: hidden;
 }
 
-.layout-renderTime{
+.layout-renderTime {
     font-style: italic;
     padding: 8px /* universal Unit */ 0;
     text-align: center;
 }
 
-.icon-passing{
+.icon-passing {
     height: 80px;
     width: 80px;
     position: absolute;
@@ -168,7 +158,8 @@ footer {
     transform: translate(-50%, -50%);
 }
 
-.noJobs{
+.noJobs {
+    color: #3da6fa;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -178,18 +169,14 @@ footer {
 
 .nextCheck {
     position: absolute;
-    bottom: 0;
+    bottom: 6px;
     text-align: center;
     width: 100%;
 }
 
-.errorMessage {
-    margin-bottom: 20px;
-}
-
 .table-cell--content{  
-    height: 118px;
-    max-height: 118px;
+    height: 96px;
+    max-height: 96px;
     overflow: hidden;
 }
 
@@ -198,15 +185,7 @@ footer {
 }
 
 @media all and (max-width: 500px) {
-    .table-cell {
-        display: block;
-        border : none;
-        padding: 0;
-    }
 
-    .table-header {
-        display: none;
-    }
 }
 
 
