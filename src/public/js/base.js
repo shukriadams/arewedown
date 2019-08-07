@@ -5,7 +5,7 @@ var dateFields = document.querySelectorAll('[data-formatDate]');
 
 var nowHolder = document.querySelector('.now');
 var now = new Date();
-nowHolder.innerHTML = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+nowHolder.innerHTML = now.toLocaleTimeString();
 
 if (clientRefreshInterval)
     clientRefreshInterval = parseInt(clientRefreshInterval);
@@ -21,10 +21,11 @@ for (var i = 0 ; i < dateFields.length ; i ++)
 
 function showTimes(){
     let agos = document.querySelectorAll('.date-ago');
+    var now = new Date();
 
     for (let ago of agos){
         let date = new Date(ago.getAttribute('data-value'));
-        let seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+        let seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
         if (seconds < 0) 
             seconds = 0;
@@ -36,7 +37,7 @@ function showTimes(){
 
     for (let next of nexts){
         let date = new Date(next.getAttribute('data-value'));
-        let seconds = Math.floor((date.getTime() - new Date().getTime()) / 1000);
+        let seconds = Math.floor((date.getTime() - now.getTime()) / 1000);
 
         if (seconds < 0) 
             seconds = 0;

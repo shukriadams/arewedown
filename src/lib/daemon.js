@@ -24,7 +24,7 @@ class CronProcess
         this.errorMessage = 'Checking has not run yet';
         this.busy = false;
         this.lastRun = new Date();
-        this.nextRun = null;
+        this.nextRun = new Date();
         this.recipients = [];
 
         // recipients is optional. It is a list of strings which must correspond to "name" values in objects in settings.people array.
