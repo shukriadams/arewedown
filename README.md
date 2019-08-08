@@ -1,7 +1,7 @@
 # ARE WE DOWN?
 
-- Simple HTTP status checking service
-- Entirely self-hosted, so good for running behind a firewall on a closed domain.
+- Simple HTTP status checking service. Use this to aggregate any status checks which use HTTP.
+- Entirely self-hosted, ideal for running behind a firewall on a closed domain.
 - Custom rules can be easily added via Javascript extension scripts.
 - Has a minimal single-page dashboard that will run on almost any browser or low-spec device, ideal for Raspberry Pi's in kiosk mode. 
 

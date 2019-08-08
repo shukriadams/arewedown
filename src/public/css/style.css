@@ -129,7 +129,6 @@ footer {
 
 .cell {
     padding: 8px /* universal Unit */;
-    word-break: break-all;
     word-wrap: break-word;
     overflow: hidden;
 }
