@@ -28,6 +28,8 @@ docker-compose -f docker-compose-build.yml up -d &&
 docker exec buildcontainer sh -c 'rm -rf /tmp/build/*' &&
 docker exec buildcontainer sh -c 'rm -rf /tmp/stage/*' &&
 
+docker exec buildcontainer sh -c 'mkdir -p /tmp/build' &&
+docker exec buildcontainer sh -c 'mkdir -p /tmp/stage' &&
 
 # copy tag clone into buildcontainer
 docker cp ./.clone/src/. buildcontainer:/tmp/build &&
