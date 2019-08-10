@@ -1,0 +1,21 @@
+# Tests and builds(deploy) arewedown in a docker container. Container is specified in test and build bash scripts. Deploy stage 
+# runs only when a tag is specified. Deploy also pushes to a tetrifact instance and docker hub, this requires following credentials to be 
+# defined as env variables on Travis :
+# - DOCKER_PASS
+# - DOCKER_USER
+# - TETRIFACT_UPLOAD_TOKEN
+
+services:
+  - docker
+
+jobs:
+  include:
+    - stage: test
+      script:
+      - cd tests
+      - sh ./test.sh
+    - stage: deploy
+      if: tag IS present
+      script:
+      - cd docker
+      - sh ./buildCurrentTag.sh
