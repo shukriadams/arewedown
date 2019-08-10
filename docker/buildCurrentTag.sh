@@ -9,4 +9,4 @@ if [ ${#TAG} -eq 0 ]; then
     exit 1;
 fi
 
-sh ./buildTag $TAG
+sh ./buildTag.sh $TAG
