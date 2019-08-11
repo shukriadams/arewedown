@@ -1,0 +1,8 @@
+version: "2"
+services:
+  arewedowntest:
+    image: shukriadams/arewedown:latest
+    container_name: arewedowntest
+    restart: unless-stopped
+    ports:
+    - "7018:3000"

@@ -51,8 +51,30 @@ docker exec buildcontainer sh -c 'cd /tmp/stage/ && npm install --production --n
 docker exec buildcontainer sh -c 'tar -czvf /tmp/build.tar.gz /tmp/stage' &&
 docker cp buildcontainer:/tmp/build.tar.gz . &&
 
+
+
 docker build -t shukriadams/arewedown . &&
 docker tag shukriadams/arewedown:latest shukriadams/arewedown:$TAG &&
+
+# test mount container
+docker-compose -f docker-compose-test.yml kill &&
+docker-compose -f docker-compose-test.yml up -d &&
+
+# need to wait a few seconds for container AND node app to start
+# todo : find more elegant way to confirm running tried 
+# `/usr/bin/docker inspect -f {{.State.Running}} CONTAINERNAME` which returns true on container but app still not started
+sleep 5; 
+
+RESPONSE=$(curl -s localhost:7018/isalive) && 
+if [ "$RESPONSE"="ARE WE DOWN? service is running" ]
+then
+    echo "Container test passed";
+else
+    echo "Container test failed with response \"${RESPONSE}\"";
+    exit 1;
+fi
+
+
 docker push shukriadams/arewedown:latest &&
 docker push shukriadams/arewedown:$TAG &&
 
