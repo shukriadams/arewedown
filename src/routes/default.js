@@ -7,7 +7,6 @@ const settings = require('./../lib/settings'),
     daemon = require('./../lib/daemon');
 
 module.exports = function(app){
-    
         
     app.get('/', async function(req, res){
         let view = handlebars.getView('default');
