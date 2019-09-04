@@ -1,0 +1,38 @@
+{{#extend "layout"}}
+    {{#content "body"}}
+
+        {{#if jobs.length}}
+            {{#each jobs}}
+                <div class="job {{#if isPassing}}job--passing{{/if}}">
+
+                    <div class="cell cell--header">
+                        <div class="name">
+                            {{config.name}} 
+                        </div>
+                    </div>
+
+                    <div class="cell cell--content">
+                        {{#if isPassing}}
+                            <img class="icon-passing" src="/icons/passing.svg" alt="Passing" />
+                        {{else}}
+                                {{ago statusDate}} - {{errorMessage}}
+                        {{/if}}
+                    </div>
+
+                    <div class="cell">
+                        <div class="nextCheck">
+                            Next check : <span data-formatDate="{{nextRun}}"></span>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        {{else}}
+            <div class="noJobs">
+                Nothing to show yet - set a few jobs up first.
+            </div>
+        {{/if}}
+
+        <div class="push"></div>
+
+    {{/content}}
+{{/extend}}

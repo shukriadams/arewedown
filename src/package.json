@@ -1,7 +1,7 @@
 {
-    "name": "amidown",
+    "name": "arewedown",
     "version": "0.0.1",
-    "description": "A simple uip/down checking service.",
+    "description": "A simple up/down checking service.",
     "private": false,
     "author": "shukri.adams@gmail.com",
     "license": "MIT",
@@ -12,12 +12,19 @@
         "start": "node index"
     },
     "dependencies": {
+        "handlebars-layouts": "3.1.4",
+        "handlebars": "4.0.14",
         "jsonfile": "5.0.0",
+        "s-ago": "2.0.1",
         "request": "2.88.0",
         "cron": "1.7.1",
+        "sendgrid": "5.1.0",
         "express": "4.17.1",
+        "sanitize-filename": "1.6.1",
         "nodemailer": "5.1.1",
+        "custom-env": "1.0.0",
         "fs-extra": "8.1.0",
+        "shukriadams-nodexec": "https://github.com/shukriadams/node-exec.git#0.0.1",
         "winston-wrapper": "https://github.com/shukriadams/winston-wrapper.git#0.0.1"
     },
     "devDependencies": {}

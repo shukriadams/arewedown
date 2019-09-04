@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap');
+
+/*
+    This layout would have been much easier with Flex, but it needed to be backwards-compatible with older browsers.
+*/
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    padding : 0;
+    margin : 0;
+    font-family: 'Source Sans Pro', sans-serif;
+    height: 100%;
+}
+
+h1 {
+    margin: 0;
+    padding:0;
+}
+
+header {
+    background-color: #FA3C00;
+    color: #ffffff;
+    font-size: 24px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+    overflow: hidden;  
+    word-break: keep-all; 
+    white-space: nowrap; 
+}
+
+main {
+    padding-top: 64px; /* header height */
+    position: relative;
+    text-align: center;
+    height: 100%;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: #FA3C00;
+    color: #ffffff;
+    width: 100%;
+    z-index: 1;
+}
+
+/* need this to create space at bottom of content area to prevent floating footer from overlapping */
+.push{
+    height: 50px;
+}
+
+.layout {
+    background-color: #A82800;
+}
+
+.layout.layout--passing {
+    background-color: #19222d;
+}
+
+.layout.layout--passing header {
+    background-color: #262c3a;
+    color: #3da6fa;
+}
+
+.layout.layout--passing footer {
+    background-color: #262c3a;
+    color: #3da6fa;
+}
+
+.layout-titleScaffold {
+    height: 64px; /* header height */
+    position: relative;
+}
+
+.layout-title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.layout-scaffold {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 8px /* universal Unit */;
+    padding-right: 8px /* universal Unit */;
+}
+
+.layout-renderTime {
+    font-style: italic;
+    padding: 8px /* universal Unit */ 0;
+    text-align: center;
+}
+
+.job {
+    border-radius: 5px;
+    display: inline-block;
+    width: 240px;
+    height: 180px;
+    overflow: hidden;
+    max-width: 100%;
+    
+    margin-top: 8px /* universal Unit */;
+    margin-left: 8px /* universal Unit */;
+    position: relative;    
+    background-color: #ff5722;
+    color: #ffffff;
+}
+
+.job--passing {
+    background-color: #22b66e;
+    color: #19222d;
+}
+
+.job.job--passing .cell--header {
+    background-color: #139556;
+}
+
+.cell {
+    padding: 8px /* universal Unit */;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+
+.cell.cell--content{  
+    height: 96px;
+    max-height: 96px;
+    overflow: hidden;
+}
+
+.cell.cell--header {
+    font-weight: bold;
+    font-size: 20px;
+    background-color: #FA3C00;
+    max-height: 65px;
+    overflow: hidden;    
+}
+
+.icon-passing {
+    height: 80px;
+    width: 80px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.noJobs {
+    color: #3da6fa;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+}
+
+.nextCheck {
+    position: absolute;
+    bottom: 6px;
+    text-align: center;
+    width: 100%;
+}
+
+@media all and (min-width: 501px) {
+   
+}
+
+@media all and (max-width: 500px) {
+
+}

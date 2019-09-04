@@ -5,11 +5,17 @@
         "secure" : false
     },
 
-    "recipients" : [ "me@example.com" ],
-    "emailSubject" : "it's down",
+    "people" : [ 
+        { "name" : "me", "email" : "me@example.com"  },
+        { "name" : "bob", "email" : "bob@example.com"  }
+    ],
+    
     "fromEmail" : "notme@example.com",
 
     "jobs" : [
-        { "interval" : "*/10 * * * * *", "name" : "My site", "url" : "http://thing.example.com/" }
-    ]
+        
+        { "name" : "My site", "recipients" :  "me,bob" , "url" : "http://thing.example.com/", "interval" : "*/10 * * * * *" },
+
+        { "name" : "My other site", "recipients" :  ["me", "bob"] , "interval" : "*/10 * * * * *", "some_arg" : "whatever" }
+    ] 
 }

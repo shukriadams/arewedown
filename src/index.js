@@ -1,44 +1,33 @@
+// force import .env settings
+require('custom-env').env();
+
 const 
     http = require('http'),
     Express = require('express'),
     app = Express(),
     settings = require('./lib/settings') ,
     Logger = require('winston-wrapper'),
-    daemon = require('./lib/daemon');
+    daemon = require('./lib/daemon'),
+    fs = require('fs-extra'),
+    path = require('path'),
+    routeFiles = fs.readdirSync(path.join(__dirname, 'routes'));
 
 (async function(){
+
+    // static content
+    app.use(Express.static('./public'));
+
+    // load routes
+    for (let routeFile of routeFiles){
+        const name = routeFile.match(/(.*).js/).pop(),
+            routes = require(`./routes/${name}`);
+
+        routes(app);
+    }
+
     Logger.initialize(settings.logPath);
     daemon.start();
-
-    app.get('/status', function(req, res){
-
-        let passed = true;
-        let result = '';
-
-        for(let job of daemon.cronJobs){
-            result += `${job.name} last ran ${job.lastRun}`;
-            if (job.isPassing){
-                result += ' passed '
-            } else {
-                passed = false;
-                result += ' failed '
-            }
-
-            result += '<br />'
-        }
-
-        if (passed) {
-            result += 'PASSED'
-
-        } else {
-            result = `ONE ORE MORE JOBS FAILED <br/> ${result}`;
-            result += 'ONE ORE MORE JOBS FAILED'
-            res.status(settings.failCode);
-        }
-
-        res.send(result);
-    });
-
+    
     const server = http.createServer(app);
     server.listen(settings.port);
 

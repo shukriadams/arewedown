@@ -1,0 +1,33 @@
+<html>
+    <head>
+        {{{block "basehead"}}}
+        <link rel="stylesheet" href="/css/style.css" type="text/css">
+    </head>
+    <body data-clientRefreshInterval="{{clientRefreshInterval}}" class="layout {{#if allJobsPassed}}layout--passing{{/if}}">
+        <div class="content">
+            
+            <header>
+                <div class="layout-scaffold">
+                    <div class="layout-titleScaffold">
+                        <h1 class="layout-title">Are We Down?</h1>
+                    </div>
+                </div>
+            </header>
+
+            <main>
+                <div class="layout-scaffold">
+                    {{{block "body"}}}
+                </div>
+            </main>
+
+            <footer>
+                <div class="layout-scaffold">
+                    <div class="layout-renderTime">
+                        Rendered <span class="now"></span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <script src="/js/base.js"></script>
+    </body>
+</html>

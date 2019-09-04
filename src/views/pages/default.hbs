@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/css/iframe.css" type="text/css">
+    </head>
+    <body data-clientRefreshInterval="{{clientRefreshInterval}}" >
+        {{! 
+            Load actual status page via iframe so we can gracefully handle the status page being down. 
+            This makes this solution kiosk-mode friendly - once loaded into the browser, the default 
+            kiosk page will always be able to continue reloading, even if the target page is temporarily
+            down.
+        }}
+        <iframe class="contentFrame1"></iframe>
+        <iframe class="contentFrame2"></iframe>
+        <script src="/js/iframe.js"></script>
+    </body>
+</html>
+
+

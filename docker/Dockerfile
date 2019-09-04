@@ -4,6 +4,7 @@ RUN apk update \
     && apk upgrade \
     && apk add bash \
     && apk add git \    
+    && apk add curl \    
     && apk add nodejs=10.14.2-r0 \
     && apk add npm=10.14.2-r0 \
     && mkdir -p /var/app \
