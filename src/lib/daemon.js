@@ -2,7 +2,7 @@ const CronJob = require('cron').CronJob,
     jsonfile = require('jsonfile'),
     sendgrid = require('./sendgrid'),
     smtp = require('./smtp'),
-    httpHelper = require('./httpHelper'),
+    httpHelper = require('./madscience-httputils'),
     path = require('path'),
     fs = require('fs-extra'),
     Logger = require('winston-wrapper'),
@@ -83,28 +83,26 @@ class CronProcess
         try {
 
             this.lastRun = new Date();
+            this.errorMessage = null;
+            
+            // revert to system/basic if test name is not explicitly set.
+            let testName = this.config.test ? this.config.test : 'system/basic'
+            testName = path.join('/../tests', testName);
 
-            if (this.config.test){
-                try {
-                    let test = require(`./../tests/${this.config.test}`);
-                    let result = await test.call(this, this);
-                    this.isPassing = result === true;
-                } catch(ex){
-                    this.logError(`Unhandled exception in user test ${this.config.test} : ${ex}`);
-                    this.isPassing = false;
-                    this.errorMessage = ex;
-                }
-            } else {
-                // do a simple http get
-                await httpHelper.downloadString(this.config.url);
+            try {
+                let test = require(testName);
+                await test.call(this, this);
                 this.isPassing = true;
-                this.errorMessage = null;
+            } catch(ex){
+                this.logError(`Unhandled exception in user test ${testName} : ${ex}`);
+                this.isPassing = false;
+                this.errorMessage = ex;
             }
 
-
         } catch(ex){
-            this.errorMessage = ex.errno === 'ENOTFOUND' || ex.errno === 'EAI_AGAIN' ? `${this.config.url} could not be reached.` :this.errorMessage = ex;
             this.isPassing = false;
+            this.errorMessage = ex.errno === 'ENOTFOUND' || ex.errno === 'EAI_AGAIN' ? 
+                `${this.config.url} could not be reached.` :this.errorMessage = ex;
         }
 
         this.calcNextRun();

@@ -61,6 +61,20 @@ module.exports = function(app){
         }));
     });
 
+    
+    /**
+     * Returns a count of failing jobs. Returns 0 if all jobs are passing.
+     */
+    app.get('/passing', async function(req, res){
+        let cronJobs = daemon.cronJobs.slice(0); // clone array, we don't want to change source
+
+        const passingJobs = cronJobs.filter((job)=>{
+            return job.isPassing ? null : job;
+        });
+
+        res.send((cronJobs.length - passingJobs.length).toString());
+    });
+
 
     app.get('/isalive', function(req, res){
         res.send('ARE WE DOWN? service is running');
