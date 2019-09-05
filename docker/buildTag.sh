@@ -8,10 +8,16 @@
 
 # tag must be passed in as an argument when calling this script
 TAG=$1
+ARMCHECK=$(lscpu | grep arm)
+ARCH=""
 
-if [ -z $TAG ]; then
+if [ -z "$TAG" ]; then
    echo "Error, tag not set. Tag must be a valid github repo tag. Call this script : ./buildTag myTag";
    exit 1;
+fi
+
+if [ ! -z "$ARMCHECK" ]; then
+    ARCH=-arm;
 fi
 
 # clone working copy of repo at the latest tag
@@ -20,8 +26,8 @@ git clone --depth 1 --branch $TAG https://github.com/shukriadams/arewedown.git .
 
 
 # kill any existing build container
-docker-compose -f docker-compose-build.yml kill &&
-docker-compose -f docker-compose-build.yml up -d &&
+docker-compose -f docker-compose-build${ARCH}.yml kill &&
+docker-compose -f docker-compose-build${ARCH}.yml up -d &&
 
 
 # clean out build container incase it's been previous used
@@ -54,7 +60,7 @@ docker cp buildcontainer:/tmp/build.tar.gz . &&
 
 
 docker build -t shukriadams/arewedown . &&
-docker tag shukriadams/arewedown:latest shukriadams/arewedown:$TAG &&
+docker tag shukriadams/arewedown:latest shukriadams/arewedown:$TAG${ARCH} &&
 
 # test mount container
 docker-compose -f docker-compose-test.yml kill &&
@@ -75,7 +81,7 @@ else
 fi
 
 
-docker push shukriadams/arewedown:latest &&
-docker push shukriadams/arewedown:$TAG &&
+#docker push shukriadams/arewedown:latest &&
+#docker push shukriadams/arewedown:$TAG${ARCH} &&
 
 echo "Build done";
