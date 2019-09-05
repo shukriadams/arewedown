@@ -20,7 +20,7 @@ module.exports = function(app){
             cronJobs = daemon.cronJobs.slice(0).filter((job)=>{return job.config.enabled === false ? null : job}); // clone array, we don't want to change source
 
         const allJobsPassed = cronJobs.filter((job)=>{
-            return job.isPassing || !job.config.enabled ? null : job;
+            return job.isPassing || job.config.enabled === false ? null : job;
         }).length === 0;
 
         cronJobs.sort((a,b)=>{
