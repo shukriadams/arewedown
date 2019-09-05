@@ -24,7 +24,8 @@
         "nodemailer": "5.1.1",
         "custom-env": "1.0.0",
         "fs-extra": "8.1.0",
-        "shukriadams-nodexec": "https://github.com/shukriadams/node-exec.git#0.0.1",
+        "madscience-httputils": "https://github.com/shukriadams/node-httpUtils.git#0.0.1",
+        "madscience-node-exec": "https://github.com/shukriadams/node-exec.git#0.0.2",
         "winston-wrapper": "https://github.com/shukriadams/winston-wrapper.git#0.0.1"
     },
     "devDependencies": {}
