@@ -25,11 +25,6 @@ module.exports = function(app){
 
         cronJobs.sort((a,b)=>{
             return a.isPassing - b.isPassing || a.config.name.localeCompare(b.config.name)
-            /*
-            return a.isPassing? 1 :
-                b.isPassing? -1 :
-                0;
-            */
         });
 
         for (let cronJob of cronJobs){
@@ -46,7 +41,6 @@ module.exports = function(app){
             cronJob.statusDate = new Date(status.date);
 
             if (cronJob.nextRun){
-                //console.log(cronJob.nextRun.getTime());
                 cronJob.next = Math.floor((cronJob.nextRun.getTime() - new Date().getTime()) / 1000) + 's'; 
             }
         }
