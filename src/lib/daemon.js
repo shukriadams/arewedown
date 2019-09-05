@@ -2,7 +2,7 @@ const CronJob = require('cron').CronJob,
     jsonfile = require('jsonfile'),
     sendgrid = require('./sendgrid'),
     smtp = require('./smtp'),
-    httpHelper = require('./madscience-httputils'),
+    httpHelper = require('madscience-httputils'),
     path = require('path'),
     fs = require('fs-extra'),
     Logger = require('winston-wrapper'),
@@ -84,10 +84,13 @@ class CronProcess
 
             this.lastRun = new Date();
             this.errorMessage = null;
+
+            if (this.config.enabled === false)
+                return;
             
             // revert to system/basic if test name is not explicitly set.
             let testName = this.config.test ? this.config.test : 'system/basic'
-            testName = path.join('/../tests', testName);
+            testName = path.join('./../tests', testName);
 
             try {
                 let test = require(testName);

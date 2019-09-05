@@ -17,10 +17,10 @@ module.exports = function(app){
 
     app.get('/status', async function(req, res){
         let view = handlebars.getView('status'),
-            cronJobs = daemon.cronJobs.slice(0); // clone array, we don't want to change source
+            cronJobs = daemon.cronJobs.slice(0).filter((job)=>{return job.config.enabled === false ? null : job}); // clone array, we don't want to change source
 
         const allJobsPassed = cronJobs.filter((job)=>{
-            return job.isPassing ? null : job;
+            return job.isPassing || !job.config.enabled ? null : job;
         }).length === 0;
 
         cronJobs.sort((a,b)=>{
@@ -65,14 +65,14 @@ module.exports = function(app){
     /**
      * Returns a count of failing jobs. Returns 0 if all jobs are passing.
      */
-    app.get('/passing', async function(req, res){
+    app.get('/failing', async function(req, res){
         let cronJobs = daemon.cronJobs.slice(0); // clone array, we don't want to change source
 
-        const passingJobs = cronJobs.filter((job)=>{
-            return job.isPassing ? null : job;
+        const failingJobs = cronJobs.filter((job)=>{
+            return job.isPassing || job.config.enabled === false ? null : job;
         });
 
-        res.send((cronJobs.length - passingJobs.length).toString());
+        res.send(failingJobs.length.toString());
     });
 
 
