@@ -80,8 +80,11 @@ else
     exit 1;
 fi
 
+# push "latest" only on default architecture
+if [ -z "$ARCH" ]; then
+    docker push shukriadams/arewedown:latest &&
+fi
 
-#docker push shukriadams/arewedown:latest &&
-#docker push shukriadams/arewedown:$TAG${ARCH} &&
+docker push shukriadams/arewedown:$TAG${ARCH} &&
 
 echo "Build done";
