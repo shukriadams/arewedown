@@ -9,16 +9,6 @@
 
 A docker image is available @ https://hub.docker.com/r/shukriadams/arewedown
 
-## Vagrant
-
-Vagrant will scaffold up a full dev runtime in a VM, and is my preferred way of managing project setup. This project was confirmed working on Vagrant 2.2.4 and VirtualBox 6.0.6.
-
-To use
-
-- cd vagrant
-- vagrant up
-- vagrant ssh
-
 ## Setup
 
 - create settings.json, use src/settings-example.json as example. Add sites you want to test. Set sane poll intervals. Adds email addresses of people who need to be alerted.
@@ -28,6 +18,8 @@ To use
 - use docker/docker-compose-yml as base for your docker-compose file.
 
 ## Tests
+
+One of the main reasons for Are We Down? is to make it simple to write custom uptime tests in Javascript.
 
 - Tests are JS modules which export async functions.
 - Tests must throw exceptions when they fail. The entire exception will be presented as the failed reset.
@@ -43,6 +35,20 @@ To use
             throw `Test failed!`;
     }
     
+
+## Developement
+
+If you aren't interested in developing on Are We down, you've read too far.
+
+### Vagrant
+
+Vagrant will scaffold up a full dev runtime in a VM, and is my preferred way of managing project setup. This project was confirmed working on Vagrant 2.2.4 and VirtualBox 6.0.6.
+
+To use
+
+- cd vagrant
+- vagrant up
+- vagrant ssh
 
 ## Credits
 
