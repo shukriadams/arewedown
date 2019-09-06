@@ -1,5 +1,13 @@
 # ARE WE DOWN?
 
+Master branch
+
+[![Build Status](https://travis-ci.org/shukriadams/arewedown.svg?branch=master)](https://travis-ci.org/shukriadams/arewedown)
+
+Develop branch
+
+[![Build Status](https://travis-ci.org/shukriadams/arewedown.svg?branch=develop)](https://travis-ci.org/shukriadams/arewedown)
+
 - Simple HTTP status checking service. Use this to aggregate any status checks which use HTTP.
 - Entirely self-hosted, ideal for running behind a firewall on a closed domain.
 - Custom rules can be easily added via Javascript extension scripts.
