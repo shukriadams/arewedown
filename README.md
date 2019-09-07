@@ -15,7 +15,7 @@ Develop branch
 
 ## Get it
 
-A docker image is available @ https://hub.docker.com/r/shukriadams/arewedown
+A docker image is available @ https://hub.docker.com/r/shukriadams/arewedown (includes ARM images for Raspberry Pi)
 
 ## Setup
 
