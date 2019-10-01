@@ -1,7 +1,7 @@
 version: "2"
 services:
   arewedown:
-    image: shukriadams/arewedown:latest
+    image: shukriadams/arewedown:0.0.10
     container_name: arewedown
     restart: unless-stopped
     volumes:
