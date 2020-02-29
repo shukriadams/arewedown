@@ -19,9 +19,9 @@ A docker image is available @ https://hub.docker.com/r/shukriadams/arewedown (in
 
 ## Setup
 
-- create settings.json, use src/settings-example.json as example. Add sites you want to test. Set sane poll intervals. Adds email addresses of people who need to be alerted.
-- create flags folder, 
-- chown 1000 -R flags
+- create settings.yml, use src/settings.yml as example. Add sites you want to test. Set sane poll intervals. Adds email addresses of people who need to be alerted.
+- create *watchers* folder, 
+- chown 1000 -R watchers
 - if you want to persists logs, create logs folder and chown as above
 - use docker/docker-compose-yml as base for your docker-compose file.
 
@@ -34,19 +34,43 @@ One of the main reasons for Are We Down? is to make it simple to write custom up
 - A job object is passed to the function, this contains the configuration for that job as defined in settings.json.
 - You can write whatever javascript you want in the test, but you are currently limited to this project's prebundled JS libraries. 
 
-### Test example
+A test should look like
 
-    module.exports = async function(job){
+    module.exports = async function(watcher){
         let conditionMet = false;
 
         if (!conditionMet)
             throw `Test failed!`;
     }
-    
 
-## Developement
+1. A test should throw an exception when it fails. If it doesn't throw an exception, the test run will be trated as passed.
 
-If you aren't interested in developing on Are We down, you've read too far.
+2. A watcher object is passed to the test, this object contains all the config for that given watcher, as it is written in settings.yml. You can use this to pass information to the test.
+
+### Debugging tests
+
+When writing tests, it helps to be able to test them to see if they work. 
+
+1. Write a new test in settings.yml. Disable it so it won't get automatically fired.
+
+    watchers:
+        mywatcher:
+            enabled: false
+            test: user/mytest
+
+2. Write your test in the file *tests/user/mytest.js*. If you're running in Docker, mount the folder *tests/user* as a volume and place your test file in that.
+
+3. Execute the test with
+
+        node testwatcher --watcher mywatcher
+
+  If youre're running in docker use
+
+        docker exec -it [arewedowncontainer] bash -c "node testwatcher --watcher mywatcher"
+
+## Development
+
+If you're interested in developing Are We down, continue reading.
 
 ### Vagrant
 
