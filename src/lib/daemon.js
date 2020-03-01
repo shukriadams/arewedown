@@ -5,10 +5,9 @@ const CronJob = require('cron').CronJob,
     path = require('path'),
     fs = require('fs-extra'),
     logger = require('./logger'),
-    settings = require('./settings').get(),
-    flagFolder = './flags';
+    settings = require('./settings').get();
 
-fs.ensureDirSync(flagFolder);
+fs.ensureDirSync(settings.watcherLogs);
 
 let cronJobs = [];
 
@@ -111,9 +110,9 @@ class CronProcess
         if (this.errorMessage)
             this.logInfo(this.errorMessage);
 
-        let flag = path.join(flagFolder, this.config.__name),
+        let flag = path.join(settings.watcherLogs, this.config.__name),
             statusChanged = false,
-            historyLogFolder = path.join(flagFolder, `${this.config.__name}_history`);
+            historyLogFolder = path.join(settings.watcherLogs, `${this.config.__name}_history`);
 
         if (this.isPassing){
             await fs.ensureDir(historyLogFolder);

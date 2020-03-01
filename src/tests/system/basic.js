@@ -1,14 +1,17 @@
 const request = require('request');
 
-async function checkHTTPResponse (url){
+module.exports = async function(watcher){
+    if (!watcher.url)
+        throw `Watcher "${watcher.__name}" is missing a url. test/system/basic requires a url`;
+
     return new Promise((resolve, reject)=>{
         let code = null;
 
-        request( { uri: url }, 
+        request( { uri: watcher.url }, 
             function(error, response) {
                 if (error){
                     if (error.errno === 'ENOTFOUND' || error.errno === 'EAI_AGAIN')  
-                        error = `${url} could not be reached.`;
+                        error = `${watcher.url} could not be reached.`;
 
                     return reject(error);
                 }
@@ -22,8 +25,4 @@ async function checkHTTPResponse (url){
             code = response.statusCode;
         })
     });
-};
-
-module.exports = async function(job){
-    await checkHTTPResponse(job.config.url);
 }

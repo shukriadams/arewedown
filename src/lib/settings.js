@@ -27,7 +27,7 @@ module.exports = {
                 emailSubject : 'Service failure',
                 dashboardLogs : './dashboards',
                 port: 3000,
-                clientRefreshInterval: 10000,
+                dashboardRefreshInterval: 10000,
                 partialFailCode : 230,
 
                 // root-level objects
@@ -46,8 +46,9 @@ module.exports = {
                 let dashboard = rawSettings.dashboards[name];
 
                 rawSettings.dashboards[name] = Object.assign({
-                    __name : name,
-                    __safeName : sanitize(name),
+                    __name : name, // node name, attached here for convenience
+                    __safeName : sanitize(name), // nodename, made safe for filesystems
+                    name : name,   // users can add their own convenient name, if not this defaults to node name
                 }, dashboard);
             }
 
@@ -58,8 +59,9 @@ module.exports = {
                 rawSettings.watchers[name] = Object.assign({
                     __name : name,
                     __safeName : sanitize(name),
+                    name : name,   // users can add their own convenient name, if not this defaults to node name
 
-                    // enabled field is optional
+                    // enabled field is optional and on by default
                     enabled : true,
                 }, watcher);
             }

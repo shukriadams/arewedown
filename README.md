@@ -25,6 +25,8 @@ A docker image is available @ https://hub.docker.com/r/shukriadams/arewedown (in
 - if you want to persists logs, create logs folder and chown as above
 - use docker/docker-compose-yml as base for your docker-compose file.
 
+## Dashboards
+
 ## Tests
 
 One of the main reasons for Are We Down? is to make it simple to write custom uptime tests in Javascript.

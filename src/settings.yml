@@ -1,10 +1,12 @@
 smtp:
-    server : aspmx.l.google.com
+    enabled: false
+    server : my.server
     port : 25,
     secure : false
     from : no-reply@example.com
 
 slack:
+    enabled: false
     something: 123
     someotherthing: abc
 
@@ -17,6 +19,9 @@ recipients :
         email : bob@example.com
 
 watchers:
+    manafeed:
+        interval: "*/35 * * * * *"
+        url: http://manafeed.com/
     first:
         interval: "*/5 * * * * *" 
         name: first thing # this is optional

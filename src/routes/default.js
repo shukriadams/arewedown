@@ -1,5 +1,5 @@
 
-const settings = require('./../lib/settings'),
+const settings = require('./../lib/settings').get(),
     fs = require('fs-extra'),
     path = require('path'),
     jsonfile = require('jsonfile'),
@@ -11,10 +11,13 @@ module.exports = function(app){
     app.get('/', async function(req, res){
         let view = handlebars.getView('default');
         res.send(view({
-            clientRefreshInterval : settings.clientRefreshInterval,
+            dashboardRefreshInterval : settings.dashboardRefreshInterval,
         }));
     });
 
+    /**
+     * Internal url called by autorefresh default view
+     */
     app.get('/status', async function(req, res){
         let view = handlebars.getView('status'),
             cronJobs = daemon.cronJobs.slice(0).filter((job)=>{return job.config.enabled === false ? null : job}); // clone array, we don't want to change source
@@ -48,7 +51,7 @@ module.exports = function(app){
         const now = new Date();
 
         res.send(view({
-            clientRefreshInterval : settings.clientRefreshInterval,
+            dashboardRefreshInterval : settings.dashboardRefreshInterval,
             allJobsPassed,
             renderDate: `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`,
             jobs : cronJobs

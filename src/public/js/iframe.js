@@ -1,10 +1,10 @@
 (function(){
-    var clientRefreshInterval = document.querySelector('body').getAttribute('data-clientRefreshInterval'),
+    var dashboardRefreshInterval = document.querySelector('body').getAttribute('data-dashboardRefreshInterval'),
         activeFrame = document.querySelector('.contentFrame1'),
         inactiveFrame = document.querySelector('.contentFrame2');
 
-    if (clientRefreshInterval)
-        clientRefreshInterval = parseInt(clientRefreshInterval);
+    if (dashboardRefreshInterval)
+        dashboardRefreshInterval = parseInt(dashboardRefreshInterval);
     
     function update(){
         inactiveFrame.contentWindow.location = '/status'
@@ -26,8 +26,8 @@
         }
     }
 
-    if (clientRefreshInterval){
-        setInterval(update, clientRefreshInterval);
+    if (dashboardRefreshInterval){
+        setInterval(update, dashboardRefreshInterval);
     }
 
     update();
