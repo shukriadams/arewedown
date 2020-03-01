@@ -1,12 +1,14 @@
 let fs = require('fs-extra'),
     yaml = require('js-yaml'),
     sanitize = require('sanitize-filename'),
+    isValidated = false,
     _settings;
 
 module.exports = {
     get : function(forceRead){
 
         if (!_settings || forceRead === true){
+
             let rawSettings = null;
 
             try {
@@ -23,7 +25,6 @@ module.exports = {
                 // basic settings
                 version : 1,
                 logs : './logs',
-                watcherLogs : './watchers',
                 emailSubject : 'Service failure',
                 dashboardLogs : './dashboards',
                 port: 3000,
@@ -81,12 +82,16 @@ module.exports = {
 
         }
 
+        if (!isValidated){
+            this.validate(_settings);
+            isValidated = true;
+        }
+
         return _settings;
     },
 
-    validate: function(){
-        const settings = this.get();
-        
+    validate: function(settings){
+       
         // validate SMTP
         if (settings.smtp){
             if (!settings.smtp.server)

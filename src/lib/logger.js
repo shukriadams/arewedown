@@ -1,6 +1,6 @@
 let winston = require('winston'),
     fs = require('fs-extra'),
-    _watcherLogs = {},
+    _watcherLogs = null,
     _global,
     path = require('path'),
     settings = require('./settings').get();
@@ -40,27 +40,29 @@ class Logger {
 
 module.exports = {
     
-    // inits the global log, this is used by trusty-daemon for its own errors.
+    // returns an instance of the global log
     instance : function(){
         if (!_global){
-            _global = new Logger(settings.logPath);
+            _global = new Logger(settings.logs);
         }
         return _global;
     },
 
-    // initializes loggers used for each job
-    initialize : async function(){
-        for(const name in settings.watchers) {
-            const watcher = settings.watchers[name],
-                logpath = path.join(settings.watcherLogs, watcher.__safeName, 'logs');
-
-            await fs.ensureDir(logpath);
-            _watcherLogs[watcher.__name] = new Logger(logpath);
-        }
-    },
-
     // returns an instance of logger
     instanceWatcher : function(name) {
+        
+        if (!_watcherLogs){
+            _watcherLogs = {};
+
+            for(const name in settings.watchers) {
+                const watcher = settings.watchers[name],
+                    logpath = path.join(settings.logs, watcher.__safeName, 'logs');
+    
+                fs.ensureDirSync(logpath);
+                _watcherLogs[watcher.__name] = new Logger(logpath);
+            }
+        }
+
         return _watcherLogs[name];
     }
 

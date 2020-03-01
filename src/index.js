@@ -8,16 +8,15 @@
     const 
         http = require('http'),
         Express = require('express'),
+        path = require('path'),
         app = Express(),
         settingsProvider = require('./lib/settings'),
         settings = await settingsProvider.get(),
         logger = require('./lib/logger'),
         daemon = require('./lib/daemon'),
-        path = require('path'),
         routeFiles = fs.readdirSync(path.join(__dirname, 'routes'));
 
     await fs.ensureDir(settings.logs);
-    await fs.ensureDir(settings.watcherLogs);
 
     // static content
     app.use(Express.static('./public'));
@@ -30,8 +29,6 @@
         routes(app);
     }
 
-    settingsProvider.validate();
-    await logger.initialize();
     await daemon.start();
     
     const server = http.createServer(app);

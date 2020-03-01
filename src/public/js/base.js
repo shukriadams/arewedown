@@ -8,7 +8,7 @@ var now = new Date();
 nowHolder.innerHTML = now.toLocaleTimeString();
 
 if (dashboardRefreshInterval)
-dashboardRefreshInterval = parseInt(dashboardRefreshInterval);
+    dashboardRefreshInterval = parseInt(dashboardRefreshInterval);
 
 
 for (var i = 0 ; i < dateFields.length ; i ++)
@@ -55,10 +55,18 @@ function showUpdateTime(){
     updateInSeconds.innerHTML = `${updateSeconds}s`;
 }
 
-setInterval(function(){
-    showTimes();
-    //showUpdateTime();
-}, 1000);
+if (dashboardRefreshInterval){
+    setInterval(function(){
+        showTimes();
+        //showUpdateTime();
+    }, dashboardRefreshInterval);
+}
+
+// if no refresh time given for page, force it into non-fail mode
+if (!dashboardRefreshInterval){
+    document.querySelector('.layout').classList.add('layout--passing');
+}
+
 
 showTimes();
 //showUpdateTime();

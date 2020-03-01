@@ -1,5 +1,6 @@
 let Handlebars = require('handlebars'),
     fs = require('fs'),
+    timebelt = require('timebelt'),
     ago = require('s-ago').default,
     pages = null,
     views,
@@ -42,6 +43,13 @@ Handlebars.registerHelper('secondsFromNow', function(futureDate){
 
     
     return Math.floor((futureDate.getTime() - Date.now()) / 1000);
+});
+
+Handlebars.registerHelper('date', function(date){
+    if (typeof date === 'string')
+        date = new Date(date);
+
+    return `${timebelt.toShortDate(date)} ${timebelt.toShortTime(date)}`;
 });
 
 Handlebars.registerHelper('time', function(date){

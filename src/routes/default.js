@@ -71,7 +71,7 @@ module.exports = function(app){
         });
 
         for (let cronJob of cronJobs){
-            const statusFilePath = path.join(__dirname, './../flags', `${cronJob.config.__safeName}_history` , 'status.json');
+            const statusFilePath = path.join(__dirname, settings.logs, cronJob.config.__safeName, 'status.json');
             
             cronJob.status = 'unknown'
             cronJob.statusDate = null;

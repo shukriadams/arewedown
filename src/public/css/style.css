@@ -19,6 +19,14 @@ body {
     height: 100%;
 }
 
+a {
+    text-decoration: none;   
+}
+
+a:visited {
+    color: inherit;
+}
+
 h1 {
     margin: 0;
     padding:0;

@@ -1,0 +1,20 @@
+{{#extend "layout"}}
+    {{#content "body"}}
+
+        Watcher
+        {{#each history}}
+            <div>
+                <div>
+                    {{status}}
+                </div>
+                <div>
+                    {{date date}}
+                </div>
+                <div>
+                    {{ago date}}
+                </div>
+            </div>
+        {{/each}}
+
+    {{/content}}
+{{/extend}}
