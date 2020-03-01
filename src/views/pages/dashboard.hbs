@@ -1,6 +1,5 @@
 {{#extend "layout"}}
     {{#content "body"}}
-
         {{#if jobs.length}}
             {{#each jobs}}
                 <div class="job {{#if isPassing}}job--passing{{/if}}">
@@ -28,7 +27,7 @@
             {{/each}}
         {{else}}
             <div class="noJobs">
-                Nothing to show yet - set a few jobs up first.
+                Nothing to show yet - add/enable some watchers
             </div>
         {{/if}}
 

@@ -1,5 +1,7 @@
 (function(){
-    var dashboardRefreshInterval = document.querySelector('body').getAttribute('data-dashboardRefreshInterval'),
+    var body = document.querySelector('body'),
+        dashboardRefreshInterval = body.getAttribute('data-dashboardRefreshInterval'),
+        dashboard = body.getAttribute('data-dashboard'),
         activeFrame = document.querySelector('.contentFrame1'),
         inactiveFrame = document.querySelector('.contentFrame2');
 
@@ -7,7 +9,7 @@
         dashboardRefreshInterval = parseInt(dashboardRefreshInterval);
     
     function update(){
-        inactiveFrame.contentWindow.location = '/status'
+        inactiveFrame.contentWindow.location = `/dashboard/${dashboard}`
 
         var timeOut = setTimeout(function(){
             activeFrame.classList.remove('iframe--show');

@@ -4,23 +4,63 @@ const settings = require('./../lib/settings').get(),
     path = require('path'),
     jsonfile = require('jsonfile'),
     handlebars = require('./../lib/handlebars');
+    arrayHelper = require('./../lib/array'),
+    NO_DASHBOARDS_FLAG = '__no_dashboards_defined',
     daemon = require('./../lib/daemon');
 
 module.exports = function(app){
         
-    app.get('/', async function(req, res){
+    app.get('/:dashboard?', async function(req, res){
+        let dashboardNode = req.params.dashboard;
+        if (!dashboardNode && settings.dashboards){
+            // fall back to first dashboard
+            let definedDashboardKeys = Object.keys(settings.dashboards);
+            dashboardNode = definedDashboardKeys.length ? definedDashboardKeys[0]: dashboardNode;
+        }
+
+        if (!dashboardNode)
+            dashboard = NO_DASHBOARDS_FLAG;
+
         let view = handlebars.getView('default');
         res.send(view({
+            title : 'Are we down?',
+            dashboardNode,
             dashboardRefreshInterval : settings.dashboardRefreshInterval,
         }));
     });
 
+    
     /**
      * Internal url called by autorefresh default view
      */
-    app.get('/status', async function(req, res){
-        let view = handlebars.getView('status'),
-            cronJobs = daemon.cronJobs.slice(0).filter((job)=>{return job.config.enabled === false ? null : job}); // clone array, we don't want to change source
+    app.get('/dashboard/:dashboard', async function(req, res){
+        const dashboardNode = req.params.dashboard;
+
+        if (dashboardNode === NO_DASHBOARDS_FLAG){
+            let view = handlebars.getView('noDashboards');
+            return res.send(view());
+        }
+
+        let dashboard = settings.dashboards[dashboardNode];
+        if (!dashboard){
+            let view = handlebars.getView('invalidDashboard');
+            return res.send(view({
+                title : dashboardNode
+            }));
+        }
+
+        let title = dashboard.name;
+        let view = handlebars.getView('dashboard');
+
+        // clone array, we don't want to change source
+        let dashboardWatchers = arrayHelper.split(dashboard.watchers, ',');
+        let cronJobs = daemon.cronJobs.slice(0).filter((job)=>{
+            if (!job.config.enabled)
+                return null;
+            if (!dashboardWatchers.includes(job.config.__name))
+                return null;
+            return job;
+        }); 
 
         const allJobsPassed = cronJobs.filter((job)=>{
             return job.isPassing || job.config.enabled === false ? null : job;
@@ -31,7 +71,7 @@ module.exports = function(app){
         });
 
         for (let cronJob of cronJobs){
-            const statusFilePath = path.join(__dirname, './../flags', `${cronJob.config.name}_history` , 'status.json');
+            const statusFilePath = path.join(__dirname, './../flags', `${cronJob.config.__safeName}_history` , 'status.json');
             
             cronJob.status = 'unknown'
             cronJob.statusDate = null;
@@ -51,6 +91,8 @@ module.exports = function(app){
         const now = new Date();
 
         res.send(view({
+            title,
+            dashboardNode,
             dashboardRefreshInterval : settings.dashboardRefreshInterval,
             allJobsPassed,
             renderDate: `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`,

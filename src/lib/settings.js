@@ -46,9 +46,10 @@ module.exports = {
                 let dashboard = rawSettings.dashboards[name];
 
                 rawSettings.dashboards[name] = Object.assign({
-                    __name : name, // node name, attached here for convenience
+                    __name : name,  // node name, attached here for convenience
                     __safeName : sanitize(name), // nodename, made safe for filesystems
-                    name : name,   // users can add their own convenient name, if not this defaults to node name
+                    name : name,    // users can add their own convenient name, if not this defaults to node name
+                    watchers : ''   //force empty list
                 }, dashboard);
             }
 
