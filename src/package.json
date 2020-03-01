@@ -9,7 +9,8 @@
         "node": ">=0.10.x"
     },
     "scripts": {
-        "start": "node index"
+        "start": "node index",
+        "test": "node test/all"
     },
     "dependencies": {
         "handlebars-layouts": "3.1.4",
@@ -31,5 +32,9 @@
         "madscience-httputils": "https://github.com/shukriadams/node-httpUtils.git#0.0.1",
         "madscience-node-exec": "https://github.com/shukriadams/node-exec.git#0.0.2"
     },
-    "devDependencies": {}
+    "devDependencies": {
+        "glob": "7.1.6",
+        "madscience-node-assert": "https://github.com/shukriadams/node-assert.git#0.0.2",
+        "mocha": "7.1.0"
+    }
 }
