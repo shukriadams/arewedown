@@ -12,6 +12,7 @@ jobs:
   include:
     - stage: test
       script:
+      - cd src
       - npm test
     - stage: deploy
       if: tag IS present
