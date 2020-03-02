@@ -1,0 +1,45 @@
+dashboardRefreshInterval: 5000
+
+smtp:
+    enabled: false
+    server : my.server
+    port : 25,
+    secure : false
+    from : no-reply@example.com
+
+slack:
+    enabled: false
+    something: 123
+    someotherthing: abc
+
+recipients :
+    me:
+        enabled: false
+        email:  me@example.com
+        slack : slackid
+    bob:
+        email : bob@example.com
+
+watchers:
+    example:
+        interval: "*/35 * * * * *"
+        url: http://example.com/
+    first:
+        interval: "*/5 * * * * *" 
+        name: first thing # this is optional
+        url: http://thing.example.com/
+        test: user/example
+        recipients :  me,bob #override
+    second: 
+        url : http://second.example.com/
+        enabled: false
+    third:
+        test: mytest
+        some_arg : whatever
+
+dashboards:
+    all:
+        name : all the things!
+        watchers: example,first, second,   third  , somethign
+    example:
+        watchers: example

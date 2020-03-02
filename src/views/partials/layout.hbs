@@ -2,15 +2,15 @@
     <head>
         {{{block "basehead"}}}
         <link rel="stylesheet" href="/css/style.css" type="text/css">
-        <title>Are we down?</title>
+        <title>{{title}}</title>
     </head>
-    <body data-clientRefreshInterval="{{clientRefreshInterval}}" class="layout {{#if allJobsPassed}}layout--passing{{/if}}">
+    <body data-dashboard="{{dashboard}}" data-dashboardRefreshInterval="{{dashboardRefreshInterval}}" class="layout {{#if allJobsPassed}}layout--passing{{/if}}">
         <div class="content">
             
             <header>
                 <div class="layout-scaffold">
                     <div class="layout-titleScaffold">
-                        <h1 class="layout-title">Are We Down?</h1>
+                        <h1 class="layout-title">{{title}}</h1>
                     </div>
                 </div>
             </header>

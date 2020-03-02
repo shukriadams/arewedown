@@ -1,4 +1,4 @@
-var clientRefreshInterval = document.querySelector('body').getAttribute('data-clientRefreshInterval');
+var dashboardRefreshInterval = document.querySelector('body').getAttribute('data-dashboardRefreshInterval');
 var updateInSeconds = document.querySelector('.layout-updateTime');
 var renderTime = null; //new Date(document.querySelector('.renderTime').getAttribute('data-value'));
 var dateFields = document.querySelectorAll('[data-formatDate]');
@@ -7,8 +7,8 @@ var nowHolder = document.querySelector('.now');
 var now = new Date();
 nowHolder.innerHTML = now.toLocaleTimeString();
 
-if (clientRefreshInterval)
-    clientRefreshInterval = parseInt(clientRefreshInterval);
+if (dashboardRefreshInterval)
+    dashboardRefreshInterval = parseInt(dashboardRefreshInterval);
 
 
 for (var i = 0 ; i < dateFields.length ; i ++)
@@ -47,18 +47,26 @@ function showTimes(){
 }
 
 function showUpdateTime(){
-    if (!clientRefreshInterval)
+    if (!dashboardRefreshInterval)
         return;
         
-    const updateTime = new Date(renderTime.getTime() + clientRefreshInterval);
+    const updateTime = new Date(renderTime.getTime() + dashboardRefreshInterval);
     const updateSeconds = Math.floor((updateTime.getTime() - new Date().getTime())/ 1000);
     updateInSeconds.innerHTML = `${updateSeconds}s`;
 }
 
-setInterval(function(){
-    showTimes();
-    //showUpdateTime();
-}, 1000);
+if (dashboardRefreshInterval){
+    setInterval(function(){
+        showTimes();
+        //showUpdateTime();
+    }, dashboardRefreshInterval);
+}
+
+// if no refresh time given for page, force it into non-fail mode
+if (!dashboardRefreshInterval){
+    document.querySelector('.layout').classList.add('layout--passing');
+}
+
 
 showTimes();
 //showUpdateTime();

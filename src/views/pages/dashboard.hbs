@@ -1,13 +1,14 @@
 {{#extend "layout"}}
     {{#content "body"}}
-
         {{#if jobs.length}}
             {{#each jobs}}
                 <div class="job {{#if isPassing}}job--passing{{/if}}">
 
                     <div class="cell cell--header">
                         <div class="name">
-                            {{config.name}} 
+                            <a href="/watcher/{{config.__name}}" target="watcher">
+                                {{config.name}} 
+                            </a>
                         </div>
                     </div>
 
@@ -28,7 +29,7 @@
             {{/each}}
         {{else}}
             <div class="noJobs">
-                Nothing to show yet - set a few jobs up first.
+                Nothing to show yet - add/enable some watchers
             </div>
         {{/if}}
 

@@ -1,18 +1,22 @@
-// force import .env settings
-require('custom-env').env();
-
-const 
-    http = require('http'),
-    Express = require('express'),
-    app = Express(),
-    settings = require('./lib/settings') ,
-    Logger = require('winston-wrapper'),
-    daemon = require('./lib/daemon'),
-    fs = require('fs-extra'),
-    path = require('path'),
-    routeFiles = fs.readdirSync(path.join(__dirname, 'routes'));
-
 (async function(){
+
+    // force import .env settings if present
+    const fs = require('fs-extra');
+    if (await fs.exists('./.env'))
+        require('custom-env').env();
+
+    const 
+        http = require('http'),
+        Express = require('express'),
+        path = require('path'),
+        app = Express(),
+        settingsProvider = require('./lib/settings'),
+        settings = await settingsProvider.get(),
+        logger = require('./lib/logger'),
+        daemon = require('./lib/daemon'),
+        routeFiles = fs.readdirSync(path.join(__dirname, 'routes'));
+
+    await fs.ensureDir(settings.logs);
 
     // static content
     app.use(Express.static('./public'));
@@ -25,8 +29,7 @@ const
         routes(app);
     }
 
-    Logger.initialize(settings.logPath);
-    daemon.start();
+    await daemon.start();
     
     const server = http.createServer(app);
     server.listen(settings.port);

@@ -19,6 +19,16 @@ body {
     height: 100%;
 }
 
+a {
+    color: #19222d;
+    text-decoration: none;   
+
+}
+
+a:visited {
+    color: #19222d;
+}
+
 h1 {
     margin: 0;
     padding:0;

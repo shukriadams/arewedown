@@ -9,24 +9,34 @@
         "node": ">=0.10.x"
     },
     "scripts": {
-        "start": "node index"
+        "start": "node index",
+        "test": "node test/all"
     },
     "dependencies": {
         "handlebars-layouts": "3.1.4",
         "handlebars": "4.0.14",
         "jsonfile": "5.0.0",
         "s-ago": "2.0.1",
+        "js-yaml": "3.13.1",
         "request": "2.88.0",
         "cron": "1.7.1",
         "sendgrid": "5.1.0",
         "express": "4.17.1",
-        "sanitize-filename": "1.6.1",
+        "minimist": "1.2.0",
+        "sanitize-filename": "1.6.3",
         "nodemailer": "5.1.1",
         "custom-env": "1.0.0",
         "fs-extra": "8.1.0",
+        "winston": "2.4.0",
+        "winston-daily-rotate-file": "1.7.2",
+        "timebelt": "https://github.com/shukriadams/timebelt.git#0.1.3",
+        "madscience-fsUtils": "https://github.com/shukriadams/node-fsUtils.git#0.0.4",
         "madscience-httputils": "https://github.com/shukriadams/node-httpUtils.git#0.0.1",
-        "madscience-node-exec": "https://github.com/shukriadams/node-exec.git#0.0.2",
-        "winston-wrapper": "https://github.com/shukriadams/winston-wrapper.git#0.0.1"
+        "madscience-node-exec": "https://github.com/shukriadams/node-exec.git#0.0.2"
     },
-    "devDependencies": {}
+    "devDependencies": {
+        "glob": "7.1.6",
+        "madscience-node-assert": "https://github.com/shukriadams/node-assert.git#0.0.2",
+        "mocha": "7.1.0"
+    }
 }

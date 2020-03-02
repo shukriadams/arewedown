@@ -4,6 +4,7 @@ vagrant/.vagrant
 vagrant/ubuntu-xenial-16.04-cloudimg-console.log
 src/settings.json
 src/logs/
+src/watchers
 src/flags/
 docker/logs/
 docker/.keys/
@@ -12,4 +13,7 @@ docker/build.tar.gz
 docker/.clone/
 docker/settings.json
 src/.env
-src/tests/user/
+.vscode/launch.json
+src/yarn.lock
+src/tests/user
+!src/tests/user/example.js
