@@ -15,3 +15,5 @@ docker/settings.json
 src/.env
 .vscode/launch.json
 src/yarn.lock
+src/tests/user
+!src/tests/user/example.js
