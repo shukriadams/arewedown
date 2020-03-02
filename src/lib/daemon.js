@@ -86,8 +86,8 @@ class CronProcess
         if (this.config.enabled === false)
             return;
         
-        // revert to system/basic if test name is not explicitly set.
-        let testName = this.config.test ? this.config.test : 'system/basic'
+        // revert to system/httpcheck if test name is not explicitly set.
+        let testName = this.config.test ? this.config.test : 'system/httpcheck'
         testName = path.join('./../tests', testName);
 
         try {
