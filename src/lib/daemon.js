@@ -200,5 +200,8 @@ module.exports = {
             cronJobs.push(cronjob);
             cronjob.start();
         }
+
+        if (!settings.watchers || !Object.keys(settings.watchers).length)
+            console.warn('No watchers were defined in settings file');
     }
 }

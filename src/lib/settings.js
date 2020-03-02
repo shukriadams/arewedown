@@ -11,6 +11,9 @@ module.exports = {
 
             let rawSettings = null;
 
+            if (!fs.existsSync('./settings.yml'))
+                throw 'settings.yml not found.';
+
             try {
                 let settingsYML = fs.readFileSync('./settings.yml', 'utf8');
                 rawSettings = yaml.safeLoad(settingsYML);
