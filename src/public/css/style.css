@@ -20,11 +20,13 @@ body {
 }
 
 a {
+    color: #19222d;
     text-decoration: none;   
+
 }
 
 a:visited {
-    color: inherit;
+    color: #19222d;
 }
 
 h1 {

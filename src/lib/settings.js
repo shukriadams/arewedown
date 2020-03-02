@@ -26,6 +26,7 @@ module.exports = {
                 version : 1,
                 logs : './logs',
                 emailSubject : 'Service failure',
+                fromEmail : 'no-reply@example.com',
                 dashboardLogs : './dashboards',
                 port: 3000,
                 dashboardRefreshInterval: 10000,
