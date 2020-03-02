@@ -13,5 +13,5 @@ docker/build.tar.gz
 docker/.clone/
 docker/settings.json
 src/.env
-src/tests/user/
 .vscode/launch.json
+src/yarn.lock

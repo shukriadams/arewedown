@@ -1,3 +1,5 @@
+dashboardRefreshInterval: 5000
+
 smtp:
     enabled: false
     server : my.server
