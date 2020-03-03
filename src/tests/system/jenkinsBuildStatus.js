@@ -7,12 +7,10 @@ module.exports = async function(watcher){
     try {
         json = JSON.parse(jsonraw.body);
     } catch (ex){
-        console.log(ex, watcher.url, jsonraw.body);
-        console.log(jsonraw.body);
-        throw 'Invalid JSON check logs';
+        throw `Jenkins returned invalid JSON : ${jsonraw.body}`;
     }
 
     if (!json || json.result !== 'SUCCESS')      
-        throw "Jenkins status:" + json.result;
+        throw `Jenkins job has status  "${json.result}"`;
 }
 

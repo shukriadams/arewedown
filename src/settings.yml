@@ -16,30 +16,27 @@ recipients :
     me:
         enabled: false
         email:  me@example.com
-        slack : slackid
+        slack : myslackid
     bob:
         email : bob@example.com
 
 watchers:
     example:
-        interval: "*/35 * * * * *"
-        url: http://example.com/
-    first:
-        interval: "*/5 * * * * *" 
-        name: first thing # this is optional
-        url: http://thing.example.com/
+        interval: "*/2 * * * *"
+        url: http://example.com
+    another:
+        interval: "1 * * * *" 
+        # name is optional, node name "another" will be used as fallback
+        name: first thing 
+        url: http://example.com
+        # call this script to perform up test 
         test: user/example
-        recipients :  me,bob #override
-    second: 
-        url : http://second.example.com/
-        enabled: false
-    third:
-        test: mytest
-        some_arg : whatever
+        recipients :  me,bob 
 
 dashboards:
     all:
-        name : all the things!
-        watchers: example,first, second,   third  , somethign
-    example:
+        # name is optional, node name "all" will be use as fallback
+        name : All the things
+        watchers: example, another
+    single:
         watchers: example

@@ -1,3 +1,7 @@
+/**
+ * Performs a simple HTTP lookup of watcher.url. Any HTTP code between 200 and 299 will count
+ * as a test pass, all else will fail
+ */
 const request = require('request');
 
 module.exports = async function(watcher){
@@ -16,8 +20,8 @@ module.exports = async function(watcher){
                     return reject(error);
                 }
                 
-                if (code && (code < 200 || code >= 300)) // allow all code 2**
-                    return reject(`Error : server responded with code ${code}.`);
+                if (code && (code < 200 || code > 299)) // allow all code 2**
+                    return reject(`Unexpected HTTP code ${code}`);
 
                 resolve(response);
             }

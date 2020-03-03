@@ -10,9 +10,6 @@
     
     function update(){
 
-        if (!dashboard)
-            return;
-
         inactiveFrame.contentWindow.location = `/dashboard/${dashboard}`;
         
         // handles iframe load failure - if the frame fails to load, all active frames are 
