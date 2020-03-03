@@ -1,4 +1,4 @@
-# ARE WE DOWN?
+# Are We Down?
 
 Master branch
 
