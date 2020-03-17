@@ -22,7 +22,7 @@
         "cron": "1.7.1",
         "sendgrid": "5.1.0",
         "express": "4.17.1",
-        "minimist": "1.2.0",
+        "minimist": "1.2.2",
         "sanitize-filename": "1.6.3",
         "nodemailer": "5.1.1",
         "custom-env": "1.0.0",
