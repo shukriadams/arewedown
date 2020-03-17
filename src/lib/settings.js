@@ -45,22 +45,14 @@ module.exports = {
                 sendgrid : null
 
             }, rawSettings);
-    
-            for (const name in rawSettings.dashboards){
 
-                let dashboard = rawSettings.dashboards[name];
-
-                rawSettings.dashboards[name] = Object.assign({
-                    __name : name,  // node name, attached here for convenience
-                    __safeName : sanitize(name), // nodename, made safe for filesystems
-                    name : name,    // users can add their own convenient name, if not this defaults to node name
-                    watchers : ''   //force empty list
-                }, dashboard);
-            }
-
+            let allWatcherNames = [];
+            // process watchers first, we need these to process dashboards
             for (const name in rawSettings.watchers){
 
                 let watcher = rawSettings.watchers[name];
+                
+                allWatcherNames.push(name);
 
                 rawSettings.watchers[name] = Object.assign({
                     __name : name,
@@ -70,6 +62,22 @@ module.exports = {
                     // enabled field is optional and on by default
                     enabled : true,
                 }, watcher);
+            }
+
+            for (const name in rawSettings.dashboards){
+
+                let dashboard = rawSettings.dashboards[name];
+
+                rawSettings.dashboards[name] = Object.assign({
+                    __name : name,  // node name, attached here for convenience
+                    __safeName : sanitize(name), // nodename, made safe for filesystems
+                    name : name,    // users can add their own convenient name, if not this defaults to node name
+                    watchers : '*'  // force to all watchers
+                }, dashboard);
+
+                // if dashboard is set to * watchers, replace it's watchers list with literal names of all watchers
+                if (rawSettings.dashboards[name].watchers.trim() === '*')
+                    rawSettings.dashboards[name].watchers = allWatcherNames.join(',');
             }
 
             _settings = rawSettings;

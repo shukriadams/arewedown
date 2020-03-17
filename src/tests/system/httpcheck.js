@@ -9,24 +9,27 @@ module.exports = async function(watcher){
         throw `Watcher "${watcher.__name}" is missing a url. test/system/basic requires a url`;
 
     return new Promise((resolve, reject)=>{
-        let code = null;
-
-        request( { uri: watcher.url }, 
-            function(error, response) {
-                if (error){
-                    if (error.errno === 'ENOTFOUND' || error.errno === 'EAI_AGAIN')  
-                        error = `${watcher.url} could not be reached.`;
-
-                    return reject(error);
+        try {
+            let code = null;
+            request( { uri: watcher.url }, 
+                function(error, response) {
+                    if (error){
+                        if (error.errno === 'ENOTFOUND' || error.errno === 'EAI_AGAIN')  
+                            error = `${watcher.url} could not be reached.`;
+    
+                        return reject(error);
+                    }
+                    
+                    if (code && (code < 200 || code > 299)) // allow all code 2**
+                        return reject(`Unexpected HTTP code ${code}`);
+    
+                    resolve(response);
                 }
-                
-                if (code && (code < 200 || code > 299)) // allow all code 2**
-                    return reject(`Unexpected HTTP code ${code}`);
-
-                resolve(response);
-            }
-        ).on('response', function(response) {
-            code = response.statusCode;
-        })
+            ).on('response', function(response) {
+                code = response.statusCode;
+            })
+        } catch(ex){
+            reject(ex);
+        }
     });
 }

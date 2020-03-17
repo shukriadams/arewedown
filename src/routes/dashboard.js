@@ -36,8 +36,10 @@ module.exports = function(app){
         let cronJobs = daemon.cronJobs.slice(0).filter((job)=>{
             if (!job.config.enabled)
                 return null;
+
             if (!dashboardWatchers.includes(job.config.__name))
                 return null;
+
             return job;
         }); 
 
