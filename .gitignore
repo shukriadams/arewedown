@@ -6,14 +6,12 @@ src/settings.json
 src/logs/
 src/watchers
 src/flags/
-docker/logs/
-docker/.keys/
-docker/flags
-docker/build.tar.gz
-docker/.clone/
+build/build.tar.gz
+build/.stage/
 docker/settings.json
 src/.env
 .vscode/launch.json
 src/yarn.lock
 src/tests/user
 !src/tests/user/example.js
+src/user-scripts/mytest.js

@@ -10,6 +10,8 @@
     },
     "scripts": {
         "start": "node index",
+        "debug": "node --inspect=0.0.0.0:3001 index",
+        "debug-brk": "node --inspect-brk=0.0.0.0:3001 index",
         "test": "node test/all"
     },
     "dependencies": {
@@ -25,15 +27,15 @@
         "express": "4.17.1",
         "minimist": "1.2.2",
         "sanitize-filename": "1.6.3",
-        "nodemailer": "5.1.1",
-        "custom-env": "1.0.0",
         "fs-extra": "8.1.0",
         "winston": "2.4.0",
+        "http-terminator" : "3.0.0",
         "winston-daily-rotate-file": "1.7.2",
-        "timebelt": "https://github.com/shukriadams/timebelt.git#0.1.3",
-        "madscience-fsUtils": "https://github.com/shukriadams/node-fsUtils.git#0.0.4",
+        "smtp-client" : "0.4.0",
+        "timebelt": "https://github.com/shukriadams/timebelt.git#0.1.9",
+        "madscience-fsUtils": "https://github.com/shukriadams/node-fsUtils.git#0.0.10",
         "madscience-httputils": "https://github.com/shukriadams/node-httpUtils.git#0.0.1",
-        "madscience-node-exec": "https://github.com/shukriadams/node-exec.git#0.0.2"
+        "madscience-node-exec": "https://github.com/shukriadams/node-exec.git#0.0.7"
     },
     "devDependencies": {
         "glob": "7.1.6",

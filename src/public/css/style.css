@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap');
 
+:root {
+    --layout-universalMargin: 8px;
+} 
+
 /*
     This layout would have been much easier with Flex, but it needed to be backwards-compatible with older browsers.
 */
@@ -22,7 +26,6 @@ body {
 a {
     color: #19222d;
     text-decoration: none;   
-
 }
 
 a:visited {
@@ -32,7 +35,9 @@ a:visited {
 h1 {
     margin: 0;
     padding:0;
+    color: #3da6fa;
 }
+
 
 header {
     background-color: #FA3C00;
@@ -51,8 +56,8 @@ header {
 main {
     padding-top: 64px; /* header height */
     position: relative;
-    text-align: center;
     height: 100%;
+    color: #3da6fa;
 }
 
 footer {
@@ -114,6 +119,7 @@ footer {
 }
 
 .job {
+    text-align: center;
     border-radius: 5px;
     display: inline-block;
     width: 240px;
@@ -180,6 +186,46 @@ footer {
     bottom: 6px;
     text-align: center;
     width: 100%;
+}
+
+.historyItem {
+    border-radius: 2px;
+    display: inline-block;
+    white-space: nowrap;
+    padding-top: var(--layout-universalMargin);
+    margin-top: var(--layout-universalMargin);
+    margin-left: var(--layout-universalMargin);
+    position: relative;    
+    background-color: #ff5722;
+    color: #ffffff;
+    padding: var(--layout-universalMargin);
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.historyItem-header {
+    margin: 0;
+    padding:0;
+    text-transform: uppercase;
+}
+
+
+.historyItem.historyItem--up {
+    background-color: #22b66e;
+    color: #19222d;
+}
+
+.historyItem-mainContent{
+    display: inline-block;    
+}
+
+.historyItem-padder {
+    display: inline-block;
+}
+
+.history-empty{
+    padding-top: 100px;
+    text-align: center;
 }
 
 @media all and (min-width: 501px) {

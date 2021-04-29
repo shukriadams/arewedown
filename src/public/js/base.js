@@ -1,11 +1,12 @@
-var dashboardRefreshInterval = document.querySelector('body').getAttribute('data-dashboardRefreshInterval');
-var updateInSeconds = document.querySelector('.layout-updateTime');
-var renderTime = null; //new Date(document.querySelector('.renderTime').getAttribute('data-value'));
-var dateFields = document.querySelectorAll('[data-formatDate]');
+var dashboardRefreshInterval = document.querySelector('body').getAttribute('data-dashboardRefreshInterval'),
+    updateInSeconds = document.querySelector('.layout-updateTime'),
+    renderTime = null, 
+    dateFields = document.querySelectorAll('[data-formatDate]'),
+    nowHolder = document.querySelector('.now');
+    now = new Date()
 
-var nowHolder = document.querySelector('.now');
-var now = new Date();
-nowHolder.innerHTML = now.toLocaleTimeString();
+if (now && nowHolder)
+    nowHolder.innerHTML = now.toLocaleTimeString()
 
 if (dashboardRefreshInterval)
     dashboardRefreshInterval = parseInt(dashboardRefreshInterval);
@@ -69,5 +70,5 @@ if (!dashboardRefreshInterval){
 
 
 showTimes();
-//showUpdateTime();
+
 

@@ -1,0 +1,11 @@
+version: "2"
+services:
+  arewedown:
+    image: shukriadams/arewedown:0.0.10
+    container_name: arewedown
+    restart: unless-stopped
+    volumes:
+      - ./settings.yml:/etc/arewedown/settings.yml
+      - ./logs:/etc/arewedown/logs/:rw
+    ports:
+    - "7018:3000"

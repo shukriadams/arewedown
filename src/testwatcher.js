@@ -3,8 +3,8 @@
     let process = require('process'),
         fs = require('fs-extra'),
         path = require('path'),
-        settings = require('./lib/settings').get(true),
-        argv = require('minimist')(process.argv.slice(2));
+        settings = require('./lib/settings'),
+        argv = require('minimist')(process.argv.slice(2))
     
     if (!argv.watcher){
         console.error(`ERROR : Watcher required. Use "--watcher [watcher_name]"`);

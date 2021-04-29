@@ -1,16 +1,21 @@
 <html>
     <head>
         {{{block "basehead"}}}
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="/css/style.css" type="text/css">
         <title>{{title}}</title>
     </head>
-    <body data-dashboard="{{dashboard}}" data-dashboardRefreshInterval="{{dashboardRefreshInterval}}" class="layout {{#if allJobsPassed}}layout--passing{{/if}}">
+    <body class="layout {{#if allJobsPassed}}layout--passing{{/if}}">
         <div class="content">
             
             <header>
                 <div class="layout-scaffold">
                     <div class="layout-titleScaffold">
-                        <h1 class="layout-title">{{title}}</h1>
+                        <a href="/">
+                            <h1 class="layout-title">
+                                Are We Down? {{title}}
+                            </h1>
+                        </a>
                     </div>
                 </div>
             </header>
@@ -22,11 +27,7 @@
             </main>
 
             <footer>
-                <div class="layout-scaffold">
-                    <div class="layout-renderTime">
-                        Rendered <span class="now"></span>
-                    </div>
-                </div>
+                {{{block "footer"}}}
             </footer>
         </div>
         <script src="/js/base.js"></script>

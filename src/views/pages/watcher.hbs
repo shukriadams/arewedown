@@ -1,20 +1,23 @@
 {{#extend "layout"}}
     {{#content "body"}}
+        <div class="noreload"></div>
 
-        Watcher
-        {{#each history}}
-            <div>
-                <div>
-                    {{status}}
+        {{#if history}}
+            {{#each history}}
+                <div class="historyItem historyItem--{{status}}">
+                    <div class="historyItem-mainContent">
+                        {{status}} {{duration}}
+                        <div>
+                            {{ago date}}  ({{date date}})
+                        </div>
+                    </div>
+                    <div class="historyItem-padder" style="width:{{durationPercent}}px"></div>
                 </div>
-                <div>
-                    {{date date}}
-                </div>
-                <div>
-                    {{ago date}}
-                </div>
+            {{/each}}
+        {{else}}
+            <div class="history-empty">
+                No changes to report
             </div>
-        {{/each}}
-
+        {{/if}}
     {{/content}}
 {{/extend}}

@@ -1,153 +1,189 @@
 let fs = require('fs-extra'),
     yaml = require('js-yaml'),
+    process = require('process'),
+    path = require('path'),
     sanitize = require('sanitize-filename'),
-    isValidated = false,
-    _settings;
+    _settings,
+    rawSettings = null,
+    allWatcherNames = []
 
-module.exports = {
-    get : function(forceRead){
+if (!fs.existsSync('./settings.yml'))
+    throw 'settings.yml not found.'
 
-        if (!_settings || forceRead === true){
+try {
+    let settingsYML = fs.readFileSync('./settings.yml', 'utf8')
+    rawSettings = yaml.safeLoad(settingsYML)
+} catch (e) {
+    console.log('Error reading settings.yml')
+    console.log(e)
+    throw e
+}
 
-            let rawSettings = null;
+// force default structures
+rawSettings = Object.assign({
+    // basic settings
+    version : 1,
+    logs : './logs',
+    emailSubject : 'Service failure',
+    fromEmail : 'no-reply@example.com',
+    dashboardLogs : './dashboards',
+    port: 3000,
+    dashboardRefreshInterval: 10000,
+    dashboardLoadTimeout: 5000,
+    partialFailCode : 230,
+    cacheViews : true,
 
-            if (!fs.existsSync('./settings.yml'))
-                throw 'settings.yml not found.';
+    // internal work cleans up/maintains self. needs to run once a day only
+    internalWorkerTimer : '0 0 * * *',
+    // in days
+    logRetention: 0, // daysd
+    debug: false,
+    
+    // root-level objects
+    dashboards : {},
+    recipients : {},
 
-            try {
-                let settingsYML = fs.readFileSync('./settings.yml', 'utf8');
-                rawSettings = yaml.safeLoad(settingsYML);
-            } catch (e) {
-                console.log('Error reading settings.yml');
-                console.log(e);
-                throw e;
+    // transmission options
+    smtp : null,
+    /* allowed config : 
+        {
+            host : 'smtp.example.com',
+            port: 123,
+            secure : true|false,
+            auth : {
+                user: 'myuser',
+                pass : 'mypassword'
             }
-            
-            // force default structures
-            rawSettings = Object.assign({
-                // basic settings
-                version : 1,
-                logs : './logs',
-                emailSubject : 'Service failure',
-                fromEmail : 'no-reply@example.com',
-                dashboardLogs : './dashboards',
-                port: 3000,
-                dashboardRefreshInterval: 10000,
-                partialFailCode : 230,
-
-                // root-level objects
-                dashboards : {},
-                recipients : {},
-
-                // transmission options
-                smtp : null,
-                slack: null,
-                sendgrid : null
-
-            }, rawSettings);
-
-            let allWatcherNames = [];
-            // process watchers first, we need these to process dashboards
-            for (const name in rawSettings.watchers){
-
-                let watcher = rawSettings.watchers[name];
-                
-                allWatcherNames.push(name);
-
-                rawSettings.watchers[name] = Object.assign({
-                    __name : name,
-                    __safeName : sanitize(name),
-                    name : name,   // users can add their own convenient name, if not this defaults to node name
-
-                    // enabled field is optional and on by default
-                    enabled : true,
-                }, watcher);
-            }
-
-            for (const name in rawSettings.dashboards){
-
-                let dashboard = rawSettings.dashboards[name];
-
-                rawSettings.dashboards[name] = Object.assign({
-                    __name : name,  // node name, attached here for convenience
-                    __safeName : sanitize(name), // nodename, made safe for filesystems
-                    name : name,    // users can add their own convenient name, if not this defaults to node name
-                    watchers : '*'  // force to all watchers
-                }, dashboard);
-
-                // if dashboard is set to * watchers, replace it's watchers list with literal names of all watchers
-                if (rawSettings.dashboards[name].watchers.trim() === '*')
-                    rawSettings.dashboards[name].watchers = allWatcherNames.join(',');
-            }
-
-            _settings = rawSettings;
-
-            // default values
-            for (const watcherName in _settings.watchers){
-                const watcher = _settings.watchers[watcherName];
-                if (!watcher.recipients){
-                    watcher.recipients ='';
-                    for (const recipient in _settings.recipients)
-                        watcher.recipients = `${recipient},`;
-                }
-            }
-
         }
+    */
 
-        if (!isValidated){
-            this.validate(_settings);
-            isValidated = true;
-        }
+    slack: null,
+    sendgrid : null
 
-        return _settings;
-    },
+}, rawSettings)
 
-    validate: function(settings){
+
+// apply default recipient settings
+for (const recipient in rawSettings.recipients)
+    rawSettings.recipients[recipient] = Object.assign({
+        email : null,
+        enabled : true,
+        slackId: null
+    }, rawSettings.recipients[recipient])
+
+
+// apply default watcher settings
+for (const name in rawSettings.watchers){
+    
+    allWatcherNames.push(name)
+
+    // apply default watcher settings
+    rawSettings.watchers[name] = Object.assign({
+        __name : name,
+        __safeName : sanitize(name),
+
+        // users can add their own convenient name, if not this defaults to node name
+        name : name,   
+
+        // internal js test
+        test: null,
+
+        // string of user names to receive alerts on watcher status change. 
+        // if null or empty, all recipients will be automatically added
+        recipients : null,
+
+        // external command. either test or cmd must be given
+        cmd: null,
+
+        // enabled field is optional and on by default
+        enabled : true,
+
+    }, rawSettings.watchers[name])
+}
+
+for (const name in rawSettings.dashboards){
+
+    // apply default dashboard settings
+    rawSettings.dashboards[name] = Object.assign({
+        __name : name,  // node name, attached here for convenience
+        __safeName : sanitize(name), // nodename, made safe for filesystems
+        name : name,    // users can add their own convenient name, if not this defaults to node name
+        watchers : '*'  // force to all watchers
+    }, rawSettings.dashboards[name])
+
+    // if dashboard is set to * watchers, replace it's watchers list with literal names of all watchers
+    if (rawSettings.dashboards[name].watchers.trim() === '*')
+        rawSettings.dashboards[name].watchers = allWatcherNames.join(',')
+}
+
+_settings = rawSettings
+
+// default values
+const allRecipientNames = Object.keys(_settings.recipients).join(',')
+for (const watcherName in _settings.watchers)
+    // if a watcher has no explicit recipients list, assign all recipient names to list
+    if (!_settings.watchers[watcherName].recipients)
+        _settings.watchers[watcherName].recipients = allRecipientNames
+
+
        
-        // validate SMTP
-        if (settings.smtp){
-            if (!settings.smtp.server)
-                console.log('settings is missing expected value for "smtp.server"');
-        
-            if (!settings.smtp.port)
-                console.log('settings is missing expected value for "smtp.port"');
-        
-            if (settings.smtp.secure === undefined)
-                console.log('settings is missing expected value for "smtp.secure"');
+
+// validate SMTP
+if (_settings.smtp){
+    if (!_settings.smtp.server)
+        console.log('settings is missing expected value for "smtp.server"')
+
+    if (!_settings.smtp.port)
+        console.log('settings is missing expected value for "smtp.port"')
+
+    if (_settings.smtp.secure === undefined)
+        console.log('settings is missing expected value for "smtp.secure"')
+}
+
+
+// validate sendgrid
+if (_settings.sendgrid){
+    if (!_settings.sendgrid.key)
+        console.log('settings is missing expected value for "sendgrid.key"')
+}
+
+
+// validate dashboards
+if (!_settings.dashboards)
+    console.log('WARNING - no dashboards set, nothing will be monitored.')
+
+// validate watchers
+for (const name in _settings.watchers){
+    const watcher = _settings.watchers[name]
+
+    if (!watcher.interval){
+        console.error(`Watcher "${name}" has no interval, it will not be run.`)
+        _settings.watchers[name].enabled = false
+        _settings.watchers[name].error = `No interval`
+        continue
+    }
+
+    if (!_settings.watchers[name].cmd){
+        _settings.watchers[name].test = _settings.watchers[name].test || 'httpcheck'
+        if (!_settings.watchers[name].url) {
+            _settings.watchers[name].enabled = false 
+            _settings.watchers[name].error = `URL required if test is not defined`    
         }
 
-        // validate sendgrid
-        if (settings.sendgrid){
-            if (!settings.sendgrid.key)
-                console.log('settings is missing expected value for "sendgrid.key"');
-        }
-
-        // validate dashboards
-        if (!settings.dashboards)
-            console.log('WARNING - no dashboards set, nothing will be monitored.');
-
-        for (const name in settings.watchers){
-            const watcher = settings.watchers[name];
-
-            if (!watcher.interval){
-                console.error(`Watcher "${name}" has no interval, it will not be run.`);
-                delete settings.watchers[name];
-                continue;
-            }
-
-        }
-
-        for (const dashboardName in settings.dashboards){
-            const dashboard = settings.dashboards[dashboardName];
-            if (!dashboard.watches || !Object.keys(dashboard.watches).length)
-                console.error(`Dashboard "${dashboardName}" has no watchers.`);
-
-            for(const watchName in dashboard.watches){
-                const watch = dashboard.watches[watchName];
-                if (!watch.test && !wactch.url)
-                    console.error(`Watch ${watchName} in dashboard ${dashboardName} has no test or url defined.`);
-            }
+        const testName = path.join(process.cwd(), 'tests', `${_settings.watchers[name].test}.js`)
+        if (!fs.existsSync(testName)){
+            _settings.watchers[name].enabled = false 
+            _settings.watchers[name].error = `could not find internal test ${_settings.watchers[name].test}`    
         }
     }
 }
+
+for (const dashboardName in _settings.dashboards){
+    const dashboard = _settings.dashboards[dashboardName]
+    if (!dashboard.watchers || !Object.keys(dashboard.watchers).length)
+        console.error(`Dashboard "${dashboardName}" has no watchers.`)
+}
+
+module.exports = _settings
+   
 

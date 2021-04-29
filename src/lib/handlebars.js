@@ -2,6 +2,7 @@ let Handlebars = require('handlebars'),
     fs = require('fs'),
     timebelt = require('timebelt'),
     ago = require('s-ago').default,
+    settings = require('./settings'),
     pages = null,
     views,
     path = require('path'),
@@ -49,8 +50,10 @@ Handlebars.registerHelper('date', function(date){
     if (typeof date === 'string')
         date = new Date(date);
 
-    return `${timebelt.toShortDate(date)} ${timebelt.toShortTime(date)}`;
+    return `${timebelt.toShortDate(date, 'y-m-d')} ${timebelt.toShortTime(date, 'h:m')}`;
 });
+
+
 
 Handlebars.registerHelper('time', function(date){
     if (typeof date === 'string')
@@ -68,10 +71,10 @@ module.exports = {
 
     getView: function(page){
 
-        if (!pages){
+        if (!pages || !settings.cacheViews){
 
-            pages = {};
-            views = {};
+            pages = {}
+            views = {}
         
             // partials
             let partialPaths = findViews(path.join(__dirname,'./../views/partials'));

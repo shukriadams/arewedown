@@ -1,39 +1,19 @@
-{{#extend "layout"}}
-    {{#content "body"}}
-        {{#if jobs.length}}
-            {{#each jobs}}
-                <div class="job {{#if isPassing}}job--passing{{/if}}">
+<html>
+    <head>
+        <link rel="stylesheet" href="/css/iframe.css" type="text/css">
+        <title>Are we down?</title>
+    </head>
+    <body data-dashboard="{{dashboardNode}}" data-dashboardRefreshInterval="{{dashboardRefreshInterval}}" data-dashboardLoadTimeout="{{dashboardLoadTimeout}}" >
+        {{! 
+            Load actual status page via iframe so we can gracefully handle the status page being down. 
+            This makes this solution kiosk-mode friendly - once loaded into the browser, the default 
+            kiosk page will always be able to continue reloading, even if the target page is temporarily
+            down.
+        }}
+        <iframe class="contentFrame contentFrame1"></iframe>
+        <iframe class="contentFrame contentFrame2"></iframe>
+        <script src="/js/iframe.js"></script>
+    </body>
+</html>
 
-                    <div class="cell cell--header">
-                        <div class="name">
-                            <a href="/watcher/{{config.__name}}" target="watcher">
-                                {{config.name}} 
-                            </a>
-                        </div>
-                    </div>
 
-                    <div class="cell cell--content">
-                        {{#if isPassing}}
-                            <img class="icon-passing" src="/icons/passing.svg" alt="Passing" />
-                        {{else}}
-                                {{ago statusDate}} - {{errorMessage}}
-                        {{/if}}
-                    </div>
-
-                    <div class="cell">
-                        <div class="nextCheck">
-                            Next check : <span data-formatDate="{{nextRun}}"></span>
-                        </div>
-                    </div>
-                </div>
-            {{/each}}
-        {{else}}
-            <div class="noJobs">
-                Nothing to show yet - add/enable some watchers
-            </div>
-        {{/if}}
-
-        <div class="push"></div>
-
-    {{/content}}
-{{/extend}}

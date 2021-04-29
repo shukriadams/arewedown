@@ -1,5 +1,5 @@
 const settings = require('./settings'),
-    Sendgrid = require('sendgrid');
+    Sendgrid = require('sendgrid')
 
 module.exports = async function(to, subject, message){
 

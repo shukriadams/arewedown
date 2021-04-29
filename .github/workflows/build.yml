@@ -1,0 +1,15 @@
+name: builds docker container
+on: 
+  push:
+    tags:
+      - '*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: builds
+        run: cd build && sh ./build.sh --dockerpush --smoketest
+        env:
+            DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+            DOCKER_USER: ${{ secrets.DOCKER_USER }}

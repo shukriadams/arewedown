@@ -1,35 +1,45 @@
 # Are We Down?
 
-Master branch
-
-[![Build Status](https://travis-ci.org/shukriadams/arewedown.svg?branch=master)](https://travis-ci.org/shukriadams/arewedown)
-
-Develop branch
-
-[![Build Status](https://travis-ci.org/shukriadams/arewedown.svg?branch=develop)](https://travis-ci.org/shukriadams/arewedown)
 
 - Simple HTTP status checking service. Use this to aggregate any status checks which use HTTP.
 - Entirely self-hosted, ideal for running behind a firewall on a closed domain.
+- Runs on ARM and x86.
 - Custom rules can be easily added via Javascript extension scripts.
 - Has a minimal single-page dashboard that will run on almost any browser or low-spec device, ideal for Raspberry Pi's in kiosk mode. 
 
 ## Get it
 
-A docker image is available @ https://hub.docker.com/r/shukriadams/arewedown (includes ARM images for Raspberry Pi)
+A docker image is available @ https://hub.docker.com/r/shukriadams/arewedown 
 
 ## Setup
 
 - create settings.yml, use src/settings.yml as example. Add sites you want to test. Set sane poll intervals. Adds email addresses of people who need to be alerted.
-- create *watchers* folder, 
-- chown 1000 -R watchers
-- if you want to persists logs, create logs folder and chown as above
-- use docker/docker-compose-yml as base for your docker-compose file.
+- create *logs* folder, 
+- chown 1000 -R logs
+- see ./docker-compose.yml if you want to use docker-compose.
+
+## Tranmissions
+
+### SMTP
+
+#### Google SMTP Settings
+
+    smtp:
+        enabled: true
+        server : smtp.gmail.com
+        port : 465
+        secure : true
+        user : your-user@gmail.com
+        pass: your-gmail-password
+        from : your-user@gmail.com
 
 ## Dashboards
 
 ## Tests
 
-One of the main reasons for Are We Down? is to make it simple to write custom uptime tests in Javascript.
+One of the main reasons for Are We Down? is to make it simple to write custom uptime tests in Javascript, Python or Bash. AWD ships with several internal tests that cover standard queries like HTTP 200 checks and Docker container lookups, but the you can write your own tests.
+
+
 
 - Tests are JS modules which export async functions.
 - Tests must throw exceptions when they fail. The entire exception will be presented as the failed reset.

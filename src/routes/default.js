@@ -1,11 +1,10 @@
 
-const settings = require('./../lib/settings').get(),
-    handlebars = require('./../lib/handlebars');
-    arrayHelper = require('./../lib/array'),
-    daemon = require('./../lib/daemon');
+const settings = require('./../lib/settings'),
+    handlebars = require('./../lib/handlebars')
 
-module.exports = function(app){
-        
+module.exports = app =>{
+
+
     /**
      * This is the default view of this site. To load use
      * 
@@ -19,25 +18,17 @@ module.exports = function(app){
      * If no (:dashboard) parameter is supplied, the first dashboard is automatically targetted.
      * 
      */
-    app.get('/:dashboard?', async function(req, res){
-        let dashboardNode = req.params.dashboard;
-
-        // fall back to first dashboard
-        if (!dashboardNode && settings.dashboards){
-            let definedDashboardKeys = Object.keys(settings.dashboards);
-            if (definedDashboardKeys.length)
-                dashboardNode = definedDashboardKeys[0];
-        }
-
-        const view = handlebars.getView('autoreloader');
+    app.get('/', async (req, res)=>{
+        const definedDashboardKeys = Object.keys(settings.dashboards)
+        if (definedDashboardKeys.length)
+            dashboardNode = definedDashboardKeys[0]
+            
+        const view = handlebars.getView('dashboard')
         res.send(view({
             dashboardNode,
+            dashboardLoadTimeout : settings.dashboardLoadTimeout,
             dashboardRefreshInterval : settings.dashboardRefreshInterval,
-        }));
-    });
-
-    
-
-
+        }))
+    })
 
 }

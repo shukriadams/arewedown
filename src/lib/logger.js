@@ -3,7 +3,7 @@ let winston = require('winston'),
     _watcherLogs = null,
     _global,
     path = require('path'),
-    settings = require('./settings').get();
+    settings = require('./settings')
 
 class Logger {
     constructor(logFolder){

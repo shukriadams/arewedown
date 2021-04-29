@@ -1,10 +1,10 @@
 const fs = require('fs-extra'),
     path = require('path'),
-    settings = require('./../lib/settings').get(),
+    settings = require('./../lib/settings'),
     jsonfile = require('jsonfile'),
     handlebars = require('./../lib/handlebars'),
     arrayHelper = require('./../lib/array'),
-    daemon = require('./../lib/daemon');
+    daemon = require('./../lib/daemon')
 
 module.exports = function(app){
 
@@ -13,7 +13,7 @@ module.exports = function(app){
      * The autoreload frame will in turn call and autorefresh this dashboard view.
      */
     app.get('/dashboard/:dashboard?', async function(req, res){
-        const dashboardNode = req.params.dashboard;
+        const dashboardNode = req.params.dashboard
 
         if (!settings.dashboards || !Object.keys(settings.dashboards).length){
             let view = handlebars.getView('noDashboards');
@@ -28,19 +28,20 @@ module.exports = function(app){
             }));
         }
 
-        let title = dashboard.name;
-        let view = handlebars.getView('dashboard');
+        let title = dashboard.name,
+            view = handlebars.getView('dashboardInner'),
+            dashboardWatchers = arrayHelper.split(dashboard.watchers, ','); // clone array, we don't want to change source
 
-        // clone array, we don't want to change source
-        let dashboardWatchers = arrayHelper.split(dashboard.watchers, ',');
-        let cronJobs = daemon.cronJobs.slice(0).filter((job)=>{
+        // get cronprocesses that are running and used on the current dashboard
+        let cc = daemon.getCronJobs()
+        let cronJobs = cc.slice(0).filter((job)=>{
             if (!job.config.enabled)
-                return null;
+                return null
 
             if (!dashboardWatchers.includes(job.config.__name))
-                return null;
+                return null
 
-            return job;
+            return job
         }); 
 
         const allJobsPassed = cronJobs.filter((job)=>{
@@ -74,6 +75,7 @@ module.exports = function(app){
         res.send(view({
             title,
             dashboardNode,
+            debug: settings.debug,
             dashboardRefreshInterval : settings.dashboardRefreshInterval,
             allJobsPassed,
             renderDate: `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`,
