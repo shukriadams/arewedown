@@ -4,23 +4,24 @@ const settings = require('./settings'),
 
 module.exports = { 
     async send(to, subject, message){
-        let SMTPClient = require('smtp-client').SMTPClient,
+        let smtpConfig = settings.transports.smtp,
+            SMTPClient = require('smtp-client').SMTPClient,
             client = new SMTPClient({
-                host: settings.smtp.server,
-                secure: settings.smtp.secure,
-                port: settings.smtp.port
+                host: smtpConfig.server,
+                secure: smtpConfig.secure,
+                port: smtpConfig.port
             }),
             mailContent = 
-                `From : ${settings.smtp.from}\n` +
+                `From : ${smtpConfig.from}\n` +
                 `Subject : ${subject}\n` +
                 `To: ${to}\n` +
                 `\n` +
                 `${message}`
 
         await client.connect()
-        await client.greet({hostname: settings.smtp.server })
-        await client.authPlain({username: settings.smtp.user, password: settings.smtp.pass })
-        await client.mail({from: settings.smtp.from })
+        await client.greet({hostname: smtpConfig.server })
+        await client.authPlain({username: smtpConfig.user, password: smtpConfig.pass })
+        await client.mail({from: smtpConfig.from })
         await client.rcpt({ to })
         await client.data(mailContent)
         await client.quit()
@@ -32,18 +33,21 @@ module.exports = {
         }
     },
     async ensureSettingsOrExit(){
-        console.log(`Confirming stmp settings by connecting to "${settings.smtp.server}"`)
-        let SMTPClient = require('smtp-client').SMTPClient,
+        
+        let smtpConfig = settings.transports.smtp,
+            SMTPClient = require('smtp-client').SMTPClient,
             client = new SMTPClient({
-                host: settings.smtp.server,
-                secure: settings.smtp.secure,
-                port: settings.smtp.port
+                host: smtpConfig.server,
+                secure: smtpConfig.secure,
+                port: smtpConfig.port
             })
+            
+        console.log(`Confirming stmp settings by connecting to "${smtpConfig.server}"`)
 
         try {
             await client.connect()
-            await client.greet({hostname: settings.smtp.server })
-            await client.authPlain({username: settings.smtp.user, password: settings.smtp.pass })
+            await client.greet({hostname: smtpConfig.server })
+            await client.authPlain({username: smtpConfig.user, password: smtpConfig.pass })
             await client.quit()
             console.log('Stmp connection succeeded : settings validated')
         } catch (ex){

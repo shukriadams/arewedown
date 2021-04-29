@@ -42,7 +42,8 @@ module.exports = {
             express.get('/restart', async (req, res)=>{
                 this.stopRequested = true
                 res.send('restart request')
-            })        
+            })
+
             // load routes
             for (const routeFile of routeFiles){
                 const name = routeFile.match(/(.*).js/).pop(),
@@ -51,9 +52,8 @@ module.exports = {
                 routes(express)
             }
             
-            if(settings.smtp)
+            if(settings.transports.smtp)
                 await smtp.ensureSettingsOrExit()
-
 
             await daemon.start()
             

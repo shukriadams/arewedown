@@ -44,16 +44,14 @@ rawSettings = Object.assign({
     recipients : {},
 
     // transmission options
-    smtp : null,
-    /* allowed config : 
-        {
+    transports : null,
+    /* 
+       smtp : {
             host : 'smtp.example.com',
             port: 123,
             secure : true|false,
-            auth : {
-                user: 'myuser',
-                pass : 'mypassword'
-            }
+            user: 'myuser',
+            pass : 'mypassword'
         }
     */
 
@@ -129,14 +127,14 @@ for (const watcherName in _settings.watchers)
        
 
 // validate SMTP
-if (_settings.smtp){
-    if (!_settings.smtp.server)
+if (_settings.transports.smtp){
+    if (!_settings.transports.smtp.server)
         console.log('settings is missing expected value for "smtp.server"')
 
-    if (!_settings.smtp.port)
+    if (!_settings.transports.smtp.port)
         console.log('settings is missing expected value for "smtp.port"')
 
-    if (_settings.smtp.secure === undefined)
+    if (_settings.transports.smtp.secure === undefined)
         console.log('settings is missing expected value for "smtp.secure"')
 }
 
