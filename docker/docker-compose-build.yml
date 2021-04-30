@@ -1,7 +1,0 @@
-version: "2"
-services:
-  buildcontainer:
-    image: shukriadams/node10build:0.0.1
-    container_name: buildcontainer
-    restart: unless-stopped
-
