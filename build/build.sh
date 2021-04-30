@@ -46,11 +46,12 @@ docker build -f Dockerfile$ARCHITECTURE -t shukriadams/arewedown .
 
 # test mount container
 if [ $SMOKETEST -eq 1 ]; then
+    echo "starting smoketest"
     # test build
     docker-compose -f docker-compose-test.yml down 
     docker-compose -f docker-compose-test.yml up -d 
     # give container a chance to start
-    sleep 5 
+    sleep 15 
 
     # confirm app has started
     LOOKUP=$(curl -s -o /dev/null -D - localhost:7018 | grep "HTTP/1.1 200 OK") 
