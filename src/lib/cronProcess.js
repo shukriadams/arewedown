@@ -80,13 +80,21 @@ class CronProcess
         this.lastRun = new Date();
         this.errorMessage = null;
         
-        // revert to system/httpcheck if test name is not explicitly set.
+        // revert to system/net.httpcheck if test name is not explicitly set.
+        
+        let testRun = ''
 
         try {
             this.isPassing = true
 
             if (this.config.cmd){
-                let result = await exec.sh({ cmd : this.config.cmd })
+                testRun = this.config.cmd
+
+                let thisConfigString = ''
+                for (const prop in this.config)
+                    thisConfigString += ` --${prop} ${this.config[prop]}`
+
+                let result = await exec.sh({ cmd : `${this.config.cmd} ${thisConfigString}` })
                 if (result.code !== 0) {
                     const errorMessage = `${result.result} (code ${result.code})`
                     this.errorMessage = errorMessage
@@ -94,17 +102,19 @@ class CronProcess
                     this.isPassing = false
                 }
             } else {
-                let testname = this.config.test ? this.config.test : 'httpcheck',
-                    test = require(`../tests/${test}`)
-                    
+                let testname = this.config.test ? this.config.test : 'net.httpCheck',
+                    test = require(`../tests/${testname}`)
+                
+                testRun = testname
+
                 await test.call(this, this.config)
             }
 
         } catch(ex){
-            this.logError(`Unhandled exception in user test ${test} : ${ex}`);
+            this.logError(`Unhandled exception running "${testRun}"`, ex)
             this.isPassing = false;
             this.errorMessage = ex.errno === 'ENOTFOUND' || ex.errno === 'EAI_AGAIN' ? 
-            `${this.config.url} could not be reached.` : this.errorMessage = ex;
+            `${this.config.url} could not be reached.` : this.errorMessage = ex
         }
 
 

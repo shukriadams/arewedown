@@ -32,7 +32,8 @@ rawSettings = Object.assign({
     dashboardLoadTimeout: 5000,
     partialFailCode : 230,
     cacheViews : true,
-
+    allowHttpRestart: false,
+    
     // internal work cleans up/maintains self. needs to run once a day only
     internalWorkerTimer : '0 0 * * *',
     // in days
@@ -162,7 +163,7 @@ for (const name in _settings.watchers){
     }
 
     if (!_settings.watchers[name].cmd){
-        _settings.watchers[name].test = _settings.watchers[name].test || 'httpcheck'
+        _settings.watchers[name].test = _settings.watchers[name].test || 'net.httpCheck'
         if (!_settings.watchers[name].url) {
             _settings.watchers[name].enabled = false 
             _settings.watchers[name].error = `URL required if test is not defined`    

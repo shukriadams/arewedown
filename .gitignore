@@ -14,5 +14,5 @@ src/.env
 src/yarn.lock
 src/tests/user
 !src/tests/user/example.js
-src/user-scripts/mytest.js
+src/user-scripts
 src/settings.yml

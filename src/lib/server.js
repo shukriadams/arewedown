@@ -40,6 +40,11 @@ module.exports = {
             // static content
             express.use(Express.static('./public'))
             express.get('/restart', async (req, res)=>{
+                if (!settings.allowHttpRestart){
+                    res.error(403)
+                    res.end('set allowHttpRestart:true to allow this')
+                    return
+                }
                 this.stopRequested = true
                 res.send('restart request')
             })
