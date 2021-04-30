@@ -33,7 +33,6 @@ fi
 
 # copy src to .stage so we can build it both locally and on Github
 rm -rf .stage
-echo "123"
 mkdir -p .stage
 rsync -v -r --exclude=node_modules --exclude=data --exclude=user-scripts --exclude=settings.yml --exclude=.* ./../src .stage
 
@@ -43,7 +42,7 @@ docker run -v $(pwd)/.stage/src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/
 # zip the build up
 tar -czvf ./build.tar.gz .stage/src 
 
-docker build -t shukriadams/arewedown . 
+docker build -f Dockerfile$ARCHITECTURE -t shukriadams/arewedown . 
 
 # test mount container
 if [ $SMOKETEST -eq 1 ]; then
