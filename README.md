@@ -1,11 +1,14 @@
 # Are We Down?
 
-
 - Simple HTTP status checking service. Use this to aggregate any status checks which use HTTP.
 - Entirely self-hosted, ideal for running behind a firewall on a closed domain.
 - Runs on ARM and x86.
-- Custom rules can be easily added via Javascript extension scripts.
+- Runs in a Docker container.
+- All config stored in a single yml file.
+- Custom rules can be easily added via any linux shell script - NodeJS 12, Python3 and bash work out-of-the-box.
 - Has a minimal single-page dashboard that will run on almost any browser or low-spec device, ideal for Raspberry Pi's in kiosk mode. 
+- Shows basic history of uptime changes.
+- Sends alerts via SMTP, Slack and others coming.
 
 ## Get it
 
@@ -18,7 +21,31 @@ A docker image is available @ https://hub.docker.com/r/shukriadams/arewedown
 - chown 1000 -R logs
 - see ./docker-compose.yml if you want to use docker-compose.
 
+## Config
+
+All config is written in a single YML file `setup.yml` in the project root. 
+
+You can restart `Are We Down?` to update settings by running using the `/restart` route.
+
+### Customize your container
+
+If you're running Docker and need to install a runtime or package, you can do this at app start using `onstart` in settings.yml. The `sudo` command is available to the `arewedown` user in the container
+
+    ...
+    onstart: sudo apt-get install <some-package> -y
+    ...
+
+Suppose you mount your own NodeJS application (ie package.json) in `/opt/mytests` in your container. You need to run `npm install` on this first to ensure required local package are installed. 
+
+    ...
+    onstart: cd /opt/mytests && npm install
+    ...
+
+For performance reasons, it's best to keep `onstart` short, and try to install things which can persist in a volume mount, else you'll end up reinstalling from scratch each time your container restarts.
+
 ## Tranmissions
+
+Transmissions are used to send alerts when watcher states change. Currently the following transmission types are supported
 
 ### SMTP
 
@@ -35,10 +62,11 @@ A docker image is available @ https://hub.docker.com/r/shukriadams/arewedown
 
 ## Dashboards
 
+Dashboards let you vizualize watchers. A given dashboard can display the status of any watcher. Dashboards automatically reload to update watcher state, and are written to be display on large screens on low-performance devices such as Raspberry Pi's.
+
 ## Tests
 
-One of the main reasons for Are We Down? is to make it simple to write custom uptime tests in Javascript, Python or Bash. AWD ships with several internal tests that cover standard queries like HTTP 200 checks and Docker container lookups, but the you can write your own tests.
-
+One of the main reasons for Are We Down? is to make it simple to write custom uptime tests in Javascript, Python or Bash. `AWD?` ships with several internal tests that cover standard queries like HTTP 200 checks and Docker container lookups, but the you can write your own tests.
 
 
 - Tests are JS modules which export async functions.
@@ -59,30 +87,62 @@ A test should look like
 
 2. A watcher object is passed to the test, this object contains all the config for that given watcher, as it is written in settings.yml. You can use this to pass information to the test.
 
-### Debugging tests
+## Your own scripts
 
-When writing tests, it helps to be able to test them to see if they work. 
+`Arewedown?` is written around custom shell scripts.
 
-1. Write a new test in settings.yml. Disable it so it won't get automatically fired.
+- Your can use any script / scripting language that you can call from the operating system shell.
+- All watcher configuration is passed to the script as '--' arguments. If your config looks like
 
-    watchers:
-        mywatcher:
-            enabled: false
-            test: user/mytest
+        watchers:
+            mywatcher:
+                interval: "*/1 * * * *"
+                cmd: node /home/bob/mytest.js
+                foo: bar
 
-2. Write your test in the file *tests/user/mytest.js*. If you're running in Docker, mount the folder *tests/user* as a volume and place your test file in that.
+    then inside `/home/bob/mytest.js` you will have access to the argument `--foo` with value `bar`.
 
-3. Execute the test with
+### Getting args in Python3
 
-        node testwatcher --watcher mywatcher
+Using command line args in Python3 is easily done with built-in `argparse`
 
-  If youre're running in docker use
+    import sys
+    import argparse
 
-        docker exec -it [arewedowncontainer] bash -c "node testwatcher --watcher mywatcher"
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--foo', '-f')
+    args, unknown = parser.parse_known_args()
 
-## Development
+    # args.foo > 
 
-If you're interested in developing Are We down, continue reading.
+### Getting args in NodeJS
+
+The easiest way to get command line arguments passed to a NodeJS script is with [minimist](https://www.npmjs.com/package/minimist). If you don't want to install npm packages use this function
+
+    function getArg(arg){
+        for (let i = 0 ; i < process.argv.length ; i ++)
+            if (process.argv[i] == `--${arg}` && process.argv.length >= i)
+                return process.argv[i + 1]
+        return null
+    }
+
+    const foo = getArg('foo') // > "bar"
+
+### Getting args in sh
+
+Parsing args in bash or similar is done thusly
+
+    FOO="not set"
+
+    while [ -n "$1" ]; do 
+        case "$1" in
+        -f|--foo)
+            FOO="$2" shift;;
+        esac 
+        shift
+    done
+
+    echo $FOO
 
 ### Vagrant
 

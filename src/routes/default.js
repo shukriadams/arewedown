@@ -19,8 +19,18 @@ module.exports = app =>{
      * 
      */
     app.get('/', async (req, res)=>{
-        const definedDashboardKeys = Object.keys(settings.dashboards)
-        if (definedDashboardKeys.length)
+        let definedDashboardKeys = Object.keys(settings.dashboards),
+            dashboardNode
+        
+        // take first dashboard marked as default
+        for (let dashboardName of definedDashboardKeys)
+            if (settings.dashboards[dashboardName].default === true){
+                dashboardNode = dashboardName
+                break
+            }
+
+        // if no default, take first dashboard
+        if (!dashboardNode && definedDashboardKeys.length)
             dashboardNode = definedDashboardKeys[0]
             
         const view = handlebars.getView('dashboard')

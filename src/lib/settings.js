@@ -106,6 +106,11 @@ for (const name in rawSettings.dashboards){
         __name : name,  // node name, attached here for convenience
         __safeName : sanitize(name), // nodename, made safe for filesystems
         name : name,    // users can add their own convenient name, if not this defaults to node name
+
+        // set to true to have this be the default dashboard when viewing '/' in a browser. if not set, the first
+        // dashboard defined will be default. If multiple are defined with default, the first one defined is taken
+        default : false,
+
         watchers : '*'  // force to all watchers
     }, rawSettings.dashboards[name])
 
@@ -153,6 +158,8 @@ if (!_settings.dashboards)
 // validate watchers
 for (const name in _settings.watchers){
     const watcher = _settings.watchers[name]
+
+    // todo : warn on multiple defaults
 
     if (!watcher.interval){
         console.error(`Watcher "${name}" has no interval, it will not be run.`)
