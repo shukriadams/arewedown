@@ -2,6 +2,7 @@ FROM ubuntu:20.04
 
 RUN apt-get update \
     && apt-get install bash -y \
+    && apt-get install sudo -y \
     && apt-get install git -y \
     && apt-get install curl -y \
     && apt-get install python3-minimal -y \
@@ -10,6 +11,8 @@ RUN apt-get update \
     && rm nodejs_12.20.2-deb-1nodesource1_amd64.deb \
     && mkdir -p /etc/arewedown \
     && adduser -u 1000 arewedown \
+    && adduser arewedown sudo \
+    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
     && chmod 700 -R /etc/arewedown \
     && chown -R arewedown /etc/arewedown    
     

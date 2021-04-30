@@ -1,6 +1,6 @@
 let CronJob = require('cron').CronJob,
     path = require('path'),
-    CronProcess = require('./CronProcess'),
+    CronProcess = require('./cronProcess'),
     fs = require('fs-extra'),
     fsUtils = require('madscience-fsUtils'),
     timebelt = require('timebelt'),

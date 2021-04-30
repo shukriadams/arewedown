@@ -17,6 +17,8 @@ while [ -n "$1" ]; do
     shift
 done
 
+echo "Smoketest:${SMOKETEST}"
+
 # get tag fom current context
 TAG=$(git describe --abbrev=0 --tags)
 if [ -z $TAG ]; then
@@ -33,7 +35,7 @@ fi
 rm -rf .stage
 echo "123"
 mkdir -p .stage
-rsync -v -r --exclude=node_modules --exclude=data --exclude=.* ./../src .stage
+rsync -v -r --exclude=node_modules --exclude=data --exclude=user-scripts --exclude=settings.yml --exclude=.* ./../src .stage
 
 # install with --no-bin-links to avoid simlinks, this is needed to copy build content around
 docker run -v $(pwd)/.stage/src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links'

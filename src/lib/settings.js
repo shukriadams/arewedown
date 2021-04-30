@@ -4,20 +4,22 @@ let fs = require('fs-extra'),
     path = require('path'),
     sanitize = require('sanitize-filename'),
     _settings,
-    rawSettings = null,
+    rawSettings = {},
     allWatcherNames = []
 
-if (!fs.existsSync('./settings.yml'))
-    throw 'settings.yml not found.'
-
-try {
-    let settingsYML = fs.readFileSync('./settings.yml', 'utf8')
-    rawSettings = yaml.safeLoad(settingsYML)
-} catch (e) {
-    console.log('Error reading settings.yml')
-    console.log(e)
-    throw e
+if (fs.existsSync('./settings.yml')){
+    try {
+        let settingsYML = fs.readFileSync('./settings.yml', 'utf8')
+        rawSettings = yaml.safeLoad(settingsYML)
+    } catch (e) {
+        console.log('Error reading settings.yml', e)
+        throw e
+    }
+} else {
+    console.log(`WARNINGS : settings.yml not found - please create file in application folder ${process.cwd()}. If you are running in docker, mount your external settings.yml to this location.`)
 }
+
+
 
 // force default structures
 rawSettings = Object.assign({
@@ -45,7 +47,7 @@ rawSettings = Object.assign({
     recipients : {},
 
     // transmission options
-    transports : null,
+    transports : {},
     /* 
        smtp : {
             host : 'smtp.example.com',
@@ -55,9 +57,6 @@ rawSettings = Object.assign({
             pass : 'mypassword'
         }
     */
-
-    slack: null,
-    sendgrid : null
 
 }, rawSettings)
 
