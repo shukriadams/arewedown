@@ -71,4 +71,10 @@ if (!dashboardRefreshInterval){
 
 showTimes();
 
-
+// -------------------------------------------
+const cbEnableReload = document.querySelector('#cbEnableReload')
+if (cbEnableReload){
+    cbEnableReload.addEventListener('change', (event) => {
+        window.parent.postMessage(`reload status:${event.currentTarget.checked}`, '*')
+    })
+}

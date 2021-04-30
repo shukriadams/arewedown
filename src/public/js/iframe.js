@@ -5,24 +5,28 @@
         dashboardLoadTimeout = body.getAttribute('data-dashboardLoadTimeout'),
         dashboard = body.getAttribute('data-dashboard'),
         activeFrame = document.querySelector('.contentFrame1'),
-        inactiveFrame = document.querySelector('.contentFrame2')
+        inactiveFrame = document.querySelector('.contentFrame2'),
+        reload = true
 
     if (dashboardRefreshInterval)
         dashboardRefreshInterval = parseInt(dashboardRefreshInterval);
     
+    window.addEventListener('message', evt => {
+        if (evt.data.startsWith('reload status:')){
+            reload = evt.data.replace('reload status:', '') === 'true'
+        }
+    })
 
     function update(){
-
-        const cbEnableReload =  activeFrame.contentWindow.document.querySelector('#cbEnableReload') 
-        if (cbEnableReload && !cbEnableReload.checked)
+        if (!reload)
             return
-    
+
         inactiveFrame.contentWindow.location = `/dashboard/${dashboard}`
         
         // handles iframe load failure - if the frame fails to load, all active frames are 
         // hidden and the underlying fail state shows through
         var timeOut = setTimeout(function(){
-            if (cbEnableReload && !cbEnableReload.checked)
+            if (!reload)
                 return
 
             activeFrame.classList.remove('iframe--show')
@@ -36,7 +40,7 @@
 
             // backbuffer new page to prevent reload flickering on slow devices like raspberry pi's
             setTimeout(function(){
-                if (cbEnableReload && !cbEnableReload.checked)
+                if (!reload)
                     return
     
                 inactiveFrame.classList.add('iframe--show')
