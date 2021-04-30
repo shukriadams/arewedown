@@ -1,21 +1,24 @@
 # fail on errors
-ARMCHECK=$(lscpu|grep arm)
-
 set -e
 
 # tag must be passed in as an argument when calling this script
 ARCH=""
 DOCKERPUSH=0
-BUILDCONTAINER=shukriadams/node10build:0.0.3
+
 SMOKETEST=0
+ARCHITECTURE="" # set to "-arm" for arm
 
 while [ -n "$1" ]; do 
     case "$1" in
     --dockerpush) DOCKERPUSH=1 ;;
     --smoketest) SMOKETEST=1 ;;
+    --arc)
+        ARCHITECTURE="$2" shift;;         
     esac 
     shift
 done
+
+BUILDCONTAINER=shukriadams/node12build:0.0.3$ARCHITECTURE
 
 echo "Smoketest:${SMOKETEST}"
 
@@ -26,9 +29,6 @@ if [ -z $TAG ]; then
    exit 1
 fi
 
-if [ ! -z "$ARMCHECK" ]; then
-    ARCH="-arm"
-fi
 
 
 # copy src to .stage so we can build it both locally and on Github
@@ -64,8 +64,8 @@ fi
 
 if [ $DOCKERPUSH -eq 1 ]; then
     docker login -u $DOCKER_USER -p $DOCKER_PASS 
-    docker tag shukriadams/arewedown:latest shukriadams/arewedown:$TAG${ARCH} 
-    docker push shukriadams/arewedown:$TAG${ARCH} 
+    docker tag shukriadams/arewedown:latest shukriadams/arewedown:$TAG$ARCHITECTURE 
+    docker push shukriadams/arewedown:$TAG$ARCHITECTURE
 fi
 
 echo "Build done";
