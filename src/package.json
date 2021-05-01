@@ -24,7 +24,7 @@
         "request": "2.88.0",
         "cron": "1.7.1",
         "express": "4.17.1",
-        "minimist": "1.2.2",
+        "minimist": "1.2.5",
         "sanitize-filename": "1.6.3",
         "fs-extra": "8.1.0",
         "winston": "2.4.0",
