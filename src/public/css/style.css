@@ -2,6 +2,9 @@
 
 :root {
     --layout-universalMargin: 8px;
+    --color-ebonyClay: #262c3a;
+    --color-mirage: #19222d;
+    --color-vermilion: #FA3C00;
 } 
 
 /*
@@ -24,12 +27,12 @@ body {
 }
 
 a {
-    color: #19222d;
+    color: var(--color-mirage);
     text-decoration: none;   
 }
 
 a:visited {
-    color: #19222d;
+    color: var(--color-mirage);
 }
 
 h1 {
@@ -40,7 +43,7 @@ h1 {
 
 
 header {
-    background-color: #FA3C00;
+    background-color: var(--color-vermilion);
     color: #ffffff;
     font-size: 24px;
     position: fixed;
@@ -64,7 +67,7 @@ footer {
     position: fixed;
     bottom: 0;
     left: 0;
-    background-color: #FA3C00;
+    background-color: var(--color-vermilion);
     color: #ffffff;
     width: 100%;
     z-index: 1;
@@ -76,20 +79,20 @@ footer {
 }
 
 .layout {
+    background-color: var(--color-mirage);
+}
+
+.layout.layout--failing {
     background-color: #A82800;
 }
 
-.layout.layout--passing {
-    background-color: #19222d;
-}
-
-.layout.layout--passing header {
-    background-color: #262c3a;
+.layout header {
+    background-color: var(--color-ebonyClay);
     color: #3da6fa;
 }
 
-.layout.layout--passing footer {
-    background-color: #262c3a;
+.layout footer {
+    background-color: var(--color-ebonyClay);
     color: #3da6fa;
 }
 
@@ -136,7 +139,7 @@ footer {
 
 .job--passing {
     background-color: #22b66e;
-    color: #19222d;
+    color: var(--color-mirage);
 }
 
 .job.job--passing .cell--header {
@@ -158,7 +161,7 @@ footer {
 .cell.cell--header {
     font-weight: bold;
     font-size: 20px;
-    background-color: #FA3C00;
+    background-color: var(--color-vermilion);
     max-height: 65px;
     overflow: hidden;    
 }
@@ -170,15 +173,6 @@ footer {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-}
-
-.noJobs {
-    color: #3da6fa;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-weight: bold;
 }
 
 .nextCheck {
@@ -212,7 +206,7 @@ footer {
 
 .historyItem.historyItem--up {
     background-color: #22b66e;
-    color: #19222d;
+    color: var(--color-mirage);
 }
 
 .historyItem-mainContent{
@@ -223,9 +217,13 @@ footer {
     display: inline-block;
 }
 
-.history-empty{
-    padding-top: 100px;
-    text-align: center;
+.dashboard-message {
+    color: #3da6fa;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;    
 }
 
 @media all and (min-width: 501px) {

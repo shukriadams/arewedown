@@ -41,12 +41,12 @@ module.exports = {
             express.use(Express.static('./public'))
             express.get('/restart', async (req, res)=>{
                 if (!settings.allowHttpRestart){
-                    res.error(403)
-                    res.end('set allowHttpRestart:true to allow this')
+                    res.status(403)
+                    res.end('Not allowed. set "allowHttpRestart:true" to enable restart')
                     return
                 }
                 this.stopRequested = true
-                res.send('restart request')
+                res.end('restart request')
             })
 
             // load routes

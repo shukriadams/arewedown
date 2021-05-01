@@ -53,7 +53,7 @@ function showUpdateTime(){
         
     const updateTime = new Date(renderTime.getTime() + dashboardRefreshInterval);
     const updateSeconds = Math.floor((updateTime.getTime() - new Date().getTime())/ 1000);
-    updateInSeconds.innerHTML = `${updateSeconds}s`;
+    updateInSeconds.innerHTML = `${updateSeconds}s`
 }
 
 if (dashboardRefreshInterval){
@@ -63,13 +63,7 @@ if (dashboardRefreshInterval){
     }, dashboardRefreshInterval);
 }
 
-// if no refresh time given for page, force it into non-fail mode
-if (!dashboardRefreshInterval){
-    document.querySelector('.layout').classList.add('layout--passing');
-}
-
-
-showTimes();
+showTimes()
 
 // -------------------------------------------
 const cbEnableReload = document.querySelector('#cbEnableReload')

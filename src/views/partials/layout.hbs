@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="/css/style.css" type="text/css">
         <title>{{title}}</title>
     </head>
-    <body class="layout {{#if allJobsPassed}}layout--passing{{/if}}">
+    <body class="layout {{#if hasErrors}}layout--failing{{/if}}">
         <div class="content">
             
             <header>

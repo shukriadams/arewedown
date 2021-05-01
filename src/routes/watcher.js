@@ -56,8 +56,6 @@ module.exports = function(app){
                     deltaDate = historyItem.date
                 }
             }
-
-            console.log(history)
             
             let view = handlebars.getView('watcher')
             res.send(view({
