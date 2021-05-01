@@ -198,8 +198,8 @@ class CronProcess
 
             let subject = this.isPassing ? `${this.config.__name} is up` : `${this.config.__name} is down`,
                 message = this.isPassing ? `${this.config.__name} is up` : `${this.config.__name} is down`,
-                sendMethod = settings.transports.smtp ? smtp :
-                    settings.slack ? sendgrid :   
+                sendMethod = settings.transports.smtp ? 
+                    smtp :
                     null
 
             if (sendMethod){

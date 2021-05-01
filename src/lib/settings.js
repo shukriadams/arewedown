@@ -156,14 +156,6 @@ if (_settings.transports.smtp){
         console.log('settings is missing expected value for "smtp.secure"')
 }
 
-
-// validate sendgrid
-if (_settings.sendgrid){
-    if (!_settings.sendgrid.key)
-        console.log('settings is missing expected value for "sendgrid.key"')
-}
-
-
 // validate dashboards
 if (!_settings.dashboards)
     console.log('WARNING - no dashboards set, you won\'t be able to view watchers.')
