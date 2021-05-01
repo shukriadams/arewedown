@@ -1,7 +1,14 @@
 const httpHelper = require('madscience-httputils')
 
-module.exports = async function(watcher){
-    let jsonraw = await httpHelper.downloadString(watcher.url),
+module.exports = async function(config){
+    // validate settings
+    if (!config.url)
+        throw {
+            type : 'configError',
+            text : '.url required'
+        }
+
+    let jsonraw = await httpHelper.downloadString(config.url),
         json = null
 
     try {

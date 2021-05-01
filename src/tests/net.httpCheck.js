@@ -33,13 +33,11 @@ const request = require('request'),
 
 module.exports = async function(config){
     // validate settings
-    if (!config.url){
-        config.__errorMessage = '.url required'
-        config.__hasErrors = true
-        config.isPassing = false
-        return
-    }
+    if (!config.url)
+        throw {
+            type : 'configError',
+            text : '.url required'
+        }
 
     await ensureReachable(config.url)
-
 }

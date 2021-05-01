@@ -15,12 +15,12 @@
 
                     <div class="cell cell--content">
                         {{#if config.__hasErrors}}
-                            {{config.__errorMessage}}
+                            {{errorMessage}}
                         {{else}}
                             {{#if isPassing}}
                                 <img class="icon-passing" src="/icons/passing.svg" alt="Passing" />
                             {{else}}
-                                {{ago statusDate}} - {{config.__errorMessage}}
+                                {{ago statusDate}} - {{errorMessage}}
                             {{/if}}                            
                         {{/if}}
                     </div>

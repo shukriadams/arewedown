@@ -45,9 +45,7 @@ module.exports = app => {
         })
 
         hasErrors = watchers.filter((job)=>{
-            return job.isPassing || !job.config.__hasErrors ? 
-                null : 
-                job
+            return !job.isPassing
         }).length > 0
 
         watchers.sort((a,b)=>{

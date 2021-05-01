@@ -15,7 +15,7 @@ class CronProcess
         this.logInfo = logger.instanceWatcher(config.__name).info.info
         this.logError = logger.instanceWatcher(config.__name).error.error
         this.isPassing = false
-        this.config.__errorMessage = this.config.__errorMessage || 'Checking has not run yet'
+        this.errorMessage = this.config.__errorMessage || 'Checking has not run yet'
         this.busy = false
         this.lastRun = new Date()
         this.nextRun = new Date()
@@ -80,14 +80,13 @@ class CronProcess
 
     async work(){
         this.lastRun = new Date()
-        this.config.__errorMessage = null
+        this.errorMessage = null
         
         // revert to system/net.httpcheck if test name is not explicitly set.
         
         let testRun = ''
 
         try {
-            this.isPassing = true
 
             if (this.config.cmd){
                 testRun = this.config.cmd
@@ -97,13 +96,16 @@ class CronProcess
                     thisConfigString += ` --${prop} ${this.config[prop]}`
 
                 let result = await exec.sh({ cmd : `${this.config.cmd} ${thisConfigString}` })
-                if (result.code !== 0) {
+                if (result.code === 0) {
+                    this.isPassing = true
+                } else {
                     const errorMessage = `${result.result} (code ${result.code})`
-                    this.config.__errorMessage = errorMessage
+                    this.errorMessage = errorMessage
                     this.logError(errorMessage)
                     this.isPassing = false
                 }
             } else {
+                this.isPassing = true
                 let testname = this.config.test ? 
                         this.config.test 
                         : 'net.httpCheck',
@@ -115,19 +117,25 @@ class CronProcess
             }
 
         } catch(ex){
-            this.logError(`Unhandled exception running "${testRun}"`, ex)
-            this.isPassing = false;
-            this.config.__errorMessage = ex.errno === 'ENOTFOUND' || ex.errno === 'EAI_AGAIN' ? 
-                `${this.config.url} could not be reached.` 
-                : ex
+            if (ex.type === 'configError'){
+                this.config.__hasErrors = true
+                this.errorMessage = ex.text    
+            } else {
+                this.logError(`Unhandled exception running "${testRun}"`, ex)
+                this.errorMessage = ex.errno === 'ENOTFOUND' || ex.errno === 'EAI_AGAIN' ? 
+                    `${this.config.url} could not be reached.` 
+                    : ex
+            }
+
+            this.isPassing = false
         }
 
 
         this.calcNextRun()
 
         
-        if (this.config.__errorMessage)
-            this.logInfo(this.config.__errorMessage)
+        if (this.errorMessage)
+            this.logInfo(this.errorMessage)
 
         let downFlag = path.join(settings.logs, this.config.__safeName, 'flag'),
             statusChanged = false,

@@ -3,18 +3,31 @@
  */
 const NetcatClient = require('netcat/client')
 
-module.exports = async function(watcher){
-    if (!watcher.host)
-        throw `Watcher "${watcher.__name}" is missing a "host" entry.`
+module.exports = async function(config){
+    // validate settings
+    if (!config.url)
+        throw {
+            type : 'configError',
+            text : '.url required'
+        }
 
-    if (!watcher.port)
-        throw `Watcher "${watcher.__name}" is missing a "port" entry.`
+    if (!config.host)
+        throw {
+            type : 'configError',
+            text : '.host required'
+        }
+
+    if (!config.port)
+        throw {
+            type : 'configError',
+            text : '.port required'
+        }
 
     return new Promise((resolve, reject)=>{
         try {
             const nc = new NetcatClient()
-            nc.addr(watcher.host).scan(watcher.port, function(ports){
-                if (ports[watcher.port] === 'open')
+            nc.addr(config.host).scan(config.port, function(ports){
+                if (ports[config.port] === 'open')
                     return resolve('port open')
 
                 return reject('port closed')
