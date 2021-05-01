@@ -36,6 +36,8 @@ rawSettings = Object.assign({
     cacheViews : true,
     allowHttpRestart: false,
     
+    logLevel: 'error',
+
     // internal work cleans up/maintains self. needs to run once a day only
     internalWorkerTimer : '0 0 * * *',
     // in days

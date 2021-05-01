@@ -29,7 +29,7 @@ module.exports = {
         try {
             return await transporter.sendMail(mailOptions)
         } catch (ex){
-            log.error.error(ex)
+            log.error(ex)
         }
     },
     async ensureSettingsOrExit(){
@@ -42,7 +42,7 @@ module.exports = {
                 port: smtpConfig.port
             })
             
-        console.log(`Confirming stmp settings by connecting to "${smtpConfig.server}"`)
+        log.info(`Confirming stmp settings by connecting to "${smtpConfig.server}"`)
 
         try {
             await client.connect()
@@ -51,8 +51,7 @@ module.exports = {
             await client.quit()
             console.log('Stmp connection succeeded : settings validated')
         } catch (ex){
-            log.error.error('smtp connection test failed')
-            log.error.error(ex)
+            log.error('smtp connection test failed', ex)
             process.exit(1)
         }        
     }

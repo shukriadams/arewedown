@@ -3,7 +3,7 @@ const handlebars = require('./../lib/handlebars'),
     fs = require('fs-extra'),
     jsonfile= require('jsonfile'),
     fsUtils = require('madscience-fsUtils'),
-    logger = require('./../lib/logger').instance(),
+    log = require('./../lib/logger').instance(),
     timebelt = require('timebelt'),
     settings = require('./../lib/settings')
 
@@ -66,7 +66,7 @@ module.exports = function(app){
         } catch(ex) {
             res.status(500)
             res.end('Something went wrong - check logs for details.')
-            logger.error.error(ex)
+            log.error(ex)
         }
     })
 }

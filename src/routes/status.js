@@ -1,4 +1,4 @@
-const logger = require('./../lib/logger').instance(),
+const log = require('./../lib/logger').instance(),
     daemon = require('./../lib/daemon')
 
 module.exports = app => {
@@ -17,7 +17,7 @@ module.exports = app => {
         }catch(ex){
             res.status(500)
             res.end('Something went wrong - check logs for details.')
-            logger.error.error(ex)
+            log.error(ex)
         }
     })
 

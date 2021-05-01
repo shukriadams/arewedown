@@ -7,13 +7,12 @@ let CronJob = require('cron').CronJob,
     logger = require('./logger'),
     settings = require('./settings')
 
-class CronProcess
+module.exports = class CronProcess
 {
     constructor(config){
 
         this.config = config
-        this.logInfo = logger.instanceWatcher(config.__name).info.info
-        this.logError = logger.instanceWatcher(config.__name).error.error
+        this.log = logger.instanceWatcher(config.__name)
         this.isPassing = false
         this.errorMessage = this.config.__errorMessage || 'Checking has not run yet'
         this.busy = false
@@ -32,7 +31,7 @@ class CronProcess
             let recipientObject = settings.recipients[recipientName]
 
             if (!recipientObject){
-                this.logError(`Recipient "${recipientName}" in watcher ${this.config.__name} could not be matched to a recipient in settings.`)
+                this.log.error(`Recipient "${recipientName}" in watcher ${this.config.__name} could not be matched to a recipient in settings.`)
                 continue
             }
 
@@ -49,8 +48,7 @@ class CronProcess
 
     start(){
         
-        this.logInfo(`Starting watcher "${this.config.name || this.config.__name}"`)
-        console.log(`Starting watcher "${this.config.name || this.config.__name}"`)
+        this.log.info(`Starting watcher "${this.config.name || this.config.__name}"`)
         this.cron = new CronJob(this.config.interval, async()=>{
 
             try
@@ -59,7 +57,7 @@ class CronProcess
                     return
 
                 if (this.busy){
-                    this.logInfo(`${this.config.__name} check was busy from previous run, skipping`);
+                    this.log.info(`${this.config.__name} check was busy from previous run, skipping`);
                     return
                 }
         
@@ -67,7 +65,7 @@ class CronProcess
                 await this.work()
 
             } catch (ex){
-                this.logError(ex)
+                this.log.error(ex)
             } finally {
                 this.busy = false
             }
@@ -101,7 +99,7 @@ class CronProcess
                 } else {
                     const errorMessage = `${result.result} (code ${result.code})`
                     this.errorMessage = errorMessage
-                    this.logError(errorMessage)
+                    this.log.info(errorMessage)
                     this.isPassing = false
                 }
             } else {
@@ -121,7 +119,7 @@ class CronProcess
                 this.config.__hasErrors = true
                 this.errorMessage = ex.text    
             } else {
-                this.logError(`Unhandled exception running "${testRun}"`, ex)
+                this.log.info(`Unhandled exception running "${testRun}"`, ex)
                 this.errorMessage = ex.errno === 'ENOTFOUND' || ex.errno === 'EAI_AGAIN' ? 
                     `${this.config.url} could not be reached.` 
                     : ex
@@ -135,7 +133,7 @@ class CronProcess
 
         
         if (this.errorMessage)
-            this.logInfo(this.errorMessage)
+            this.log.info(this.errorMessage)
 
         let downFlag = path.join(settings.logs, this.config.__safeName, 'flag'),
             statusChanged = false,
@@ -160,7 +158,7 @@ class CronProcess
                     date : this.lastRun
                 })
 
-                this.logInfo(`Status changed, flag removed for ${this.config.__name}`)
+                this.log.info(`Status changed, flag removed for ${this.config.__name}`)
                 statusChanged = true
             }
 
@@ -196,7 +194,7 @@ class CronProcess
                     date : this.lastRun
                 });
 
-                this.logInfo(`Status changed, flag created for ${this.config.__name}`);
+                this.log.info(`Status changed, flag created for ${this.config.__name}`);
                 statusChanged = true;
             }
         }
@@ -218,7 +216,7 @@ class CronProcess
                     // handle email
                     if (recipient.email){
                         let result = await sendMethod(recipient.email, subject, message)
-                        this.logInfo(`Sent email to ${recipient.email} for process ${this.config.__name} with result : ${result}` )
+                        this.log.info(`Sent email to ${recipient.email} for process ${this.config.__name} with result : ${result}` )
                     }
 
                     // handle slack
@@ -228,5 +226,3 @@ class CronProcess
 
     }
 }
-
-module.exports = CronProcess
