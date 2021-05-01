@@ -1,10 +1,42 @@
-const fs = require('fs-extra'),
-    path = require('path'),
-    settings = require('./../lib/settings'),
-    jsonfile = require('jsonfile'),
+const settings = require('./../lib/settings'),
     handlebars = require('./../lib/handlebars'),
     arrayHelper = require('./../lib/array'),
     daemon = require('./../lib/daemon')
+
+const timespanString = function(end, start){
+    if (typeof start === 'number' || typeof start === 'string')
+        start = new Date(start)
+
+    if (typeof end === 'number' || typeof end === 'string')
+        end = new Date(end)
+
+    let diff = end.getTime() - start.getTime()
+    if (diff <= 0)
+        return 'now'
+
+    let days = Math.floor(diff / (1000 * 60 * 60 * 24))
+    diff -=  days * (1000 * 60 * 60 * 24)
+
+    let hours = Math.floor(diff / (1000 * 60 * 60))
+    diff -= hours * (1000 * 60 * 60)
+
+    let mins = Math.floor(diff / (1000 * 60))
+    let secs = Math.floor(diff / 1000)
+    function plural(value){
+        return value > 1 ?'s':''
+    }
+
+    if (days >= 1)
+        return `${days} day${plural(days)}`
+
+    if (hours >= 1)
+        return `${hours} hour${plural(hours)}}`
+    
+    if (mins >= 1)
+        return `${mins} minute${plural(mins)}`
+    
+    return `${secs} second${plural(secs)}`
+}
 
 module.exports = app => {
 
@@ -53,20 +85,8 @@ module.exports = app => {
         })
 
         for (let watcher of watchers){
-            const statusFilePath = path.join(__dirname, settings.logs, watcher.config.__safeName, 'status.json')
-            
-            watcher.status = 'unknown'
-            watcher.statusDate = null
-
-            if (!await fs.pathExists(statusFilePath))
-                continue
-
-            const status = jsonfile.readFileSync(statusFilePath)
-            watcher.status = status.status
-            watcher.statusDate = new Date(status.date)
-
             if (watcher.nextRun)
-                watcher.next = Math.floor((watcher.nextRun.getTime() - new Date().getTime()) / 1000) + 's' 
+                watcher.next = timespanString(watcher.nextRun, new Date())
         }
 
         const now = new Date()

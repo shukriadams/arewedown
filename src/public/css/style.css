@@ -157,6 +157,10 @@ footer {
     background-color: grey;
 }
 
+.watcher-nextUpdateWrapper {
+    height: 38px;
+}
+
 .cell {
     padding: 8px /* universal Unit */;
     word-wrap: break-word;

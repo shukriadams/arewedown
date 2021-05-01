@@ -17,19 +17,15 @@
                         {{#if config.__hasErrors}}
                             {{errorMessage}}
                         {{else}}
-                            {{#if isPassing}}
-                                <img class="icon-passing" src="/icons/passing.svg" alt="Passing" />
-                            {{else}}
-                                {{ago statusDate}} - {{errorMessage}}
-                            {{/if}}                            
+                            <img class="icon-passing" src="/icons/passing.svg" alt="Passing" />
                         {{/if}}
                     </div>
 
-                    <div class="cell">
+                    <div class="cell watcher-nextUpdateWrapper">
                         {{#if config.__hasErrors}}
                             Disabled (config errors)
                         {{else}}
-                            Next check : <span data-formatDate="{{nextRun}}"></span>
+                            <span class="watcher-nextUpdate" data-nextUpdate="{{nextRun}}">{{next}}</span> to next check
                         {{/if}}
                     </div>
                 </div>
