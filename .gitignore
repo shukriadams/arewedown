@@ -11,7 +11,7 @@ build/.stage/
 docker/settings.json
 src/.env
 .vscode/launch.json
-src/yarn.lock
+src/yarn-error.log
 src/tests/user
 !src/tests/user/example.js
 src/user-scripts
