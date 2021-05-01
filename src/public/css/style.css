@@ -108,11 +108,14 @@ footer {
     transform: translate(-50%, -50%);
 }
 
-.layout-scaffold {
+.grid {
     margin-left: auto;
     margin-right: auto;
     padding-left: 8px /* universal Unit */;
     padding-right: 8px /* universal Unit */;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    column-gap: var(--layout-universalMargin);    
 }
 
 .layout-renderTime {
@@ -124,17 +127,13 @@ footer {
 .job {
     text-align: center;
     border-radius: 5px;
-    display: inline-block;
-    width: 240px;
     height: 180px;
     overflow: hidden;
     max-width: 100%;
-    
-    margin-top: 8px /* universal Unit */;
-    margin-left: 8px /* universal Unit */;
     position: relative;    
 
 }
+
 .job .cell { 
     background-color: #ff5722;
     color: #ffffff;
