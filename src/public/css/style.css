@@ -57,7 +57,7 @@ header {
 }
 
 main {
-    padding-top: 64px; /* header height */
+    padding-top: 74px; /* header height */
     position: relative;
     height: 100%;
     color: #3da6fa;
@@ -111,49 +111,49 @@ footer {
 .grid {
     margin-left: auto;
     margin-right: auto;
-    padding-left: 8px /* universal Unit */;
-    padding-right: 8px /* universal Unit */;
+    padding-left: var(--layout-universalMargin);    
+    padding-right: var(--layout-universalMargin);    
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     column-gap: var(--layout-universalMargin);    
+    row-gap: var(--layout-universalMargin);    
 }
 
 .layout-renderTime {
     font-style: italic;
-    padding: 8px /* universal Unit */ 0;
+    padding: var(--layout-universalMargin) 0;
     text-align: center;
 }
 
-.job {
+.watcher {
     text-align: center;
     border-radius: 5px;
-    height: 180px;
     overflow: hidden;
-    max-width: 100%;
+    max-width: 300px;
     position: relative;    
 
 }
 
-.job .cell { 
+.watcher .cell { 
     background-color: #ff5722;
     color: #ffffff;
 }
 
-.job.job--passing .cell {
+.watcher.watcher--passing .cell {
     background-color: #22b66e;
     color: var(--color-mirage);
 }
 
 
-.job.job--passing .cell--header {
+.watcher.watcher--passing .cell--header {
     background-color: #139556;
 }
 
-.job.job--configErrors .cell {
+.watcher.watcher--configErrors .cell {
     background-color: darkgrey;
 }
 
-.job.job--configErrors .cell--header {
+.watcher.watcher--configErrors .cell--header {
     background-color: grey;
 }
 

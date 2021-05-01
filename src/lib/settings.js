@@ -85,7 +85,7 @@ for (const name in rawSettings.watchers){
 
         // system will flag watchers if they fail start validation. watchers with config errors
         // will not run (to save on error spam in logs), but will still be visible in dashboards
-        __hasConfigErrors: false,
+        __hasErrors: false,
 
         // users can add their own convenient name, if not this defaults to node name
         name : name,   
@@ -176,7 +176,7 @@ for (const name in _settings.watchers){
 
     if (!watcher.interval){
         console.error(`Watcher "${name}" has no interval, it will not be run.`)
-        _settings.watchers[name].__hasConfigErrors = true
+        _settings.watchers[name].__hasErrors = true
         _settings.watchers[name].__errorMessage = `.interval not set`
         continue
     }

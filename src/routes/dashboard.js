@@ -37,39 +37,38 @@ module.exports = app => {
             dashboardWatchers = arrayHelper.split(dashboard.watchers, ',') // clone array, we don't want to change source
 
         // get cronprocesses that are running and used on the current dashboard
-        let cc = daemon.getCronJobs()
-        let cronJobs = cc.slice(0).filter((job)=>{
+        let watchers = daemon.getWatchers().slice(0).filter((job)=>{
             if (!dashboardWatchers.includes(job.config.__name))
                 return null
 
             return job
         })
 
-        hasErrors = cronJobs.filter((job)=>{
-            return job.isPassing || !job.config.__hasConfigErrors ? 
+        hasErrors = watchers.filter((job)=>{
+            return job.isPassing || !job.config.__hasErrors ? 
                 null : 
                 job
         }).length > 0
 
-        cronJobs.sort((a,b)=>{
+        watchers.sort((a,b)=>{
             return a.isPassing - b.isPassing || a.config.name.localeCompare(b.config.name)
         })
 
-        for (let cronJob of cronJobs){
-            const statusFilePath = path.join(__dirname, settings.logs, cronJob.config.__safeName, 'status.json')
+        for (let watcher of watchers){
+            const statusFilePath = path.join(__dirname, settings.logs, watcher.config.__safeName, 'status.json')
             
-            cronJob.status = 'unknown'
-            cronJob.statusDate = null
+            watcher.status = 'unknown'
+            watcher.statusDate = null
 
             if (!await fs.pathExists(statusFilePath))
                 continue
 
             const status = jsonfile.readFileSync(statusFilePath)
-            cronJob.status = status.status
-            cronJob.statusDate = new Date(status.date)
+            watcher.status = status.status
+            watcher.statusDate = new Date(status.date)
 
-            if (cronJob.nextRun)
-                cronJob.next = Math.floor((cronJob.nextRun.getTime() - new Date().getTime()) / 1000) + 's' 
+            if (watcher.nextRun)
+                watcher.next = Math.floor((watcher.nextRun.getTime() - new Date().getTime()) / 1000) + 's' 
         }
 
         const now = new Date()
@@ -81,7 +80,7 @@ module.exports = app => {
             dashboardRefreshInterval : settings.dashboardRefreshInterval,
             hasErrors,
             renderDate: `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`,
-            jobs : cronJobs
+            watchers 
         }))
     })
 }

@@ -35,7 +35,7 @@ module.exports = async function(config){
     // validate settings
     if (!config.url){
         config.__errorMessage = '.url required'
-        config.__hasConfigErrors = true
+        config.__hasErrors = true
         config.isPassing = false
         return
     }

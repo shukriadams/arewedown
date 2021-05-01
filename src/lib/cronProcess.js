@@ -55,7 +55,7 @@ class CronProcess
 
             try
             {
-                if (this.config.__hasConfigErrors)
+                if (this.config.__hasErrors)
                     return
 
                 if (this.busy){

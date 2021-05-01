@@ -1,9 +1,9 @@
 {{#extend "layout"}}
     {{#content "body"}}
         
-        {{#if jobs.length}}
-            {{#each jobs}}
-                <div class="job {{#if config.__hasConfigErrors}}job--configErrors{{/if}} {{#if isPassing}}job--passing{{/if}}">
+        {{#if watchers}}
+            {{#each watchers}}
+                <div class="watcher {{#if config.__hasErrors}}watcher--configErrors{{/if}} {{#if isPassing}}watcher--passing{{/if}}">
 
                     <div class="cell cell--header">
                         <div class="name">
@@ -14,7 +14,7 @@
                     </div>
 
                     <div class="cell cell--content">
-                        {{#if config.__hasConfigErrors}}
+                        {{#if config.__hasErrors}}
                             {{config.__errorMessage}}
                         {{else}}
                             {{#if isPassing}}
@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="cell">
-                        {{#if config.__hasConfigErrors}}
+                        {{#if config.__hasErrors}}
                             Disabled (config errors)
                         {{else}}
                             Next check : <span data-formatDate="{{nextRun}}"></span>

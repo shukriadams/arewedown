@@ -8,23 +8,23 @@ let CronJob = require('cron').CronJob,
     settings = require('./settings'),
     daemon = {
 
-        cronJobs : [],
+        watchers : [],
         
         internalWorker: null,
 
-        getCronJobs(){
-            return this.cronJobs
+        getWatchers(){
+            return this.watchers
         },
 
         async start(){
             
-            this.cronJobs = []
+            this.watchers = []
 
             for (const watcherName in settings.watchers){
                 const watcher = settings.watchers[watcherName]
                 if (watcher.enabled){
                     const cronProcess = new CronProcess(watcher)
-                    this.cronJobs.push(cronProcess)
+                    this.watchers.push(cronProcess)
                     cronProcess.start()
                 } else {
                     console.log(`Skipping disabled watcher "${watcher.__name}"${watcher.error ? ` ${watcher.error}`:''}`)
@@ -59,8 +59,8 @@ let CronJob = require('cron').CronJob,
 
         async stop(){
             this.internalWorker.stop()
-            for (const job of this.cronJobs)
-                job.stop()
+            for (const watcher of this.watchers)
+                watcher.stop()
         }
     }
 
