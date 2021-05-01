@@ -235,6 +235,9 @@ footer {
    
 }
 
-@media all and (max-width: 500px) {
+@media all and (max-width: 800px) {
+    h1 {
+        font-size: 5vw;
+    }
 
 }

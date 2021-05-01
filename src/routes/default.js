@@ -20,7 +20,7 @@ module.exports = app =>{
      */
     app.get('/', async (req, res)=>{
         let definedDashboardKeys = Object.keys(settings.dashboards),
-            dashboardNode
+            dashboardNode = req.query.dashboard
         
         // take first dashboard marked as default
         for (let dashboardName of definedDashboardKeys)
