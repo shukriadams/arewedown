@@ -32,9 +32,8 @@ let CronJob = require('cron').CronJob,
             }
 
             this.internalWorker = new CronJob(settings.internalWorkerTimer, async()=>{
-                try
-                {
-                    let files = await fsUtils.readFilesUnderDir(settings.logs)
+                try {
+                    const files = await fsUtils.readFilesUnderDir(settings.logs)
                     for (const file of files){
                         const stat = await fs.stat(file)
                         if (path.basename(file) === 'status.json')

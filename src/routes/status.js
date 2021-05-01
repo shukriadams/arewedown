@@ -12,7 +12,7 @@ module.exports = function(app){
             let cronJobs = daemon.getCronJobs().slice(0); // clone array, we don't want to change source
 
             const failingJobs = cronJobs.filter((job)=>{
-                return job.isPassing || job.config.enabled === false ? null : job;
+                return job.isPassing ? null : job
             });
 
             res.send(failingJobs.length.toString());

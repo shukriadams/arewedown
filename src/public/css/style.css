@@ -133,17 +133,29 @@ footer {
     margin-top: 8px /* universal Unit */;
     margin-left: 8px /* universal Unit */;
     position: relative;    
+
+}
+.job .cell { 
     background-color: #ff5722;
     color: #ffffff;
 }
 
-.job--passing {
+.job.job--passing .cell {
     background-color: #22b66e;
     color: var(--color-mirage);
 }
 
+
 .job.job--passing .cell--header {
     background-color: #139556;
+}
+
+.job.job--configErrors .cell {
+    background-color: darkgrey;
+}
+
+.job.job--configErrors .cell--header {
+    background-color: grey;
 }
 
 .cell {
@@ -153,7 +165,7 @@ footer {
 }
 
 .cell.cell--content{  
-    height: 96px;
+    height: 94px;
     max-height: 96px;
     overflow: hidden;
 }
@@ -175,12 +187,6 @@ footer {
     transform: translate(-50%, -50%);
 }
 
-.nextCheck {
-    position: absolute;
-    bottom: 6px;
-    text-align: center;
-    width: 100%;
-}
 
 .historyItem {
     border-radius: 2px;

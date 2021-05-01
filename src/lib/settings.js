@@ -79,9 +79,19 @@ for (const name in rawSettings.watchers){
     rawSettings.watchers[name] = Object.assign({
         __name : name,
         __safeName : sanitize(name),
+        
+        // internally set error message. normally for validation text. merged with cronprocess's, .errorMessage
+        __errorMessage: null,
+
+        // system will flag watchers if they fail start validation. watchers with config errors
+        // will not run (to save on error spam in logs), but will still be visible in dashboards
+        __hasConfigErrors: false,
 
         // users can add their own convenient name, if not this defaults to node name
         name : name,   
+
+        //cronmask to time test
+        interval : null,
 
         // internal js test
         test: null,
@@ -93,10 +103,15 @@ for (const name in rawSettings.watchers){
         // external command. either test or cmd must be given
         cmd: null,
 
-        // enabled field is optional and on by default
+        // enabled field is optional and true by default. setting this to false will cause the 
+        // watcher to be completely ignored
         enabled : true,
 
     }, rawSettings.watchers[name])
+
+    // force default values based on logic  
+    if (!rawSettings.watchers[name].cmd && !rawSettings.watchers[name].test)
+        rawSettings.watchers[name].test = 'net.httpCheck'
 }
 
 for (const name in rawSettings.dashboards){
@@ -129,8 +144,6 @@ for (const watcherName in _settings.watchers)
         _settings.watchers[watcherName].recipients = allRecipientNames
 
 
-       
-
 // validate SMTP
 if (_settings.transports.smtp){
     if (!_settings.transports.smtp.server)
@@ -153,7 +166,7 @@ if (_settings.sendgrid){
 
 // validate dashboards
 if (!_settings.dashboards)
-    console.log('WARNING - no dashboards set, nothing will be monitored.')
+    console.log('WARNING - no dashboards set, you won\'t be able to view watchers.')
 
 // validate watchers
 for (const name in _settings.watchers){
@@ -163,30 +176,10 @@ for (const name in _settings.watchers){
 
     if (!watcher.interval){
         console.error(`Watcher "${name}" has no interval, it will not be run.`)
-        _settings.watchers[name].enabled = false
-        _settings.watchers[name].error = `No interval`
+        _settings.watchers[name].__hasConfigErrors = true
+        _settings.watchers[name].__errorMessage = `.interval not set`
         continue
     }
-
-    if (!_settings.watchers[name].cmd){
-        _settings.watchers[name].test = _settings.watchers[name].test || 'net.httpCheck'
-        if (!_settings.watchers[name].url) {
-            _settings.watchers[name].enabled = false 
-            _settings.watchers[name].error = `URL required if test is not defined`    
-        }
-
-        const testName = path.join(process.cwd(), 'tests', `${_settings.watchers[name].test}.js`)
-        if (!fs.existsSync(testName)){
-            _settings.watchers[name].enabled = false 
-            _settings.watchers[name].error = `could not find internal test ${_settings.watchers[name].test}`    
-        }
-    }
-}
-
-for (const dashboardName in _settings.dashboards){
-    const dashboard = _settings.dashboards[dashboardName]
-    if (!dashboard.watchers || !Object.keys(dashboard.watchers).length)
-        console.error(`Dashboard "${dashboardName}" has no watchers.`)
 }
 
 module.exports = _settings

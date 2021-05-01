@@ -6,61 +6,58 @@ let Handlebars = require('handlebars'),
     pages = null,
     views,
     path = require('path'),
-    layouts = require('handlebars-layouts');
+    layouts = require('handlebars-layouts')
 
 function findViews(root){
-    let views = [];
+    let views = []
 
     function process(root){
-        let items = fs.readdirSync(root);
+        let items = fs.readdirSync(root)
 
         for (let i = 0; i < items.length; i ++){
-            const file = path.join(root, items[i]);
+            const file = path.join(root, items[i])
 
             if (fs.statSync(file).isDirectory())
                 process(file)
             else
-                views.push(file);
+                views.push(file)
         }
     }
 
-    process(root);
-    return views;
+    process(root)
+    return views
 }    
 
 Handlebars.registerHelper('ago', function(date){
     if (!date)
-        return;
+        return
         
     if (typeof date === 'string')
-        date = new Date(date);
+        date = new Date(date)
 
-    return ago(date);
-});
+    return ago(date)
+})
 
 Handlebars.registerHelper('secondsFromNow', function(futureDate){
     if (typeof futureDate === 'string')
-        futureDate = new Date(futureDate);
-
+        futureDate = new Date(futureDate)
     
-    return Math.floor((futureDate.getTime() - Date.now()) / 1000);
-});
+    return Math.floor((futureDate.getTime() - Date.now()) / 1000)
+})
 
 Handlebars.registerHelper('date', function(date){
     if (typeof date === 'string')
-        date = new Date(date);
+        date = new Date(date)
 
-    return `${timebelt.toShortDate(date, 'y-m-d')} ${timebelt.toShortTime(date, 'h:m')}`;
-});
-
-
+    return `${timebelt.toShortDate(date, 'y-m-d')} ${timebelt.toShortTime(date, 'h:m')}`
+})
 
 Handlebars.registerHelper('time', function(date){
     if (typeof date === 'string')
-        date = new Date(date);
+        date = new Date(date)
 
-    return date.toLocaleTimeString();
-});
+    return date.toLocaleTimeString()
+})
 
 
 

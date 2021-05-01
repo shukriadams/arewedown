@@ -11,65 +11,67 @@ class CronProcess
 {
     constructor(config){
 
-        this.config = config;
-        this.logInfo = logger.instanceWatcher(config.__name).info.info;
-        this.logError = logger.instanceWatcher(config.__name).error.error;
-        this.isPassing = false;
-        this.errorMessage = 'Checking has not run yet';
-        this.busy = false;
-        this.lastRun = new Date();
-        this.nextRun = new Date();
-        this.recipients = [];
+        this.config = config
+        this.logInfo = logger.instanceWatcher(config.__name).info.info
+        this.logError = logger.instanceWatcher(config.__name).error.error
+        this.isPassing = false
+        this.config.__errorMessage = this.config.__errorMessage || 'Checking has not run yet'
+        this.busy = false
+        this.lastRun = new Date()
+        this.nextRun = new Date()
+        this.recipients = []
 
         // recipients is optional. It is a list of strings which must correspond to "name" values in objects in settings.people array.
         if (!this.config.recipients)
-            this.config.recipients = [];
+            this.config.recipients = []
             
         if (typeof this.config.recipients === 'string')
-            this.config.recipients = this.config.recipients.split(',').filter((r)=> {return !!r.length })
-
+            this.config.recipients = this.config.recipients.split(',').filter((r)=> { return !!r.length })
 
         for (let recipientName of this.config.recipients){
-            let recipientObject = settings.recipients[recipientName];
+            let recipientObject = settings.recipients[recipientName]
 
             if (!recipientObject){
-                this.logError(`Recipient "${recipientName}" in watcher ${this.config.__name} could not be matched to a recipient in settings.`);
-                continue;
+                this.logError(`Recipient "${recipientName}" in watcher ${this.config.__name} could not be matched to a recipient in settings.`)
+                continue
             }
 
-            this.recipients.push(recipientObject);
+            this.recipients.push(recipientObject)
         }
 
-        this.calcNextRun();
+        this.calcNextRun()
     }
 
     calcNextRun(){
-        if (this.cron){
-            this.nextRun = new Date(this.cron.nextDates().toString());
-        }
+        if (this.cron)
+            this.nextRun = new Date(this.cron.nextDates().toString())
     }
 
     start(){
         
-        this.logInfo('Starting watcher ' + this.config.__name);
-        console.log('Starting watcher ' + this.config.__name);
+        this.logInfo(`Starting watcher "${this.config.name || this.config.__name}"`)
+        console.log(`Starting watcher "${this.config.name || this.config.__name}"`)
         this.cron = new CronJob(this.config.interval, async()=>{
+
             try
             {
+                if (this.config.__hasConfigErrors)
+                    return
+
                 if (this.busy){
                     this.logInfo(`${this.config.__name} check was busy from previous run, skipping`);
-                    return;
+                    return
                 }
         
-                this.busy = true;
-                await this.work();
+                this.busy = true
+                await this.work()
 
             } catch (ex){
-                this.logError(ex);
+                this.logError(ex)
             } finally {
-                this.busy = false;
+                this.busy = false
             }
-        }, null, true, null, null, true /*runonitit*/);
+        }, null, true, null, null, true /*runonitit*/)
     }
 
     stop(){
@@ -77,8 +79,8 @@ class CronProcess
     }
 
     async work(){
-        this.lastRun = new Date();
-        this.errorMessage = null;
+        this.lastRun = new Date()
+        this.config.__errorMessage = null
         
         // revert to system/net.httpcheck if test name is not explicitly set.
         
@@ -97,12 +99,14 @@ class CronProcess
                 let result = await exec.sh({ cmd : `${this.config.cmd} ${thisConfigString}` })
                 if (result.code !== 0) {
                     const errorMessage = `${result.result} (code ${result.code})`
-                    this.errorMessage = errorMessage
+                    this.config.__errorMessage = errorMessage
                     this.logError(errorMessage)
                     this.isPassing = false
                 }
             } else {
-                let testname = this.config.test ? this.config.test : 'net.httpCheck',
+                let testname = this.config.test ? 
+                        this.config.test 
+                        : 'net.httpCheck',
                     test = require(`../tests/${testname}`)
                 
                 testRun = testname
@@ -113,18 +117,19 @@ class CronProcess
         } catch(ex){
             this.logError(`Unhandled exception running "${testRun}"`, ex)
             this.isPassing = false;
-            this.errorMessage = ex.errno === 'ENOTFOUND' || ex.errno === 'EAI_AGAIN' ? 
-            `${this.config.url} could not be reached.` : this.errorMessage = ex
+            this.config.__errorMessage = ex.errno === 'ENOTFOUND' || ex.errno === 'EAI_AGAIN' ? 
+                `${this.config.url} could not be reached.` 
+                : ex
         }
 
 
         this.calcNextRun()
 
         
-        if (this.errorMessage)
-            this.logInfo(this.errorMessage);
+        if (this.config.__errorMessage)
+            this.logInfo(this.config.__errorMessage)
 
-        let flag = path.join(settings.logs, this.config.__safeName, 'flag'),
+        let downFlag = path.join(settings.logs, this.config.__safeName, 'flag'),
             statusChanged = false,
             historyLogFolder = path.join(settings.logs, this.config.__safeName, 'history');
 
@@ -135,30 +140,38 @@ class CronProcess
                 status : 'up',
                 url : this.config.url,
                 date : this.lastRun
-            });
+            })
 
-            if (await fs.exists(flag)){
-
+            if (await fs.exists(downFlag)){
                 // site is back up after fail was previous detected, clean up flag and write log
-                await fs.remove(flag);
+                await fs.remove(downFlag)
 
                 jsonfile.writeFileSync(path.join(historyLogFolder, `${this.lastRun.getTime()}.json`), {
                     status : 'up',
                     url : this.config.url,
                     date : this.lastRun
-                });
+                })
 
-                this.logInfo(`Status changed, flag removed for ${this.config.__name}`);
-                statusChanged = true;
+                this.logInfo(`Status changed, flag removed for ${this.config.__name}`)
+                statusChanged = true
             }
+
+            // if no history exists, write start entry, status flag counts for 1, history will be 1 more
+            if ((await fs.readdir(historyLogFolder)).length < 2)
+                jsonfile.writeFileSync(path.join(historyLogFolder, `${this.lastRun.getTime()}.json`), {
+                    status : 'up',
+                    url : this.config.url,
+                    date : this.lastRun
+                })
+
         } else {
 
-            if (!await fs.exists(flag)){
+            if (!await fs.exists(downFlag)){
 
                 await fs.ensureDir(historyLogFolder);
 
                 // site is down, write fail flag and log
-                jsonfile.writeFileSync(flag, {
+                jsonfile.writeFileSync(downFlag, {
                     url : this.config.url,
                     date : new Date()
                 })

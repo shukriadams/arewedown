@@ -39,9 +39,6 @@ module.exports = app => {
         // get cronprocesses that are running and used on the current dashboard
         let cc = daemon.getCronJobs()
         let cronJobs = cc.slice(0).filter((job)=>{
-            if (!job.config.enabled)
-                return null
-
             if (!dashboardWatchers.includes(job.config.__name))
                 return null
 
@@ -49,7 +46,7 @@ module.exports = app => {
         })
 
         hasErrors = cronJobs.filter((job)=>{
-            return job.isPassing || !job.config.enabled ? 
+            return job.isPassing || !job.config.__hasConfigErrors ? 
                 null : 
                 job
         }).length > 0
