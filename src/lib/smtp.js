@@ -18,20 +18,22 @@ module.exports = {
                 `\n` +
                 `${message}`
 
-        await client.connect()
-        await client.greet({hostname: smtpConfig.server })
-        await client.authPlain({username: smtpConfig.user, password: smtpConfig.pass })
-        await client.mail({from: smtpConfig.from })
-        await client.rcpt({ to })
-        await client.data(mailContent)
-        await client.quit()
-
         try {
-            return await transporter.sendMail(mailOptions)
+            await client.connect()
+            await client.greet({hostname: smtpConfig.server })
+            await client.authPlain({username: smtpConfig.user, password: smtpConfig.pass })
+            await client.mail({from: smtpConfig.from })
+            await client.rcpt({ to })
+            await client.data(mailContent)
+            await client.quit()
+            return {
+                result : 'mail sent'
+            }
         } catch (ex){
             log.error(ex)
         }
     },
+    
     async ensureSettingsOrExit(){
         
         let smtpConfig = settings.transports.smtp,

@@ -94,7 +94,7 @@ for (const name in _settings.watchers){
 
         // string of user names to receive alerts on watcher status change. 
         // can be * to use all defined recipients
-        recipients : null,
+        recipients : '*',
 
         // external command. either test or cmd must be given
         cmd: null,
@@ -139,10 +139,22 @@ for (const name in _settings.dashboards){
 
 // if a watcher has no explicit recipients list, assign all recipient names to list
 const allRecipientNames = Object.keys(_settings.recipients).join(',')
-for (const watcherName in _settings.watchers)
+for (const watcherName in _settings.watchers){
+    
+    // ensure value, user can force null
+    _settings.watchers[watcherName].recipients = _settings.watchers[watcherName].recipients || '*'
+
     if (_settings.watchers[watcherName].recipients === '*')
         _settings.watchers[watcherName].recipients = allRecipientNames
-
+    else {
+        // ensure that recipient names match objects in recipient object
+        let recipientNames = _settings.watchers[watcherName].recipients.split(',').filter(r => !!r)
+        for (const recipientName of recipientNames){
+            if (!_settings.recipients[recipientName])
+                console.log(`Recipient name ${recipientName} in watcher ${watcherName} is invalid`)
+        }
+    }
+}
 
 // validate SMTP
 if (_settings.transports.smtp){

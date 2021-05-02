@@ -117,12 +117,11 @@ module.exports = class CronProcess
         } catch(ex){
             if (ex.type === 'configError'){
                 this.config.__hasErrors = true
-                this.errorMessage = ex.text    
+                this.errorMessage = ex.text  
+            } else if (ex.type === 'awdtest.fail'){
+                this.log.info(`Watcher "${this.config.__name}" test "${ex.test}" failed.`, ex.text)
             } else {
-                this.log.info(`Unhandled exception running "${testRun}"`, ex)
-                this.errorMessage = ex.errno === 'ENOTFOUND' || ex.errno === 'EAI_AGAIN' ? 
-                    `${this.config.url} could not be reached.` 
-                    : ex
+                this.log.error(`Unhandled exception running "${testRun}"`, ex)
             }
 
             this.isPassing = false
@@ -194,14 +193,14 @@ module.exports = class CronProcess
                     date : this.lastRun
                 });
 
-                this.log.info(`Status changed, flag created for ${this.config.__name}`);
-                statusChanged = true;
+                this.log.info(`Status changed, flag created for ${this.config.__name}`)
+                statusChanged = true
             }
         }
 
         // send email if site status has change changed
         if (statusChanged){
-
+            this.log.debug(`Status changed detected for job ${this.config.__name}`)
             let subject = this.isPassing ? `${this.config.__name} is up` : `${this.config.__name} is down`,
                 message = this.isPassing ? `${this.config.__name} is up` : `${this.config.__name} is down`,
                 sendMethod = settings.transports.smtp ? 
@@ -209,13 +208,22 @@ module.exports = class CronProcess
                     null
 
             if (sendMethod){
-                for (let recipient of this.recipients){
-                    if (!recipient.enabled)
+                this.log.debug(`Attempting to send notification changed detected for job ${sendMethod}`)
+                for (let recipientName of this.config.recipients){
+                    const recipient = settings.recipients[recipientName]
+                    if (!recipient.enabled){
+                        this.log.error(`Recipient ${recipientName} is invalid`)
                         continue
+                    }
+
+                    if (!recipient.enabled){
+                        this.log.debug(`Recipient ${recipient} disabled`)
+                        continue
+                    }
 
                     // handle email
                     if (recipient.email){
-                        let result = await sendMethod(recipient.email, subject, message)
+                        let result = await sendMethod.send(recipient.email, subject, message)
                         this.log.info(`Sent email to ${recipient.email} for process ${this.config.__name} with result : ${result}` )
                     }
 
