@@ -1,84 +1,74 @@
 let fs = require('fs-extra'),
     yaml = require('js-yaml'),
     process = require('process'),
-    path = require('path'),
     sanitize = require('sanitize-filename'),
-    _settings,
-    rawSettings = {},
+    _settings = {},
     allWatcherNames = []
 
-if (fs.existsSync('./settings.yml')){
+if (fs.existsSync('./settings.yml'))
     try {
         let settingsYML = fs.readFileSync('./settings.yml', 'utf8')
-        rawSettings = yaml.safeLoad(settingsYML)
+        _settings = yaml.safeLoad(settingsYML)
     } catch (e) {
         console.log('Error reading settings.yml', e)
         throw e
     }
-} else {
+else 
     console.log(`WARNINGS : settings.yml not found - please create file in application folder ${process.cwd()}. If you are running in docker, mount your external settings.yml to this location.`)
-}
 
 
-
-// force default structures
-rawSettings = Object.assign({
-    // basic settings
-    version : 1,
+// apply default settings
+_settings = Object.assign({
+    // path all log data is written
     logs : './logs',
-    emailSubject : 'Service failure',
-    fromEmail : 'no-reply@example.com',
-    dashboardLogs : './dashboards',
+
     port: 3000,
+
+    // milliseconds
     dashboardRefreshInterval: 10000,
+
+    // milliseconds
     dashboardLoadTimeout: 5000,
-    partialFailCode : 230,
-    cacheViews : true,
+
+    // allows AWD to be restarte via HTTP call. Enable only if you trust people on your network not to abuse
     allowHttpRestart: false,
-    
-    logLevel: 'error',
+
+    // can be error, warn, info
+    logLevel: 'warn',
 
     // internal work cleans up/maintains self. needs to run once a day only
     internalWorkerTimer : '0 0 * * *',
+
     // in days
-    logRetention: 0, // daysd
-    debug: false,
+    logRetention: 364, 
     
     // root-level objects
     dashboards : {},
     recipients : {},
-
-    // transmission options
     transports : {},
-    /* 
-       smtp : {
-            host : 'smtp.example.com',
-            port: 123,
-            secure : true|false,
-            user: 'myuser',
-            pass : 'mypassword'
-        }
-    */
 
-}, rawSettings)
+    // DEVELOPMENT STUFF
+
+    // set to false when developing
+    cacheViews : true
+}, _settings)
 
 
 // apply default recipient settings
-for (const recipient in rawSettings.recipients)
-    rawSettings.recipients[recipient] = Object.assign({
-        email : null,
+for (const recipient in _settings.recipients)
+    _settings.recipients[recipient] = Object.assign({
         enabled : true,
-        slackId: null
-    }, rawSettings.recipients[recipient])
+        email : null
+    }, _settings.recipients[recipient])
 
 
 // apply default watcher settings
-for (const name in rawSettings.watchers){
+for (const name in _settings.watchers){
     
     allWatcherNames.push(name)
 
     // apply default watcher settings
-    rawSettings.watchers[name] = Object.assign({
+    _settings.watchers[name] = Object.assign({
         __name : name,
         __safeName : sanitize(name),
         
@@ -95,11 +85,11 @@ for (const name in rawSettings.watchers){
         //cronmask to time test
         interval : null,
 
-        // internal js test
+        // internal test to call. must be in src/tests folder, must not have .js extension, egs `net.httpCheck`
         test: null,
 
         // string of user names to receive alerts on watcher status change. 
-        // if null or empty, all recipients will be automatically added
+        // can be * to use all defined recipients
         recipients : null,
 
         // external command. either test or cmd must be given
@@ -109,40 +99,44 @@ for (const name in rawSettings.watchers){
         // watcher to be completely ignored
         enabled : true,
 
-    }, rawSettings.watchers[name])
+    }, _settings.watchers[name])
 
     // force default values based on logic  
-    if (!rawSettings.watchers[name].cmd && !rawSettings.watchers[name].test)
-        rawSettings.watchers[name].test = 'net.httpCheck'
+    if (!_settings.watchers[name].cmd && !_settings.watchers[name].test)
+        _settings.watchers[name].test = 'net.httpCheck'
 }
 
+// apply default dashboard settings
 for (const name in rawSettings.dashboards){
 
-    // apply default dashboard settings
-    rawSettings.dashboards[name] = Object.assign({
-        __name : name,  // node name, attached here for convenience
-        __safeName : sanitize(name), // nodename, made safe for filesystems
-        name : name,    // users can add their own convenient name, if not this defaults to node name
+    _settings.dashboards[name] = Object.assign({
+        // node name, attached here for convenience
+        __name : name,  
+
+        // nodename, made safe for filesystems
+        __safeName : sanitize(name), 
+
+        // users can add their own convenient name, if not this defaults to node name
+        name : name,    
 
         // set to true to have this be the default dashboard when viewing '/' in a browser. if not set, the first
         // dashboard defined will be default. If multiple are defined with default, the first one defined is taken
         default : false,
 
-        watchers : '*'  // force to all watchers
-    }, rawSettings.dashboards[name])
+        // force to all watchers
+        watchers : '*'  
+    }, _settings.dashboards[name])
 
     // if dashboard is set to * watchers, replace it's watchers list with literal names of all watchers
-    if (rawSettings.dashboards[name].watchers.trim() === '*')
-        rawSettings.dashboards[name].watchers = allWatcherNames.join(',')
+    if (_settings.dashboards[name].watchers.trim() === '*')
+        _settings.dashboards[name].watchers = allWatcherNames.join(',')
 }
 
-_settings = rawSettings
 
-// default values
+// if a watcher has no explicit recipients list, assign all recipient names to list
 const allRecipientNames = Object.keys(_settings.recipients).join(',')
 for (const watcherName in _settings.watchers)
-    // if a watcher has no explicit recipients list, assign all recipient names to list
-    if (!_settings.watchers[watcherName].recipients)
+    if (_settings.watchers[watcherName].recipients === '*')
         _settings.watchers[watcherName].recipients = allRecipientNames
 
 
@@ -177,5 +171,3 @@ for (const name in _settings.watchers){
 }
 
 module.exports = _settings
-   
-
