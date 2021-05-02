@@ -29,5 +29,10 @@ module.exports = async function(config){
                 return
         }
 
-    throw `"Unexpected container state "${containerState}"`
+    throw {
+        type: 'awdtest.fail',
+        test : 'net.portInUse',
+        text:  `"Unexpected container state "${containerState}"`
+    }
+    
 }

@@ -167,8 +167,8 @@ for (const watcherName in _settings.watchers){
     }
 }
 
-// validate SMTP
-if (_settings.transports.smtp){
+// validate SMTP (if enabled)
+if (_settings.transports.smtp && _settings.transports.smtp.enabled){
     exitIfNotSet(_settings.transports.smtp.server, 'settings "transports.smtp" is missing expected value ".server"')
     exitIfNotSet(_settings.transports.smtp.port, 'settings "transports.smtp" is missing expected value ".port"')
     exitIfNotSet(_settings.transports.smtp.secure, 'settings "transports.smtp" is missing expected value ".secure"')

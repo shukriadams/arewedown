@@ -5,7 +5,10 @@ let CronJob = require('cron').CronJob,
     fs = require('fs-extra'),
     exec = require('madscience-node-exec'),
     logger = require('./logger'),
-    settings = require('./settings')
+    settings = require('./settings'),
+    transportHandlers = {
+        smtp : smtp
+    }
 
 module.exports = class CronProcess
 {
@@ -19,7 +22,7 @@ module.exports = class CronProcess
         this.lastRun = new Date()
         this.nextRun = new Date()
         this.recipients = []
-
+        
         // recipients is optional. It is a list of strings which must correspond to "name" values in objects in settings.people array.
         if (!this.config.recipients)
             this.config.recipients = []
@@ -122,6 +125,7 @@ module.exports = class CronProcess
                 this.log.info(`Watcher "${this.config.__name}" test "${ex.test}" failed.`, ex.text)
             } else {
                 this.log.error(`Unhandled exception running "${testRun}"`, ex)
+                this.errorMessage = `Unhandled exception ${JSON.stringify(ex)}` 
             }
 
             this.isPassing = false
@@ -202,13 +206,21 @@ module.exports = class CronProcess
         if (statusChanged){
             this.log.debug(`Status changed detected for job ${this.config.__name}`)
             let subject = this.isPassing ? `SUCCESS: ${this.config.__name} is up` : `WARNING: ${this.config.__name} is down`,
-                message = this.isPassing ? `${this.config.__name} is up` : `${this.config.__name} is down`,
-                sendMethod = settings.transports.smtp ? 
-                    smtp :
-                    null
+                message = this.isPassing ? `${this.config.__name} is up` : `${this.config.__name} is down`
+            
+            for (const transportName in settings.transports){
+                const transport = settings.transports[transportName]
+                if (!transport.enabled)
+                    continue
 
-            if (sendMethod){
-                this.log.debug(`Attempting to send notification changed detected for job ${sendMethod}`)
+                const transportHandler = transportHandlers[transportName]
+                if (!transportHandler){
+                    this.log.error(`ERROR : no handler defined for transport ${transportName}`)
+                    continue
+                }
+                    
+                this.log.debug(`Attempting to send notification changed detected for job ${transportName}`)
+
                 for (let recipientName of this.config.recipients){
                     const recipient = settings.recipients[recipientName]
                     if (!recipient.enabled){
@@ -223,12 +235,13 @@ module.exports = class CronProcess
 
                     // handle email
                     if (recipient.email){
-                        let result = await sendMethod.send(recipient.email, subject, message)
+                        let result = await transportHandler.send(recipient.email, subject, message)
                         this.log.info(`Sent email to ${recipient.email} for process ${this.config.__name}. Result: `, result)
                     }
 
                     // handle slack
-                }
+                }                    
+
             }
         }
 
