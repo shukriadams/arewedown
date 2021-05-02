@@ -1,0 +1,30 @@
+# Example settings for a simple AreWeDown? instance
+
+# ways to send alerts
+transports:
+    smtp:
+        enabled: false
+        server : smtp.example.com
+        port : 465
+        secure : true
+        user : myuser
+        pass: mypassword
+        from : tests@example.com
+
+# people who can receive alerts
+recipients:
+    me:
+        email: me@example.com
+
+# things to watch for. No alert recipients are set, so all recipients will receive alerts
+watchers:
+    upcheck:
+        # checks if this website is up
+        interval: "*/5 * * * *"
+        url: http://example.com
+
+    script :
+        # run shell cmd on host
+        interval: "*/2 * * * *"
+        cmd: cd /my/script && sh ./test.sh
+        enabled: false

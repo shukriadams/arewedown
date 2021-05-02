@@ -10,6 +10,7 @@ module.exports = {
 
     async start(){
         try{
+            this.isRunning = true
 
             const http = require('http'),
                 Express = require('express'),
@@ -65,7 +66,6 @@ module.exports = {
             server = http.createServer(express)
             serverProcess = server.listen(settings.port)
             console.log(`Listening on port ${settings.port}`)
-            this.isRunning = true
         } catch(ex){
             console.log(ex)
         }

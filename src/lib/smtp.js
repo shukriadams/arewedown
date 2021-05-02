@@ -18,20 +18,22 @@ module.exports = {
                 `\n` +
                 `${message}`
 
-        await client.connect()
-        await client.greet({hostname: smtpConfig.server })
-        await client.authPlain({username: smtpConfig.user, password: smtpConfig.pass })
-        await client.mail({from: smtpConfig.from })
-        await client.rcpt({ to })
-        await client.data(mailContent)
-        await client.quit()
-
         try {
-            return await transporter.sendMail(mailOptions)
+            await client.connect()
+            await client.greet({hostname: smtpConfig.server })
+            await client.authPlain({username: smtpConfig.user, password: smtpConfig.pass })
+            await client.mail({from: smtpConfig.from })
+            await client.rcpt({ to })
+            await client.data(mailContent)
+            await client.quit()
+            return {
+                result : 'mail sent.'
+            }
         } catch (ex){
             log.error(ex)
         }
     },
+    
     async ensureSettingsOrExit(){
         
         let smtpConfig = settings.transports.smtp,
@@ -42,16 +44,16 @@ module.exports = {
                 port: smtpConfig.port
             })
             
-        log.info(`Confirming stmp settings by connecting to "${smtpConfig.server}"`)
+        log.info(`Confirming stmp settings by connecting to "${smtpConfig.server}".`)
 
         try {
             await client.connect()
             await client.greet({hostname: smtpConfig.server })
             await client.authPlain({username: smtpConfig.user, password: smtpConfig.pass })
             await client.quit()
-            console.log('Stmp connection succeeded : settings validated')
+            console.log('smtp connection test succeeded.')
         } catch (ex){
-            log.error('smtp connection test failed', ex)
+            log.error('smtp connection test failed. Please confirm smtp settings are valid.', ex)
             process.exit(1)
         }        
     }

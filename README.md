@@ -66,26 +66,17 @@ Dashboards let you vizualize watchers. A given dashboard can display the status 
 
 ## Tests
 
-One of the main reasons for Are We Down? is to make it simple to write custom uptime tests in Javascript, Python or Bash. `AWD?` ships with several internal tests that cover standard queries like HTTP 200 checks and Docker container lookups, but the you can write your own tests.
+### net.httpCheck
 
-
-- Tests are JS modules which export async functions.
-- Tests must throw exceptions when they fail. The entire exception will be presented as the failed reset.
-- A job object is passed to the function, this contains the configuration for that job as defined in settings.json.
-- You can write whatever javascript you want in the test, but you are currently limited to this project's prebundled JS libraries. 
-
-A test should look like
-
-    module.exports = async function(watcher){
-        let conditionMet = false;
-
-        if (!conditionMet)
-            throw `Test failed!`;
-    }
-
-1. A test should throw an exception when it fails. If it doesn't throw an exception, the test run will be trated as passed.
-
-2. A watcher object is passed to the test, this object contains all the config for that given watcher, as it is written in settings.yml. You can use this to pass information to the test.
+    watchers:
+        mytest:
+            # required
+            interval: "*/1 * * * *"
+            # required
+            url: http://example.com
+            # optional: normally any 2** code is treated as pass, but you can specifiy the expected code
+            code: 403
+            
 
 ## Your own scripts
 

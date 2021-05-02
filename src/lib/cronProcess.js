@@ -5,7 +5,10 @@ let CronJob = require('cron').CronJob,
     fs = require('fs-extra'),
     exec = require('madscience-node-exec'),
     logger = require('./logger'),
-    settings = require('./settings')
+    settings = require('./settings'),
+    transportHandlers = {
+        smtp : smtp
+    }
 
 module.exports = class CronProcess
 {
@@ -19,7 +22,7 @@ module.exports = class CronProcess
         this.lastRun = new Date()
         this.nextRun = new Date()
         this.recipients = []
-
+        
         // recipients is optional. It is a list of strings which must correspond to "name" values in objects in settings.people array.
         if (!this.config.recipients)
             this.config.recipients = []
@@ -117,12 +120,12 @@ module.exports = class CronProcess
         } catch(ex){
             if (ex.type === 'configError'){
                 this.config.__hasErrors = true
-                this.errorMessage = ex.text    
+                this.errorMessage = ex.text  
+            } else if (ex.type === 'awdtest.fail'){
+                this.log.info(`Watcher "${this.config.__name}" test "${ex.test}" failed.`, ex.text)
             } else {
-                this.log.info(`Unhandled exception running "${testRun}"`, ex)
-                this.errorMessage = ex.errno === 'ENOTFOUND' || ex.errno === 'EAI_AGAIN' ? 
-                    `${this.config.url} could not be reached.` 
-                    : ex
+                this.log.error(`Unhandled exception running "${testRun}"`, ex)
+                this.errorMessage = `Unhandled exception ${JSON.stringify(ex)}` 
             }
 
             this.isPassing = false
@@ -194,33 +197,51 @@ module.exports = class CronProcess
                     date : this.lastRun
                 });
 
-                this.log.info(`Status changed, flag created for ${this.config.__name}`);
-                statusChanged = true;
+                this.log.info(`Status changed, flag created for ${this.config.__name}`)
+                statusChanged = true
             }
         }
 
         // send email if site status has change changed
         if (statusChanged){
+            this.log.debug(`Status changed detected for job ${this.config.__name}`)
+            let subject = this.isPassing ? `SUCCESS: ${this.config.__name} is up` : `WARNING: ${this.config.__name} is down`,
+                message = this.isPassing ? `${this.config.__name} is up` : `${this.config.__name} is down`
+            
+            for (const transportName in settings.transports){
+                const transport = settings.transports[transportName]
+                if (!transport.enabled)
+                    continue
 
-            let subject = this.isPassing ? `${this.config.__name} is up` : `${this.config.__name} is down`,
-                message = this.isPassing ? `${this.config.__name} is up` : `${this.config.__name} is down`,
-                sendMethod = settings.transports.smtp ? 
-                    smtp :
-                    null
+                const transportHandler = transportHandlers[transportName]
+                if (!transportHandler){
+                    this.log.error(`ERROR : no handler defined for transport ${transportName}`)
+                    continue
+                }
+                    
+                this.log.debug(`Attempting to send notification changed detected for job ${transportName}`)
 
-            if (sendMethod){
-                for (let recipient of this.recipients){
-                    if (!recipient.enabled)
+                for (let recipientName of this.config.recipients){
+                    const recipient = settings.recipients[recipientName]
+                    if (!recipient.enabled){
+                        this.log.error(`Recipient name "${recipientName}" is invalid. Name must be listed under "recipients" node in settings.yml`)
                         continue
+                    }
+
+                    if (!recipient.enabled){
+                        this.log.debug(`Recipient ${recipient} disabled, bypassing all alerts for them.`)
+                        continue
+                    }
 
                     // handle email
                     if (recipient.email){
-                        let result = await sendMethod(recipient.email, subject, message)
-                        this.log.info(`Sent email to ${recipient.email} for process ${this.config.__name} with result : ${result}` )
+                        let result = await transportHandler.send(recipient.email, subject, message)
+                        this.log.info(`Sent email to ${recipient.email} for process ${this.config.__name}. Result: `, result)
                     }
 
                     // handle slack
-                }
+                }                    
+
             }
         }
 

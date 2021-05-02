@@ -94,7 +94,6 @@ module.exports = app => {
         res.send(view({
             title,
             dashboardNode,
-            debug: settings.debug,
             dashboardRefreshInterval : settings.dashboardRefreshInterval,
             hasErrors,
             renderDate: `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`,

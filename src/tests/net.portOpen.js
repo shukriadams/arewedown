@@ -5,12 +5,6 @@ const NetcatClient = require('netcat/client')
 
 module.exports = async function(config){
     // validate settings
-    if (!config.url)
-        throw {
-            type : 'configError',
-            text : '.url required'
-        }
-
     if (!config.host)
         throw {
             type : 'configError',
@@ -28,9 +22,14 @@ module.exports = async function(config){
             const nc = new NetcatClient()
             nc.addr(config.host).scan(config.port, function(ports){
                 if (ports[config.port] === 'open')
-                    return resolve('port open')
+                    return resolve()
 
-                return reject('port closed')
+                return reject({
+                    type: 'awdtest.fail',
+                    test : 'net.portInUse',
+                    text:  `Port "${config.port}" closed.`
+                })
+                
             })
         }catch(ex){
             reject(ex)
