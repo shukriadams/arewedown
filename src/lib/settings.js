@@ -58,6 +58,10 @@ _settings.dashboards = _settings.dashboards || {}
 _settings.recipients = _settings.recipients || {}
 _settings.transports = _settings.transports || {}
 
+// ensure that a default dashboard is defined
+if (!Object.keys(_settings.dashboards).length)
+    _settings.dashboards['default'] = { name : '' }
+
 // apply default recipient settings
 for (const recipient in _settings.recipients)
     _settings.recipients[recipient] = Object.assign({
