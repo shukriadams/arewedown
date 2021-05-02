@@ -212,19 +212,19 @@ module.exports = class CronProcess
                 for (let recipientName of this.config.recipients){
                     const recipient = settings.recipients[recipientName]
                     if (!recipient.enabled){
-                        this.log.error(`Recipient ${recipientName} is invalid`)
+                        this.log.error(`Recipient name "${recipientName}" is invalid. Name must be listed under "recipients" node in settings.yml`)
                         continue
                     }
 
                     if (!recipient.enabled){
-                        this.log.debug(`Recipient ${recipient} disabled`)
+                        this.log.debug(`Recipient ${recipient} disabled, bypassing all alerts for them.`)
                         continue
                     }
 
                     // handle email
                     if (recipient.email){
                         let result = await sendMethod.send(recipient.email, subject, message)
-                        this.log.info(`Sent email to ${recipient.email} for process ${this.config.__name} with result : ${result}` )
+                        this.log.info(`Sent email to ${recipient.email} for process ${this.config.__name}. Result: `, result)
                     }
 
                     // handle slack
