@@ -201,7 +201,7 @@ module.exports = class CronProcess
         // send email if site status has change changed
         if (statusChanged){
             this.log.debug(`Status changed detected for job ${this.config.__name}`)
-            let subject = this.isPassing ? `${this.config.__name} is up` : `${this.config.__name} is down`,
+            let subject = this.isPassing ? `SUCCESS: ${this.config.__name} is up` : `WARNING: ${this.config.__name} is down`,
                 message = this.isPassing ? `${this.config.__name} is up` : `${this.config.__name} is down`,
                 sendMethod = settings.transports.smtp ? 
                     smtp :

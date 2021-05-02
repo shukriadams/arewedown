@@ -51,9 +51,9 @@ module.exports = {
             await client.greet({hostname: smtpConfig.server })
             await client.authPlain({username: smtpConfig.user, password: smtpConfig.pass })
             await client.quit()
-            console.log('Stmp connection succeeded : settings validated')
+            console.log('Stmp connection test succeeded.')
         } catch (ex){
-            log.error('smtp connection test failed', ex)
+            log.error('smtp connection test failed. Please confirm smtp settings are valid.', ex)
             process.exit(1)
         }        
     }

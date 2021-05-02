@@ -16,6 +16,13 @@ if (fs.existsSync('./settings.yml'))
 else 
     console.log(`WARNINGS : settings.yml not found - please create file in application folder ${process.cwd()}. If you are running in docker, mount your external settings.yml to this location.`)
 
+function exitIfNotSet(value, message){
+    if (value !== null && value !== undefined)
+        return
+
+    console.log(message)
+    process.exit(1)
+}    
 
 // apply default settings
 _settings = Object.assign({
@@ -162,32 +169,20 @@ for (const watcherName in _settings.watchers){
 
 // validate SMTP
 if (_settings.transports.smtp){
-    if (!_settings.transports.smtp.server)
-        console.log('settings is missing expected value for "smtp.server"')
-
-    if (!_settings.transports.smtp.port)
-        console.log('settings is missing expected value for "smtp.port"')
-
-    if (_settings.transports.smtp.secure === undefined)
-        console.log('settings is missing expected value for "smtp.secure"')
+    exitIfNotSet(_settings.transports.smtp.server, 'settings "transports.smtp" is missing expected value ".server"')
+    exitIfNotSet(_settings.transports.smtp.port, 'settings "transports.smtp" is missing expected value ".port"')
+    exitIfNotSet(_settings.transports.smtp.secure, 'settings "transports.smtp" is missing expected value ".secure"')
+    exitIfNotSet(_settings.transports.smtp.user, 'settings "transports.smtp" is missing expected value ".user"')
+    exitIfNotSet(_settings.transports.smtp.pass, 'settings "transports.smtp" is missing expected value ".pass"')
+    exitIfNotSet(_settings.transports.smtp.from, 'settings "transports.smtp" is missing expected value ".from"')
 }
-
-// validate dashboards
-if (!_settings.dashboards)
-    console.log('WARNING - no dashboards set, you won\'t be able to view watchers.')
 
 // validate watchers
 for (const name in _settings.watchers){
     const watcher = _settings.watchers[name]
 
     // todo : warn on multiple defaults
-
-    if (!watcher.interval){
-        console.error(`Watcher "${name}" has no interval, it will not be run.`)
-        _settings.watchers[name].__hasErrors = true
-        _settings.watchers[name].__errorMessage = `.interval not set`
-        continue
-    }
+    exitIfNotSet(watcher.interval, `Watcher "${name}" has no interval`)
 }
 
 module.exports = _settings
