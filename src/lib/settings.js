@@ -53,6 +53,10 @@ _settings = Object.assign({
     cacheViews : true
 }, _settings)
 
+// it's possible to set these items to null with goofy setup.yml content, so force defaults 
+_settings.dashboards = _settings.dashboards || {}
+_settings.recipients = _settings.recipients || {}
+_settings.transports = _settings.transports || {}
 
 // apply default recipient settings
 for (const recipient in _settings.recipients)
@@ -107,7 +111,7 @@ for (const name in _settings.watchers){
 }
 
 // apply default dashboard settings
-for (const name in rawSettings.dashboards){
+for (const name in _settings.dashboards){
 
     _settings.dashboards[name] = Object.assign({
         // node name, attached here for convenience
