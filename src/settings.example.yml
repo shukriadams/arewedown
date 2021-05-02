@@ -18,8 +18,13 @@ recipients:
 
 # things to watch for. No alert recipients are set, so all recipients will receive alerts
 watchers:
-    example:
+    upcheck:
         # checks if this website is up
         interval: "*/5 * * * *"
         url: http://example.com
 
+    script :
+        # run shell cmd on host
+        interval: "*/2 * * * *"
+        cmd: cd /my/script && sh ./test.sh
+        enabled: false

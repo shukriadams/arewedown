@@ -15,4 +15,4 @@ src/yarn.lock
 src/tests/user
 !src/tests/user/example.js
 src/user-scripts
-src/settings.yml
+src/settings.dev.yml

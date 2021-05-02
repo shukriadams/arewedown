@@ -3,24 +3,28 @@ let fs = require('fs-extra'),
     process = require('process'),
     sanitize = require('sanitize-filename'),
     _settings = {},
-    allWatcherNames = []
+    allWatcherNames = [],
+    settingsPath = './settings.yml'
 
-if (fs.existsSync('./settings.yml'))
+if (fs.existsSync('./settings.dev.yml'))
+    settingsPath = './settings.dev.yml'
+
+if (settingsPath === './settings.dev.yml' || fs.existsSync(settingsPath))
     try {
-        let settingsYML = fs.readFileSync('./settings.yml', 'utf8')
+        let settingsYML = fs.readFileSync(settingsPath, 'utf8')
         _settings = yaml.safeLoad(settingsYML)
     } catch (e) {
         console.log('Error reading settings.yml', e)
         throw e
     }
 else 
-    console.log(`WARNINGS : settings.yml not found - please create file in application folder ${process.cwd()}. If you are running in docker, mount your external settings.yml to this location.`)
+    console.log(`WARNING: settings.yml not found - please create file in application folder ${process.cwd()}. If you are running in docker, mount your external settings.yml to this location.`)
 
 function exitIfNotSet(value, message){
     if (value !== null && value !== undefined)
         return
 
-    console.log(message)
+    console.log(`ERROR: ${message}`)
     process.exit(1)
 }    
 
@@ -151,19 +155,25 @@ for (const name in _settings.dashboards){
 // if a watcher has no explicit recipients list, assign all recipient names to list
 const allRecipientNames = Object.keys(_settings.recipients).join(',')
 for (const watcherName in _settings.watchers){
-    
-    // ensure value, user can force null
-    _settings.watchers[watcherName].recipients = _settings.watchers[watcherName].recipients || '*'
+    const watcher = _settings.watchers[watcherName]
 
-    if (_settings.watchers[watcherName].recipients === '*')
-        _settings.watchers[watcherName].recipients = allRecipientNames
+    // ensure value, user can force null
+    watcher.recipients = watcher.recipients || '*'
+
+    if (watcher.recipients === '*')
+        watcher.recipients = allRecipientNames
     else {
         // ensure that recipient names match objects in recipient object
-        let recipientNames = _settings.watchers[watcherName].recipients.split(',').filter(r => !!r)
+        let recipientNames = watcher.recipients.split(',').filter(r => !!r)
         for (const recipientName of recipientNames){
             if (!_settings.recipients[recipientName])
                 console.log(`Recipient name ${recipientName} in watcher ${watcherName} is invalid`)
         }
+    }
+
+    if (watcher.test && ! fs.existsSync(`./tests/${watcher.test}.js`)){
+        console.log(`ERROR: watcher "${watcherName}" test "${watcher.test}" does not exist`)
+        process.exit(1)
     }
 }
 

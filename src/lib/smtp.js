@@ -27,7 +27,7 @@ module.exports = {
             await client.data(mailContent)
             await client.quit()
             return {
-                result : 'mail sent'
+                result : 'mail sent.'
             }
         } catch (ex){
             log.error(ex)
@@ -44,14 +44,14 @@ module.exports = {
                 port: smtpConfig.port
             })
             
-        log.info(`Confirming stmp settings by connecting to "${smtpConfig.server}"`)
+        log.info(`Confirming stmp settings by connecting to "${smtpConfig.server}".`)
 
         try {
             await client.connect()
             await client.greet({hostname: smtpConfig.server })
             await client.authPlain({username: smtpConfig.user, password: smtpConfig.pass })
             await client.quit()
-            console.log('Stmp connection test succeeded.')
+            console.log('smtp connection test succeeded.')
         } catch (ex){
             log.error('smtp connection test failed. Please confirm smtp settings are valid.', ex)
             process.exit(1)
