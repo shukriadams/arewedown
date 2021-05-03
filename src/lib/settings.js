@@ -1,15 +1,17 @@
+
+
 let fs = require('fs-extra'),
     yaml = require('js-yaml'),
     process = require('process'),
     sanitize = require('sanitize-filename'),
-    _settings = {},
     allWatcherNames = [],
-    settingsPath = './settings.yml'
+    settingsPath = './config/settings.yml',
+        _settings = {}
 
-if (fs.existsSync('./settings.dev.yml'))
-    settingsPath = './settings.dev.yml'
+if (fs.existsSync('./config/settings.dev.yml'))
+    settingsPath = './config/settings.dev.yml'
 
-if (settingsPath === './settings.dev.yml' || fs.existsSync(settingsPath))
+if (settingsPath === './config/settings.dev.yml' || fs.existsSync(settingsPath))
     try {
         let settingsYML = fs.readFileSync(settingsPath, 'utf8')
         _settings = yaml.safeLoad(settingsYML)
@@ -18,7 +20,7 @@ if (settingsPath === './settings.dev.yml' || fs.existsSync(settingsPath))
         throw e
     }
 else 
-    console.log(`WARNING: settings.yml not found - please create file in application folder ${process.cwd()}. If you are running in docker, mount your external settings.yml to this location.`)
+    console.log(`WARNING: settings.yml not found - please create file in application folder ${process.cwd()}/config/. If you are running in docker, mount your external settings.yml to this location.`)
 
 function exitIfNotSet(value, message){
     if (value !== null && value !== undefined)
@@ -50,8 +52,8 @@ _settings = Object.assign({
     // internal work cleans up/maintains self. needs to run once a day only
     internalWorkerTimer : '0 0 * * *',
 
-    // in days
-    logRetention: 364, 
+    // in days. set to zero to disable.
+    logRetention: 0, 
     
     // root-level objects
     dashboards : {},

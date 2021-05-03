@@ -3,7 +3,7 @@ src/node_modules
 vagrant/.vagrant
 vagrant/ubuntu-xenial-16.04-cloudimg-console.log
 src/settings.json
-src/logs/
+src/logs
 src/watchers
 src/flags/
 build/build.tar.gz
@@ -15,4 +15,4 @@ src/yarn-error.log
 src/tests/user
 !src/tests/user/example.js
 src/user-scripts
-src/settings.dev.yml
+src/config/settings.*.yml

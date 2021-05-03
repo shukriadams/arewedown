@@ -33,18 +33,21 @@ let CronJob = require('cron').CronJob,
 
             this.internalWorker = new CronJob(settings.internalWorkerTimer, async()=>{
                 try {
-                    const files = await fsUtils.readFilesUnderDir(settings.logs)
-                    for (const file of files){
-                        const stat = await fs.stat(file)
-                        if (path.basename(file) === 'status.json')
-                            continue
+                    if (settings.logRetention > 0) {
+                        const files = await fsUtils.readFilesUnderDir(settings.logs)
+                        for (const file of files){
+                            const stat = await fs.stat(file)
 
-                        if (timebelt.daysDifference(new Date(), stat.mtime) > settings.logRetention){
-                            try {
-                                await fs.remove(file)
-                                log.info(`Removed file ${file}, age ${stat.mtime}`)
-                            } catch(ex){
-                                log.error(`failed to delete file ${file}`, ex)
+                            if (path.basename(file) === 'status.json')
+                                continue
+    
+                            if (timebelt.daysDifference(new Date(), stat.mtime) > settings.logRetention){
+                                try {
+                                    await fs.remove(file)
+                                    log.info(`Removed file ${file}, age ${stat.mtime}`)
+                                } catch(ex){
+                                    log.error(`failed to delete file ${file}`, ex)
+                                }
                             }
                         }
                     }
