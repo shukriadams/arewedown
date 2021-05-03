@@ -12,7 +12,7 @@ const timespanString = function(end, start){
 
     let diff = end.getTime() - start.getTime()
     if (diff <= 0)
-        return 'now'
+        return 'now ...'
 
     let days = Math.floor(diff / (1000 * 60 * 60 * 24))
     diff -=  days * (1000 * 60 * 60 * 24)

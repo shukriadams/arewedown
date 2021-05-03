@@ -103,8 +103,8 @@ for (const name in _settings.watchers){
         // users can add their own convenient name, if not this defaults to node name
         name : name,   
 
-        //cronmask to time test
-        interval : null,
+        //cronmask to time test - default is 1 minute
+        interval : '*/1 * * * *',
 
         // internal test to call. must be in src/tests folder, must not have .js extension, egs `net.httpCheck`
         test: null,
@@ -162,9 +162,10 @@ for (const watcherName in _settings.watchers){
     // ensure value, user can force null
     watcher.recipients = watcher.recipients || '*'
 
-    if (watcher.recipients === '*')
+    if (watcher.recipients === '*'){
         watcher.recipients = allRecipientNames
-    else {
+        console.debug(`assigning all recipients ${allRecipientNames} to watcher ${watcherName}`)
+    } else {
         // ensure that recipient names match objects in recipient object
         let recipientNames = watcher.recipients.split(',').filter(r => !!r)
         for (const recipientName of recipientNames){

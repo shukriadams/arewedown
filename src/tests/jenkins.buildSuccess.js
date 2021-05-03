@@ -18,20 +18,28 @@ module.exports = async function(config){
     try{
         jsonraw = await httpHelper.downloadString(config.url)
     } catch(ex){
-        return reject({
+        throw {
             type: 'awdtest.fail',
             test : 'jenkins.buildSuccess',
             text:  JSON.stringify(ex)
-        })
+        }
     }
 
     try {
         json = JSON.parse(jsonraw.body)
     } catch (ex){
-        throw `Jenkins returned invalid JSON : ${jsonraw.body}.`
+        throw {
+            type: 'awdtest.fail',
+            test : 'jenkins.buildSuccess',
+            text:  'Jenkins returned invalid JSON'
+        }
     }
 
     if (!json || json.result !== 'SUCCESS')      
-        throw `Jenkins job has unwanted status "${json.result}".`
+        throw{
+            type: 'awdtest.fail',
+            test : 'jenkins.buildSuccess',
+            text: `Jenkins job has unwanted status "${json.result}".`
+        }
 }
 

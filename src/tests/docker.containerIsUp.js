@@ -18,7 +18,7 @@ module.exports = async function(config){
         }
 
     let jsonraw = await httpHelper.downloadString(config.url),
-        containers = JSON.parse(jsonraw.body)
+        containers = JSON.parse(jsonraw.body),
         containerState = 'Not found'
 
     for (let container of containers)

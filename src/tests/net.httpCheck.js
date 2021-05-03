@@ -59,5 +59,12 @@ module.exports = async function(config){
             text : '.url required'
         }
 
+    if (!config.url.toLowerCase().startsWith('http://') && !config.url.toLowerCase().startsWith('https://'))
+        throw {
+            type : 'configError',
+            text : '.url must start with "http(s)://"'
+        }
+
+
     await ensureReachable(config)
 }

@@ -44,7 +44,7 @@ module.exports = {
                 port: smtpConfig.port
             })
             
-        log.info(`Confirming stmp settings by connecting to "${smtpConfig.server}".`)
+        log.info(`Confirming smtp settings by connecting to "${smtpConfig.server}".`)
 
         try {
             await client.connect()

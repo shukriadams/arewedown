@@ -81,10 +81,6 @@ module.exports = class CronProcess
 
     async work(){
         this.lastRun = new Date()
-        this.errorMessage = null
-        
-        // revert to system/net.httpcheck if test name is not explicitly set.
-        
         let testRun = ''
 
         try {
@@ -93,12 +89,13 @@ module.exports = class CronProcess
                 testRun = this.config.cmd
 
                 let thisConfigString = ''
-                for (const prop in this.config)
-                    thisConfigString += ` --${prop} ${this.config[prop]}`
+                //for (const prop in this.config)
+                //    thisConfigString += ` --${prop} ${this.config[prop]}`
 
                 let result = await exec.sh({ cmd : `${this.config.cmd} ${thisConfigString}` })
                 if (result.code === 0) {
                     this.isPassing = true
+                    this.errorMessage = null
                 } else {
                     const errorMessage = `${result.result} (code ${result.code})`
                     this.errorMessage = errorMessage
@@ -106,15 +103,17 @@ module.exports = class CronProcess
                     this.isPassing = false
                 }
             } else {
-                this.isPassing = true
+                
                 let testname = this.config.test ? 
                         this.config.test 
                         : 'net.httpCheck',
                     test = require(`../tests/${testname}`)
                 
                 testRun = testname
-
                 await test.call(this, this.config)
+                // if reach here, no exception thrown, so test passed
+                this.isPassing = true
+                this.errorMessage = null
             }
 
         } catch(ex){
@@ -125,7 +124,7 @@ module.exports = class CronProcess
                 this.log.info(`Watcher "${this.config.__name}" test "${ex.test}" failed.`, ex.text)
             } else {
                 this.log.error(`Unhandled exception running "${testRun}"`, ex)
-                this.errorMessage = `Unhandled exception ${JSON.stringify(ex)}` 
+                this.errorMessage = `Unhandled exception:${ex.toString()}` 
             }
 
             this.isPassing = false
@@ -161,7 +160,7 @@ module.exports = class CronProcess
                     date : this.lastRun
                 })
 
-                this.log.info(`Status changed, flag removed for ${this.config.__name}`)
+                this.log.info(`Status changed, "${this.config.__name}" is passing.`)
                 statusChanged = true
             }
 
@@ -197,7 +196,7 @@ module.exports = class CronProcess
                     date : this.lastRun
                 });
 
-                this.log.info(`Status changed, flag created for ${this.config.__name}`)
+                this.log.info(`Status changed, "${this.config.__name}" is failing.`)
                 statusChanged = true
             }
         }
@@ -223,7 +222,7 @@ module.exports = class CronProcess
 
                 for (let recipientName of this.config.recipients){
                     const recipient = settings.recipients[recipientName]
-                    if (!recipient.enabled){
+                    if (!recipient){
                         this.log.error(`Recipient name "${recipientName}" is invalid. Name must be listed under "recipients" node in settings.yml`)
                         continue
                     }
