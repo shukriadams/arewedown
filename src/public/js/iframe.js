@@ -11,10 +11,14 @@
     if (dashboardRefreshInterval)
         dashboardRefreshInterval = parseInt(dashboardRefreshInterval);
     
-    window.addEventListener('message', evt => {
-        if (evt.data.startsWith('reload status:')){
-            reload = evt.data.replace('reload status:', '') === 'true'
-        }
+    window.addEventListener('message', message => {
+        if (message.data.startsWith('reload status:'))
+            reload = message.data.replace('reload status:', '') === 'true'
+
+        if (message.data.startsWith('isPassing:'))
+            isPassing = message.data === 'isPassing:true' 
+        
+        document.title = `${isPassing ? `` : 'ERRORS! ' }Are We Down?` 
     })
 
     function update(){

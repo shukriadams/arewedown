@@ -58,9 +58,8 @@ function showUpdateTime(){
 
 if (dashboardRefreshInterval){
     setInterval(function(){
-        showTimes();
-        //showUpdateTime();
-    }, dashboardRefreshInterval);
+        showTimes()
+    }, dashboardRefreshInterval)
 }
 
 showTimes()
@@ -115,8 +114,12 @@ for (const progressBar of progressBars)
 
 // -------------------------------------------
 const cbEnableReload = document.querySelector('#cbEnableReload')
+    isPassing = document.querySelector('.layout.layout--failing') === null
+
 if (cbEnableReload){
     cbEnableReload.addEventListener('change', (event) => {
         window.parent.postMessage(`reload status:${event.currentTarget.checked}`, '*')
     })
 }
+
+window.parent.postMessage(`isPassing:${isPassing}`, '*')
