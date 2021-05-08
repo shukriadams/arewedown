@@ -76,20 +76,35 @@ if (!Object.keys(_settings.dashboards).length)
     _settings.dashboards['default'] = { name : '' }
 
 // apply default recipient settings
-for (const recipient in _settings.recipients)
+for (const recipient in _settings.recipients){
+
     _settings.recipients[recipient] = Object.assign({
         enabled : true,
         email : null
     }, _settings.recipients[recipient])
 
+    // remove if disabled
+    if (!_settings.recipients[recipient].enabled)
+        delete _settings.recipients[recipient]
+}
+
+// apply defaults to transports
+for (const transport in _settings.transports){
+    _settings.transports[transport] = Object.assign({
+        enabled : true
+    }, _settings.transports[transport])
+
+    // remove if disabled
+    if (!_settings.transports[transport].enabled)
+        delete _settings.transports[transport]
+}
 
 // apply default watcher settings
 for (const name in _settings.watchers){
-    
-    allWatcherNames.push(name)
+    let watcher = _settings.watchers[name]
 
     // apply default watcher settings
-    _settings.watchers[name] = Object.assign({
+    watcher = Object.assign({
         __name : name,
         __safeName : sanitize(name),
         
@@ -111,6 +126,8 @@ for (const name in _settings.watchers){
 
         // string of user names to receive alerts on watcher status change. 
         // can be * to use all defined recipients
+        // will be converted to string array
+        // string array may be empty
         recipients : '*',
 
         // external command. either test or cmd must be given
@@ -120,25 +137,43 @@ for (const name in _settings.watchers){
         // watcher to be completely ignored
         enabled : true,
 
-    }, _settings.watchers[name])
+    }, watcher)
+
+    // remove if disabled
+    if (!watcher.enabled){
+        delete _settings.watchers[name]
+        continue
+    }
+
+    allWatcherNames.push(name)
+
+    // ensure user didn't force null on this
+    watcher.recipients = watcher.recipients || '*' 
+    // convert string list to array
+    if (watcher.recipients !== '*')
+        watcher.recipients = watcher.recipients.spit(',').filter(w => !!w)
 
     // force default values based on logic  
-    if (!_settings.watchers[name].cmd && !_settings.watchers[name].test)
-        _settings.watchers[name].test = 'net.httpCheck'
+    if (!watcher.cmd && !watcher.test)
+        watcher.test = 'net.httpCheck'
+
+    _settings.watchers[name] = watcher
 }
 
 // apply default dashboard settings
-for (const name in _settings.dashboards){
+for (const dashboard in _settings.dashboards){
 
-    _settings.dashboards[name] = Object.assign({
+    _settings.dashboards[dashboard] = Object.assign({
         // node name, attached here for convenience
-        __name : name,  
+        __name : dashboard,  
 
         // nodename, made safe for filesystems
-        __safeName : sanitize(name), 
+        __safeName : sanitize(dashboard), 
 
         // users can add their own convenient name, if not this defaults to node name
-        name : name,    
+        name : dashboard,    
+
+        enabled: true,
 
         // set to true to have this be the default dashboard when viewing '/' in a browser. if not set, the first
         // dashboard defined will be default. If multiple are defined with default, the first one defined is taken
@@ -146,13 +181,25 @@ for (const name in _settings.dashboards){
 
         // force to all watchers
         watchers : '*'  
-    }, _settings.dashboards[name])
+    }, _settings.dashboards[dashboard])
+
+    // remove if disabled
+    if (!_settings.dashboards[dashboard].enabled){
+        delete _settings.dashboards[dashboard]
+        continue
+    }
 
     // if dashboard is set to * watchers, replace it's watchers list with literal names of all watchers
-    if (_settings.dashboards[name].watchers.trim() === '*')
-        _settings.dashboards[name].watchers = allWatcherNames.join(',')
+    if (_settings.dashboards[dashboard].watchers.trim() === '*'){
+        if (allWatcherNames.length){
+            console.debug(`assigning all watchers to dashboard "${dashboard}"`)
+            _settings.dashboards[dashboard].watchers = allWatcherNames.join(',')
+        } else {
+            console.debug(`no watchers to assign to empty dashboard "${dashboard}"`)
+            _settings.dashboards[dashboard].watchers = ''
+        }
+    }
 }
-
 
 // if a watcher has no explicit recipients list, assign all recipient names to list
 const allRecipientNames = Object.keys(_settings.recipients).join(',')
@@ -163,21 +210,29 @@ for (const watcherName in _settings.watchers){
     watcher.recipients = watcher.recipients || '*'
 
     if (watcher.recipients === '*'){
-        watcher.recipients = allRecipientNames
-        console.debug(`assigning all recipients ${allRecipientNames} to watcher ${watcherName}`)
+        // replace with array of all recipients, or emty array
+        if (allRecipientNames.length){
+            watcher.recipients = allRecipientNames
+            console.debug(`assigning all recipients "${allRecipientNames}" to watcher ${watcherName}`)
+        } else {
+            watcher.recipients = []
+            console.debug(`no default recipients to assign to contactless-watcher ${watcherName} - this watcher will fail silently`)
+        }
     } else {
         // ensure that recipient names match objects in recipient object
-        let recipientNames = watcher.recipients.split(',').filter(r => !!r)
-        for (const recipientName of recipientNames){
-            if (!_settings.recipients[recipientName])
-                console.log(`Recipient name ${recipientName} in watcher ${watcherName} is invalid`)
-        }
+        for (const recipientName of watcher.recipients)
+            if (!_settings.recipients[recipientName]){
+                console.error(`Recipient name ${recipientName} in watcher ${watcherName} is invalid`)
+                process.exit(1)
+            }
     }
 
     if (watcher.test && ! fs.existsSync(`./tests/${watcher.test}.js`)){
         console.log(`ERROR: watcher "${watcherName}" test "${watcher.test}" does not exist`)
         process.exit(1)
     }
+
+     _settings.watchers[watcherName] = watcher
 }
 
 // validate SMTP (if enabled)

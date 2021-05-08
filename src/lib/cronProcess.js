@@ -122,6 +122,7 @@ module.exports = class CronProcess
                 this.errorMessage = ex.text  
             } else if (ex.type === 'awdtest.fail'){
                 this.log.info(`Watcher "${this.config.__name}" test "${ex.test}" failed.`, ex.text)
+                this.errorMessage = ex.text 
             } else {
                 this.log.error(`Unhandled exception running "${testRun}"`, ex)
                 this.errorMessage = `Unhandled exception:${ex.toString()}` 
@@ -209,8 +210,10 @@ module.exports = class CronProcess
             
             for (const transportName in settings.transports){
                 const transport = settings.transports[transportName]
-                if (!transport.enabled)
+                if (!transport.enabled){
+                    this.log.debug(`${transportName} is disabled, not using`)
                     continue
+                }
 
                 const transportHandler = transportHandlers[transportName]
                 if (!transportHandler){
