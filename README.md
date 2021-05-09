@@ -55,7 +55,7 @@ Docker images are available @ https://hub.docker.com/r/shukriadams/arewedown. Fi
     watchers:
         ....
 
-### Tranmissions
+### Transmissions
 
 Transmissions are used to send out alerts when watcher states change. Tranmissions are tested and logged automatically when *AreWeDown?* starts, so check logs to ensure your settings work.
 
@@ -112,13 +112,17 @@ Tests if a port at the given address is open. Works on TCP only.
 
 #### Jenkins job status Test
 
-Test if a jenkins job is passing
+Test if a jenkins job is passing. Requires Jenkins server URL and the name of the job in jenkins. 
 
-    watchers:
-        my_jenkins_job:
-            test : jenkins.buildSuccess
-            url: http://<USER>:<PASSWORD>@<JENKSINSURL>
-            job: my jenkins job
+- URL can be any URL that gives access to the server, this is often with built-in credentials. 
+- Job name can be the human-friendly version, we'll make it URL-safe.
+- Test passes on success only, all other outcomes will be read as a failure. 
+
+          watchers:
+                my_jenkins_job:
+                    test : jenkins.buildSuccess
+                    url: http://<USER>:<PASSWORD>@<JENKSINSURL>
+                    job: <JENKINS JOB NAME>
 
 #### Custom tests
 
