@@ -1,6 +1,6 @@
 # Are We Down?
 
-![Screenshot of AreWeDown?](https://github.com/shukriadams/arewedown/blob/master/screenshot.JPG)
+![Screenshot of AreWeDown?](https://github.com/shukriadams/arewedown/blob/master/screenshot.PNG)
 
 - Simple to setup and use
 - Sends alerts via email (SMTP), Slack and others coming.
