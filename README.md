@@ -72,10 +72,6 @@ You can send email using any SMTP server. To use a Gmail account try
             pass: your-gmail-password
             from : your-user@gmail.com
 
-#### Slack
-
-Coming soon ...
-
 ### Recipients
 
 Recipients are people who receive alerts. To send alerts using the `smtp` transport use
@@ -124,7 +120,21 @@ Test if a jenkins job is passing. Requires Jenkins server URL and the name of th
                     url: http://<USER>:<PASSWORD>@<JENKSINSURL>
                     job: <JENKINS JOB NAME>
 
-#### Custom tests
+#### Default watcher settings
+
+- Watchers have a default interval of 1 minute. You can override any watcher's default with any valid cronmask.
+- YAML imposes restrictions on the name of a node. You can override the displayed name of a watcher by setting its optional `name` field.
+- Watchers, like most other objects in *AreWeDown?* have an optional `enabled` field that defaulst to true. Set this to false to disable the watcher.
+- To alert specific people about a watcher failure, use the `recipients` property. This is an optional, comma-separated list of names defined in under `recipients`. If left empty, all defined recipients will receive alerts for the watcher.
+
+        watchers:
+            mytest:
+                name : my optional name
+                interval: '0 0 * * TUE'
+                enabled: false
+                recipients: BobMcName,someOtherPerson,YetAnotherPerson
+
+### Custom tests
 
 *AreWeDown?* also supports calling shell scripts for tests. For example, you can write your tests directly in `settings.yml`. To test if NFS is running at a remote, you can use
 
@@ -155,20 +165,6 @@ If your script requires external dependencies or setup, use `onstart` to fire a 
     onstart: cd /etc/arewedown/custom-tests && npm install && sudo apt-get install <some-package> -y
     watchers:
         ...
-
-#### Default settings
-
-- Watchers have a default interval of 1 minute. You can override any watcher's default with any valid cronmask.
-- YAML imposes restrictions on the name of a node. You can override the displayed name of a watcher by setting its optional `name` field.
-- Watchers, like most other objects in *AreWeDown?* have an optional `enabled` field that defaulst to true. Set this to false to disable the watcher.
-- To alert specific people about a watcher failure, use the `recipients` property. This is an optional, comma-separated list of names defined in under `recipients`. If left empty, all defined recipients will receive alerts for the watcher.
-
-        watchers:
-            mytest:
-                name : my optional name
-                interval: '0 0 * * TUE'
-                enabled: false
-                recipients: BobMcName,someOtherPerson,YetAnotherPerson
 
 ## Logs
 
