@@ -1,150 +1,162 @@
 # Are We Down?
 
-- Simple HTTP status checking service. Use this to aggregate any status checks which use HTTP.
-- Entirely self-hosted, ideal for running behind a firewall on a closed domain.
-- Runs on ARM and x86.
-- Runs in a Docker container.
-- All config stored in a single yml file.
-- Custom rules can be easily added via any linux shell script - NodeJS 12, Python3 and bash work out-of-the-box.
-- Has a minimal single-page dashboard that will run on almost any browser or low-spec device, ideal for Raspberry Pi's in kiosk mode. 
-- Shows basic history of uptime changes.
-- Sends alerts via SMTP, Slack and others coming.
+![Screenshot of AreWeDown?](/screenshot.jpg)
 
-## Get it
+- Simple to setup and use
+- Sends alerts via email (SMTP), Slack and others coming.
+- Supports HTTP status checking service
+- Extend with your own tests using shell scripts, Javascript (NodeJS) or Python3 scripts.
+- All configuration stored in YML 
+- No database, no dependencies on other services like Influx or Prometheus 
+- Runs on x86 and ARM, Docker containers built for both. Tested on a Raspberry Pi 3.
+- Dashboards will run on almost any browser or low-spec device, ideal for Raspberry Pi's in kiosk mode. 
 
-A docker image is available @ https://hub.docker.com/r/shukriadams/arewedown 
+## Setup in Docker
 
-## Setup
+Docker images are available @ https://hub.docker.com/r/shukriadams/arewedown. Find an up-to-date tag there, this project does not build `:latest` (and you shouldn't deploy anything with that tag). If you intend to run on a Pi, use `<TAG>-arm`
 
-- create settings.yml, use src/settings.yml as example. Add sites you want to test. Set sane poll intervals. Adds email addresses of people who need to be alerted.
-- create *logs* folder, 
-- chown 1000 -R logs
-- see ./docker-compose.yml if you want to use docker-compose.
+- An example docker-compose.yml is
+
+        version: "2"
+        services:
+        arewedown:
+            image: shukriadams/arewedown:<TAG-HERE>
+            container_name: arewedown
+            restart: unless-stopped
+            volumes:
+            - ./config:/etc/arewedown/config
+            - ./logs:/etc/arewedown/logs/:rw
+            # - ./scripts:/etc/arewedown/custom-tests # optional, see "custom tests" section of documentation
+            ports:
+            - "3000:3000"
+
+- Two directory volume mounts are required, one for logs, the other for config.
+    - Ensure write access to the `logs` directory, the container runs with user id 1000, use `chown -R 1000 path/to/logs` to allow log writing.
+    - Create an empty `settings.yml` file in the config directory, this is where all application settings live.
+
+## Logs
+
+_AreWeDown?_ logs a lot. It writes its own logs to the `./logs/<DATE>.log`, and then for each watcher in `./logs/<WATCHER>/logs/<DATE>.log`. You can also do a simple `docker logs arewdown` to see recent events.
 
 ## Config
 
-All config is written in a single YML file `setup.yml` in the project root. 
+`Settings.yml` Is divided up into 3 main sections. 
 
-You can restart `Are We Down?` to update settings by running using the `/restart` route.
+    transmissions:
+        ...
 
-### Customize your container
+    recipients:
+        ...
 
-If you're running Docker and need to install a runtime or package, you can do this at app start using `onstart` in settings.yml. The `sudo` command is available to the `arewedown` user in the container
+    watchers:
+        ....
 
-    ...
-    onstart: sudo apt-get install <some-package> -y
-    ...
+### Tranmissions
 
-Suppose you mount your own NodeJS application (ie package.json) in `/opt/mytests` in your container. You need to run `npm install` on this first to ensure required local package are installed. 
+Transmissions are used to send out alerts when watcher states change. Tranmissions are tested and logged automatically when _AreWeDown?_ starts, so check logs to ensure your settings work.
 
-    ...
-    onstart: cd /opt/mytests && npm install
-    ...
+#### SMTP
 
-For performance reasons, it's best to keep `onstart` short, and try to install things which can persist in a volume mount, else you'll end up reinstalling from scratch each time your container restarts.
+You can send email using any SMTP server. To use a Gmail account try
 
-## Tranmissions
+    transmissions:
+        smtp:
+            server : smtp.gmail.com
+            port : 465
+            secure : true
+            user : your-user@gmail.com
+            pass: your-gmail-password
+            from : your-user@gmail.com
 
-Transmissions are used to send alerts when watcher states change. Currently the following transmission types are supported
+#### Slack
 
-### SMTP
+Coming soon ...
 
-#### Google SMTP Settings
+### Recipients
 
-    smtp:
-        enabled: true
-        server : smtp.gmail.com
-        port : 465
-        secure : true
-        user : your-user@gmail.com
-        pass: your-gmail-password
-        from : your-user@gmail.com
+Recipients are people who receive alerts. To send alerts using the `smtp` transport use
 
-## Dashboards
+    recipients:
+        foo:
+            smtp: foo@example.com
+        bar:
+            smtp: bar@example.com
 
-Dashboards let you vizualize watchers. A given dashboard can display the status of any watcher. Dashboards automatically reload to update watcher state, and are written to be display on large screens on low-performance devices such as Raspberry Pi's.
+### Watchers
 
-## Tests
+Watchers watch things to see if they are passing or failing.
 
-### net.httpCheck
+#### Default settings
+
+- Watchers have a default interval of 1 minute. You can override any watcher's default with any valid cronmask.
+- YAML imposes restrictions on the name of a node. You can override the displayed name of a watcher by setting its optional `name` field.
+- Watchers, like most other objects in _AreWeDown?_ have an optional `enabled` field that defaulst to true. Set this to false to disable the watcher.
+
+        watchers:
+            mytest:
+                name : my optional name
+                interval: '0 0 * * TUE'
+                enabled: false
+
+#### HTTP 200 Test
+
+The simplest and default watcher is the HTTP check. It requests a URL and fails if it doesn't get a response between 200 and 299.
 
     watchers:
         mytest:
-            # required
-            interval: "*/1 * * * *"
-            # required
             url: http://example.com
-            # optional: normally any 2** code is treated as pass, but you can specifiy the expected code
-            code: 403
-            
 
-## Your own scripts
+_AreWeDown?_ has several built-in tests ([all tests](https://github.com/shukriadams/arewedown/tree/master/src/tests)
 
-`Arewedown?` is written around custom shell scripts.
+#### Port open Test
 
-- Your can use any script / scripting language that you can call from the operating system shell.
-- All watcher configuration is passed to the script as '--' arguments. If your config looks like
+Tests if a port at the given address is open. Works on TCP only.
 
-        watchers:
-            mywatcher:
-                interval: "*/1 * * * *"
-                cmd: node /home/bob/mytest.js
-                foo: bar
+    watchers:
+        port:
+            test: net.portOpen
+            host: 192.168.1.126
+            port: 8006
 
-    then inside `/home/bob/mytest.js` you will have access to the argument `--foo` with value `bar`.
+#### Jenkins job status Test
 
-### Getting args in Python3
+Test if a jenkins job is passing
 
-Using command line args in Python3 is easily done with built-in `argparse`
+    watchers:
+        my_jenkins_job:
+            test : jenkins.buildSuccess
+            url: http://<USER>:<PASSWORD>@<JENKSINSURL>
+            job: my jenkins job
+
+#### Custom tests
+
+ _AreWeDown?_ also supports calling shell scripts for tests. For example, you can write your tests directly in `settings.yml`. To test if NFS is running at a remote, you can use
+
+    watchers:
+         nfs-test:
+            cmd : /usr/bin/rpcinfo -u <MY-SERVER-IP> mountd | grep "ready and waiting"
+
+You can also call your own Python, Bash or NodeJS scripts. In the docker-compose example above we mounted a directory to `/etc/arewedown/custom-tests` in our container. If you put the a Python script in that folder 
 
     import sys
-    import argparse
+    # parse arg --foo, do some test, if fails exit with code 1, else code 0
+    sys.exit(1)
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--foo', '-f')
-    args, unknown = parser.parse_known_args()
+Then call it
 
-    # args.foo > 
+    watchers:
+         my-custom-test:
+            cmd : python3 /etc/arewedown/custom-tests/mytest.py --foo bar
 
-### Getting args in NodeJS
+You can do the same with NodeJS, Bash or anything linux-supported script
 
-The easiest way to get command line arguments passed to a NodeJS script is with [minimist](https://www.npmjs.com/package/minimist). If you don't want to install npm packages use this function
+    watchers:
+         my-custom-test:
+            cmd : node /etc/arewedown/custom-tests/mytest.js --foo bar
 
-    function getArg(arg){
-        for (let i = 0 ; i < process.argv.length ; i ++)
-            if (process.argv[i] == `--${arg}` && process.argv.length >= i)
-                return process.argv[i + 1]
-        return null
-    }
+If your script requires external dependencies or setup, use `onstart` to fire a shell command.
 
-    const foo = getArg('foo') // > "bar"
-
-### Getting args in sh
-
-Parsing args in bash or similar is done thusly
-
-    FOO="not set"
-
-    while [ -n "$1" ]; do 
-        case "$1" in
-        -f|--foo)
-            FOO="$2" shift;;
-        esac 
-        shift
-    done
-
-    echo $FOO
-
-### Vagrant
-
-Vagrant will scaffold up a full dev runtime in a VM, and is my preferred way of managing project setup. This project was confirmed working on Vagrant 2.2.4 and VirtualBox 6.0.6.
-
-To use
-
-- cd vagrant
-- vagrant up
-- vagrant ssh
-
-## Credits
-
-Icons by FeatherIcons (https://github.com/feathericons/feather)
+    onstart: cd /etc/arewedown/custom-tests && npm install && sudo apt-get install <some-package> -y
+    watchers:
+        ...
+        
