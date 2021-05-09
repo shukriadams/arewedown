@@ -4,7 +4,7 @@
 
 *Are We Down?* is a simple uptime monitoring system and dashboard. It is intended for the home or small business user who runs multiple services/networked devices on a private LAN, and who doesn't want the hassle of setting up a complex enterprise-level monitoring system. 
 
-*Features :*
+## Features 
 
 - Simple to setup and use. All configuration stored in YML. No clunky databases, no dependencies on other services like Influx or Prometheus. 
 - Supports HTTP status checking service.
@@ -14,9 +14,9 @@
 - Runs on low-spec hardware like the Raspberry Pi 3.
 - Built-in dashboard will run on almost any browser on low-spec device, ideal for older Raspberry Pi's in kiosk mode. 
 
-*Please note*
+*Please note :*
 
-- Never exposure *Are We Down?* to the public internet - use it behind a firewall/router at all times! 
+- Never expose *Are We Down?* to the public internet - use it behind a firewall/router at all times! 
 - *Are We Down?* is not supported or tested on Windows.
 
 ## Setup in Docker
