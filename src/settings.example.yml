@@ -14,7 +14,7 @@ transports:
 # people who can receive alerts
 recipients:
     me:
-        email: me@example.com
+        smtp: me@example.com
 
 # things to watch for. No alert recipients are set, so all recipients will receive alerts
 watchers:

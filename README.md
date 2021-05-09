@@ -81,26 +81,14 @@ Coming soon ...
 Recipients are people who receive alerts. To send alerts using the `smtp` transport use
 
     recipients:
-        foo:
-            smtp: foo@example.com
-        bar:
-            smtp: bar@example.com
+        BobMcName:
+            smtp: bob@example.com
+        FaceFacersson:
+            smtp: face@example.com
 
 ### Watchers
 
 Watchers watch things to see if they are passing or failing.
-
-#### Default settings
-
-- Watchers have a default interval of 1 minute. You can override any watcher's default with any valid cronmask.
-- YAML imposes restrictions on the name of a node. You can override the displayed name of a watcher by setting its optional `name` field.
-- Watchers, like most other objects in *AreWeDown?* have an optional `enabled` field that defaulst to true. Set this to false to disable the watcher.
-
-        watchers:
-            mytest:
-                name : my optional name
-                interval: '0 0 * * TUE'
-                enabled: false
 
 #### HTTP 200 Test
 
@@ -163,7 +151,21 @@ If your script requires external dependencies or setup, use `onstart` to fire a 
     onstart: cd /etc/arewedown/custom-tests && npm install && sudo apt-get install <some-package> -y
     watchers:
         ...
-        
+
+#### Default settings
+
+- Watchers have a default interval of 1 minute. You can override any watcher's default with any valid cronmask.
+- YAML imposes restrictions on the name of a node. You can override the displayed name of a watcher by setting its optional `name` field.
+- Watchers, like most other objects in *AreWeDown?* have an optional `enabled` field that defaulst to true. Set this to false to disable the watcher.
+- To alert specific people about a watcher failure, use the `recipients` property. This is an optional, comma-separated list of names defined in under `recipients`. If left empty, all defined recipients will receive alerts for the watcher.
+
+        watchers:
+            mytest:
+                name : my optional name
+                interval: '0 0 * * TUE'
+                enabled: false
+                recipients: BobMcName,someOtherPerson,YetAnotherPerson
+
 ## Logs
 
 *AreWeDown?* logs, a lot. It writes its own logs to the `/etc/arewedown/logs/<DATE>.log`, and then for each watcher in `/etc/arewedown/logs/<WATCHER>/logs/<DATE>.log`. Use `docker logs arewdown` to quickly see recent log entries.        

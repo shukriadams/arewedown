@@ -80,7 +80,7 @@ for (const recipient in _settings.recipients){
 
     _settings.recipients[recipient] = Object.assign({
         enabled : true,
-        email : null
+        smtp : null
     }, _settings.recipients[recipient])
 
     // remove if disabled

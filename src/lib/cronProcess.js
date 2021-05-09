@@ -235,10 +235,10 @@ module.exports = class CronProcess
                         continue
                     }
 
-                    // handle email
-                    if (recipient.email){
-                        let result = await transportHandler.send(recipient.email, subject, message)
-                        this.log.info(`Sent email to ${recipient.email} for process ${this.config.__name}. Result: `, result)
+                    // handle email via smtp
+                    if (recipient.smtp){
+                        let result = await transportHandler.send(recipient.smtp, subject, message)
+                        this.log.info(`Sent email to ${recipient.smtp} for process ${this.config.__name}. Result: `, result)
                     }
 
                     // handle slack
