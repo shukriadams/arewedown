@@ -134,7 +134,7 @@ Test if a jenkins job is passing. Requires Jenkins server URL and the name of th
                 enabled: false
                 recipients: BobMcName,someOtherPerson,YetAnotherPerson
 
-### Custom tests
+## Custom tests
 
 *AreWeDown?* also supports calling shell scripts for tests. For example, you can write your tests directly in `settings.yml`. To test if NFS is running at a remote, you can use
 
