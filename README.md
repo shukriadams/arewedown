@@ -2,18 +2,17 @@
 
 ![Screenshot of AreWeDown?](https://github.com/shukriadams/arewedown/blob/master/screenshot.PNG)
 
-- Simple to setup and use
+- Simple to setup and use. All configuration stored in YML. No clunky databases, no dependencies on other services like Influx or Prometheus. 
+- Supports HTTP status checking service.
 - Sends alerts via email (SMTP), Slack and others coming.
-- Supports HTTP status checking service
 - Extend with your own tests using shell scripts, Javascript (NodeJS) or Python3 scripts.
-- All configuration stored in YML 
-- No database, no dependencies on other services like Influx or Prometheus 
-- Runs on x86 and ARM, Docker containers built for both. Tested on a Raspberry Pi 3.
-- Dashboards will run on almost any browser or low-spec device, ideal for Raspberry Pi's in kiosk mode. 
+- Runs on x86 and ARM. Docker containers are built for both. 
+- Runs on low-spec hardware like the Raspberry Pi 3.
+- Built-in dashboard will run on almost any browser on low-spec device, ideal for older Raspberry Pi's in kiosk mode. 
 
 ## Setup in Docker
 
-Docker images are available @ https://hub.docker.com/r/shukriadams/arewedown. Find an up-to-date tag there, this project does not build `:latest` (and you shouldn't deploy anything with that tag). If you intend to run on a Pi, use `<TAG>-arm`
+Docker images are available @ https://hub.docker.com/r/shukriadams/arewedown. Find an up-to-date tag there (this project does not build `:latest`). If you intend to run on a Pi, use `<TAG>-arm`
 
 - An example docker-compose.yml is
 
@@ -31,12 +30,12 @@ Docker images are available @ https://hub.docker.com/r/shukriadams/arewedown. Fi
             - "3000:3000"
 
 - Two directory volume mounts are required, one for logs, the other for config.
-    - Ensure write access to the `logs` directory, the container runs with user id 1000, use `chown -R 1000 path/to/logs` to allow log writing.
+    - Ensure write access to the `logs` directory, the container runs with user id 1000, use `chown -R 1000 path/to/logs` to enable writes, or the app will fail.
     - Create an empty `settings.yml` file in the config directory, this is where all application settings live.
 
 ## Logs
 
-_AreWeDown?_ logs a lot. It writes its own logs to the `./logs/<DATE>.log`, and then for each watcher in `./logs/<WATCHER>/logs/<DATE>.log`. You can also do a simple `docker logs arewdown` to see recent events.
+_AreWeDown?_ logs, a lot. It writes its own logs to the `/etc/arewedown/logs/<DATE>.log`, and then for each watcher in `/etc/arewedown/logs/<WATCHER>/logs/<DATE>.log`. Use `docker logs arewdown` to quickly see recent log entries.
 
 ## Config
 
