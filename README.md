@@ -2,13 +2,22 @@
 
 ![Screenshot of AreWeDown?](https://github.com/shukriadams/arewedown/blob/master/screenshot.PNG)
 
+*Are We Down?* is a simple uptime monitoring system and dashboard. It is intended for the home or small business user who runs multiple services/networked devices on a private LAN, and who doesn't want the hassle of setting up a complex enterprise-level monitoring system. 
+
+*Features :*
+
 - Simple to setup and use. All configuration stored in YML. No clunky databases, no dependencies on other services like Influx or Prometheus. 
 - Supports HTTP status checking service.
 - Sends alerts via email (SMTP), Slack and others coming.
-- Extend with your own tests using shell scripts, Javascript (NodeJS) or Python3 scripts.
-- Runs on x86 and ARM. Docker containers are built for both. 
+- Can be extended with your own test scripts using shell scripts, Javascript (NodeJS) or Python3 scripts.
+- Runs on x86 and ARM (Docker containers are built for both) 
 - Runs on low-spec hardware like the Raspberry Pi 3.
 - Built-in dashboard will run on almost any browser on low-spec device, ideal for older Raspberry Pi's in kiosk mode. 
+
+*Please note*
+
+- Never exposure *Are We Down?* to the public internet - use it behind a firewall/router at all times! 
+- *Are We Down?* is not supported or tested on Windows.
 
 ## Setup in Docker
 
@@ -33,10 +42,6 @@ Docker images are available @ https://hub.docker.com/r/shukriadams/arewedown. Fi
     - Ensure write access to the `logs` directory, the container runs with user id 1000, use `chown -R 1000 path/to/logs` to enable writes, or the app will fail.
     - Create an empty `settings.yml` file in the config directory, this is where all application settings live.
 
-## Logs
-
-_AreWeDown?_ logs, a lot. It writes its own logs to the `/etc/arewedown/logs/<DATE>.log`, and then for each watcher in `/etc/arewedown/logs/<WATCHER>/logs/<DATE>.log`. Use `docker logs arewdown` to quickly see recent log entries.
-
 ## Config
 
 `Settings.yml` Is divided up into 3 main sections. 
@@ -52,7 +57,7 @@ _AreWeDown?_ logs, a lot. It writes its own logs to the `/etc/arewedown/logs/<DA
 
 ### Tranmissions
 
-Transmissions are used to send out alerts when watcher states change. Tranmissions are tested and logged automatically when _AreWeDown?_ starts, so check logs to ensure your settings work.
+Transmissions are used to send out alerts when watcher states change. Tranmissions are tested and logged automatically when *AreWeDown?* starts, so check logs to ensure your settings work.
 
 #### SMTP
 
@@ -89,7 +94,7 @@ Watchers watch things to see if they are passing or failing.
 
 - Watchers have a default interval of 1 minute. You can override any watcher's default with any valid cronmask.
 - YAML imposes restrictions on the name of a node. You can override the displayed name of a watcher by setting its optional `name` field.
-- Watchers, like most other objects in _AreWeDown?_ have an optional `enabled` field that defaulst to true. Set this to false to disable the watcher.
+- Watchers, like most other objects in *AreWeDown?* have an optional `enabled` field that defaulst to true. Set this to false to disable the watcher.
 
         watchers:
             mytest:
@@ -105,7 +110,7 @@ The simplest and default watcher is the HTTP check. It requests a URL and fails 
         mytest:
             url: http://example.com
 
-_AreWeDown?_ has several built-in tests ([all tests](https://github.com/shukriadams/arewedown/tree/master/src/tests)
+*AreWeDown?* has several built-in tests ([all tests](https://github.com/shukriadams/arewedown/tree/master/src/tests))
 
 #### Port open Test
 
@@ -129,7 +134,7 @@ Test if a jenkins job is passing
 
 #### Custom tests
 
- _AreWeDown?_ also supports calling shell scripts for tests. For example, you can write your tests directly in `settings.yml`. To test if NFS is running at a remote, you can use
+*AreWeDown?* also supports calling shell scripts for tests. For example, you can write your tests directly in `settings.yml`. To test if NFS is running at a remote, you can use
 
     watchers:
          nfs-test:
@@ -159,3 +164,6 @@ If your script requires external dependencies or setup, use `onstart` to fire a 
     watchers:
         ...
         
+## Logs
+
+*AreWeDown?* logs, a lot. It writes its own logs to the `/etc/arewedown/logs/<DATE>.log`, and then for each watcher in `/etc/arewedown/logs/<WATCHER>/logs/<DATE>.log`. Use `docker logs arewdown` to quickly see recent log entries.        
