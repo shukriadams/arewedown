@@ -38,7 +38,7 @@ _settings = Object.assign({
     port: 3000,
 
     // milliseconds
-    dashboardRefreshInterval: 10000,
+    dashboardRefreshInterval: 5000,
 
     // milliseconds
     dashboardLoadTimeout: 5000,

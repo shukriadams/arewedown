@@ -24,6 +24,7 @@ body {
     margin : 0;
     font-family: 'Source Sans Pro', sans-serif;
     height: 100%;
+    overflow-x: hidden;
 }
 
 a {
@@ -71,11 +72,6 @@ footer {
     color: #ffffff;
     width: 100%;
     z-index: 1;
-}
-
-/* need this to create space at bottom of content area to prevent floating footer from overlapping */
-.push{
-    height: 50px;
 }
 
 .layout {

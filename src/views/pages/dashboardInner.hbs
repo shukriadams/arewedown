@@ -1,42 +1,43 @@
 {{#extend "layout"}}
     {{#content "body"}}
-        
-        {{#if watchers}}
-            {{#each watchers}}
-                <div class="watcher {{#if config.__hasErrors}}watcher--configErrors{{/if}} {{#if isPassing}}watcher--passing{{/if}}">
+        <div class="grid">
 
-                    <div class="cell cell--header">
-                        <div class="name">
-                            <a href="/watcher/{{config.__name}}" target="_PARENT">
-                                {{config.name}} 
-                            </a>
+            {{#if watchers}}
+                {{#each watchers}}
+                    <div class="watcher {{#if config.__hasErrors}}watcher--configErrors{{/if}} {{#if isPassing}}watcher--passing{{/if}}">
+
+                        <div class="cell cell--header">
+                            <div class="name">
+                                <a href="/watcher/{{config.__name}}" target="_PARENT">
+                                    {{config.name}} 
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="cell cell--content">
+                            {{#if isPassing}}
+                                <img class="icon-passing" src="/icons/passing.svg" alt="Passing" />
+                            {{else}}
+                                {{errorMessage}}
+                            {{/if}}
+                        </div>
+
+                        <div class="cell watcher-nextUpdateWrapper">
+                            {{#if config.__hasErrors}}
+                                Disabled (config errors)
+                            {{else}}
+                                Next check : <span class="watcher-nextUpdate" data-nextUpdate="{{nextRun}}">{{next}}</span> 
+                            {{/if}}
                         </div>
                     </div>
-
-                    <div class="cell cell--content">
-                        {{#if isPassing}}
-                            <img class="icon-passing" src="/icons/passing.svg" alt="Passing" />
-                        {{else}}
-                            {{errorMessage}}
-                        {{/if}}
-                    </div>
-
-                    <div class="cell watcher-nextUpdateWrapper">
-                        {{#if config.__hasErrors}}
-                            Disabled (config errors)
-                        {{else}}
-                            Next check : <span class="watcher-nextUpdate" data-nextUpdate="{{nextRun}}">{{next}}</span> 
-                        {{/if}}
-                    </div>
+                {{/each}}
+            {{else}}
+                <div class="dashboard-message">
+                    Nothing to show yet - add/enable some watchers
                 </div>
-            {{/each}}
-        {{else}}
-            <div class="dashboard-message">
-                Nothing to show yet - add/enable some watchers
-            </div>
-        {{/if}}
-
-        <div class="push"></div>
+            {{/if}}
+            
+        </div>
 
     {{/content}}
     {{#content "footer"}}
