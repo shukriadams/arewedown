@@ -5,6 +5,7 @@ sudo apt-get update
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt-get install nodejs  -y
 sudo npm install yarn -g
+sudo npmt install pkg@5.1.0 -g
 
 # docker
 sudo apt install docker.io -y

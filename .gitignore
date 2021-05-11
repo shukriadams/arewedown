@@ -16,3 +16,5 @@ src/tests/user
 !src/tests/user/example.js
 src/user-scripts
 src/config/settings.*.yml
+build/linux64
+build/logs

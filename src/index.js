@@ -27,8 +27,6 @@
         }
     }
 
-    // static content
-    express.use(Express.static('./public'))
     express.get('/restart', async (req, res)=>{
         if (!settings.allowHttpRestart){
             res.status(403)

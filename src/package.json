@@ -5,6 +5,7 @@
     "private": false,
     "author": "shukri.adams@gmail.com",
     "license": "MIT",
+    "bin": "index.js",
     "engines": {
         "node": ">=0.10.x"
     },
@@ -38,6 +39,17 @@
         "madscience-httputils": "https://github.com/shukriadams/node-httpUtils.git#0.0.1",
         "madscience-node-exec": "https://github.com/shukriadams/node-exec.git#0.0.7"
     },
+    "pkg": {
+        "assets": [
+            "./package.json",
+            "./node_modules/**",
+            "./lib/**",
+            "./public/**",
+            "./routes/**",
+            "./tests/**",
+            "./views/**"
+        ]
+    },    
     "devDependencies": {
         "glob": "7.1.6",
         "madscience-node-assert": "https://github.com/shukriadams/node-assert.git#0.0.2",

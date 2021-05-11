@@ -227,7 +227,7 @@ for (const watcherName in _settings.watchers){
             }
     }
 
-    if (watcher.test && ! fs.existsSync(`./tests/${watcher.test}.js`)){
+    if (watcher.test && ! fs.existsSync(`${__dirname}/../tests/${watcher.test}.js`)){
         console.log(`ERROR: watcher "${watcherName}" test "${watcher.test}" does not exist`)
         process.exit(1)
     }
