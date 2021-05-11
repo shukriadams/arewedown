@@ -1,8 +1,11 @@
-# Advanced 
+# Advanced Settings
 
-## Settings
+## Defaults
 
 *AreWeDown?* works out of the box with no cutom settings. You can override the defaults with the following. Note that these settings are passed in as standard environment variables, you can define them any way you want. They can be written either at the root level of _settings.yml_ file or in your _docker-compose.yml_'s `environment:` section. 
+
+    // override default title
+    header: 'Are We Down?'
 
     # defines where logs are written. Default value is relative to application startup path
     logs: './logs'

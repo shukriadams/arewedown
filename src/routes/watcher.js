@@ -59,7 +59,7 @@ module.exports = function(app){
             
             let view = handlebars.getView('watcher')
             res.send(view({
-                title : `${watcher.name} history`,
+                title : `${settings.header} : ${watcher.name} history`,
                 history
             }))
 

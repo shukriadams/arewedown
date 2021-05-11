@@ -1,42 +1,8 @@
 const settings = require('./../lib/settings'),
     handlebars = require('./../lib/handlebars'),
     arrayHelper = require('./../lib/array'),
-    daemon = require('./../lib/daemon')
-
-const timespanString = function(end, start){
-    if (typeof start === 'number' || typeof start === 'string')
-        start = new Date(start)
-
-    if (typeof end === 'number' || typeof end === 'string')
-        end = new Date(end)
-
-    let diff = end.getTime() - start.getTime()
-    if (diff <= 0)
-        return 'now ...'
-
-    let days = Math.floor(diff / (1000 * 60 * 60 * 24))
-    diff -=  days * (1000 * 60 * 60 * 24)
-
-    let hours = Math.floor(diff / (1000 * 60 * 60))
-    diff -= hours * (1000 * 60 * 60)
-
-    let mins = Math.floor(diff / (1000 * 60))
-    let secs = Math.floor(diff / 1000)
-    function plural(value){
-        return value > 1 ?'s':''
-    }
-
-    if (days >= 1)
-        return `${days} day${plural(days)}`
-
-    if (hours >= 1)
-        return `${hours} hour${plural(hours)}}`
-    
-    if (mins >= 1)
-        return `${mins} minute${plural(mins)}`
-    
-    return `${secs} second${plural(secs)}`
-}
+    daemon = require('./../lib/daemon'),
+    timespan = require('./../lib/timespan')
 
 module.exports = app => {
 
@@ -46,6 +12,7 @@ module.exports = app => {
      */
     app.get('/dashboard/:dashboard?', async function(req, res){
         let dashboardNode = req.params.dashboard,
+            now = new Date(),
             hasErrors = false
 
         if (!settings.dashboards || !Object.keys(settings.dashboards).length){
@@ -64,17 +31,15 @@ module.exports = app => {
             }))
         }
 
-        let title = dashboard.name,
-            view = handlebars.getView('dashboardInner'),
-            dashboardWatchers = arrayHelper.split(dashboard.watchers, ',') // clone array, we don't want to change source
+        const view = handlebars.getView('dashboardInner'),
+            dashboardWatchers = arrayHelper.split(dashboard.watchers, ','), // clone array, we don't want to change source
+            // get cronprocesses that are running and used on the current dashboard
+            watchers = daemon.getWatchers().slice(0).filter((job)=>{
+                if (!dashboardWatchers.includes(job.config.__name))
+                    return null
 
-        // get cronprocesses that are running and used on the current dashboard
-        let watchers = daemon.getWatchers().slice(0).filter((job)=>{
-            if (!dashboardWatchers.includes(job.config.__name))
-                return null
-
-            return job
-        })
+                return job
+            })
 
         hasErrors = watchers.filter((job)=>{
             return !job.isPassing
@@ -84,15 +49,13 @@ module.exports = app => {
             return a.isPassing - b.isPassing || a.config.name.localeCompare(b.config.name)
         })
 
-        for (let watcher of watchers){
+        for (let watcher of watchers)
             if (watcher.nextRun)
-                watcher.next = timespanString(watcher.nextRun, new Date())
-        }
-
-        const now = new Date()
+                watcher.next = timespan(watcher.nextRun, new Date())
+        
 
         res.send(view({
-            title,
+            title : `${settings.header} ${dashboard.name}`,
             dashboardNode,
             dashboardRefreshInterval : settings.dashboardRefreshInterval,
             hasErrors,

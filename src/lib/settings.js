@@ -33,6 +33,9 @@ function exitIfNotSet(value, message){
 // apply default settings
 _settings = Object.assign({
 
+    // override default title
+    header: 'Are We Down?',
+
     // path all log data is written
     logs : './logs',
 
