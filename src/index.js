@@ -28,9 +28,9 @@
     }
 
     express.get('/restart', async (req, res)=>{
-        if (!settings.allowHttpRestart){
+        if (!settings.allowHttpExit){
             res.status(403)
-            res.end('Not allowed. set "allowHttpRestart:true" to enable restart')
+            res.end('Not allowed. set "allowHttpExit:true" to enable restart')
             return
         }
 

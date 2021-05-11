@@ -32,6 +32,7 @@ function exitIfNotSet(value, message){
 
 // apply default settings
 _settings = Object.assign({
+
     // path all log data is written
     logs : './logs',
 
@@ -44,7 +45,7 @@ _settings = Object.assign({
     dashboardLoadTimeout: 5000,
 
     // allows AWD to be restarte via HTTP call. Enable only if you trust people on your network not to abuse
-    allowHttpRestart: false,
+    allowHttpExit: false,
 
     // can be error, warn, info
     logLevel: 'warn',
@@ -53,7 +54,7 @@ _settings = Object.assign({
     internalWorkerTimer : '0 0 * * *',
 
     // in days. set to zero to disable.
-    logRetention: 0, 
+    logRetention: 365, 
     
     // root-level objects
     dashboards : {},
