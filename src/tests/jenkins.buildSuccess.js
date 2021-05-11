@@ -18,16 +18,12 @@ module.exports = async function(config){
             type : 'configError',
             text : '.job required'
         }        
+    
 
     // check if jenkins server url is valid
+    let check
     try {
-        const check = await httpHelper.downloadString(config.url)
-        if (check.statusCode === 404)
-            throw {
-                type: 'awdtest.fail',
-                test : 'jenkins.buildSuccess',
-                text:  `Jenkins URL unreachable`
-            }
+        check = await httpHelper.downloadString(config.url)
     } catch (ex) {
         throw {
             type: 'awdtest.fail',
@@ -35,6 +31,13 @@ module.exports = async function(config){
             text:  `Jenkins URL is invalid`
         }
     }
+
+    if (check.statusCode === 404)
+        throw {
+            type: 'awdtest.fail',
+            test : 'jenkins.buildSuccess',
+            text:  `Jenkins URL unreachable`
+        }
 
     let url = urljoin(config.url, 'job', encodeURIComponent(config.job), 'lastBuild/api/json'),
         jsonraw = null, 
@@ -67,11 +70,13 @@ module.exports = async function(config){
         }
     }
 
-    if (!json || json.result !== 'SUCCESS')      
+    const allowedStatusus = (config.status || 'success').split(',').filter(r => !!r)
+
+    if (!json || !json.result || !allowedStatusus.includes(json.result.toLowerCase()))      
         throw{
             type: 'awdtest.fail',
             test : 'jenkins.buildSuccess',
-            text: `Jenkins job has unwanted status "${json.result}".`
+            text: `Jenkins job has unwanted status "${json.result.toLowerCase()}".`
         }
 }
 

@@ -113,12 +113,26 @@ Test if a jenkins job is passing. Requires Jenkins server URL and the name of th
 - URL can be any URL that gives access to the server, this is often with built-in credentials. 
 - Job name can be the human-friendly version, we'll make it URL-safe.
 - Test passes on success only, all other outcomes will be read as a failure. 
+- Status is optional, and a comma-separated list. Default value is "success". This filters on the string values returned by Jenkins' API for job status, which is 
+"success", "aborted" and "failure".
 
           watchers:
                 my_jenkins_job:
                     test : jenkins.buildSuccess
                     url: http://<USER>:<PASSWORD>@<JENKSINSURL>
                     job: <JENKINS JOB NAME>
+                    status: success,aborted # optional
+
+#### Docker container up
+
+If your enable the Docker [HTTP API](https://docs.docker.com/engine/api/v1.24/), you can query if a container is up on a given host. 
+
+    watchers
+        my-container-test:
+            test: docker.containerIsUp
+            url: http://example.com
+            container: myContainer # container name
+            port: 2375 # optional. port to query, the default is 2375
 
 #### Default watcher settings
 

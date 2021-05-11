@@ -34,7 +34,7 @@ fi
 # copy src to .stage so we can build it both locally and on Github
 rm -rf .stage
 mkdir -p .stage
-rsync -v -r --exclude=node_modules --exclude=data --exclude=user-scripts --exclude=settings.yml --exclude=.* ./../src .stage
+rsync -v -r --exclude=node_modules --exclude=test --exclude=data --exclude=user-scripts --exclude=settings.yml --exclude=.* ./../src .stage
 
 # install with --no-bin-links to avoid simlinks, this is needed to copy build content around
 docker run -v $(pwd)/.stage/src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links'
@@ -68,4 +68,4 @@ if [ $DOCKERPUSH -eq 1 ]; then
     docker push shukriadams/arewedown:$TAG$ARCHITECTURE
 fi
 
-echo "Build done";
+echo "Build done"
