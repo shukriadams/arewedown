@@ -37,18 +37,29 @@ Test if a jenkins job is passing. Requires Jenkins server URL and the name of th
           watchers:
                 my_jenkins_job:
                     test : jenkins.buildSuccess
-                    url: http://<USER>:<PASSWORD>@<JENKSINSURL>
-                    job: <JENKINS JOB NAME>
+                    host: http://<USER>:<PASSWORD>@example.com
+                    job: My Jenkins Job
                     status: success,aborted # Optional.
 
 ## Docker container up
 
-If your enable the Docker [HTTP API](https://docs.docker.com/engine/api/v1.24/), you can query if a container is up on a given host. 
+If your have the Docker [HTTP API](https://docs.docker.com/engine/api/v1.24/) enabled, you can query it to test if a container is up on a given host. 
 
-    watchers
+    watchers:
         my-container-test:
             test: docker.containerIsUp
-            url: http://example.com
+            host: http://example.com
             container: myContainer # container name
             port: 2375 # Optional. Port to query, the default is 2375.
 
+## System.d service running
+
+To tests if a system.d service is running you (all items required)
+
+    watchers:
+        my-service-test:
+            test: systemd.servicerunning
+            host: example.com
+            user: myuser
+            password: mypassword
+            service: docker

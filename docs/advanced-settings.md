@@ -34,6 +34,14 @@
 
 Documentation can sometimes go out of sync with code - check [settings.js](https://github.com/shukriadams/arewedown/blob/master/src/lib/settings.js) to be sure.
 
+## Sensitive data
+
+If you do not want to store sensitive information like passwords in the `settings.yml` file, you can store these as environment variables on your host system, and bind them anywhere in settings with the following template pattern
+
+    anyProperty: "{{env.MY_SENSITIVE_INFO}}"
+
+If you defined an environment variable `MY_SENSITIVE_INFO=1234` then `anyProperty` will have the value `1234` in memory. If the environment variable is not found, the application will fail to start.
+
 ## Logs
 
 *AreWeDown?* logs, a lot. It writes its own logs to the `/etc/arewedown/logs/<DATE>.log`, and then for each watcher in `/etc/arewedown/logs/<WATCHER>/logs/<DATE>.log`. Use `docker logs arewdown` to quickly see recent log entries.        

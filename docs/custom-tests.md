@@ -6,6 +6,8 @@
          nfs-test:
             cmd : /usr/bin/rpcinfo -u <MY-SERVER-IP> mountd | grep "ready and waiting"
 
+Grep in particular is useful for tests as it will automatically exit with an error code if it finds no matches for a string.
+
 You can also call your own Python, Bash or NodeJS scripts. In the docker-compose example above we mounted a directory to `/etc/arewedown/custom-tests` in our container. If you put the a Python script in that folder 
 
     import sys

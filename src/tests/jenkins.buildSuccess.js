@@ -7,10 +7,10 @@ const httpHelper = require('madscience-httputils'),
 
 module.exports = async function(config){
     // validate settings
-    if (!config.url)
+    if (!config.host && !config.url)
         throw {
             type : 'configError',
-            text : '.url required'
+            text : '.host required'
         }
 
     if (!config.job)
@@ -20,15 +20,17 @@ module.exports = async function(config){
         }        
     
 
-    // check if jenkins server url is valid
-    let check
+    // check if jenkins server host is valid
+    let check,
+        host = config.host || config.url
+
     try {
-        check = await httpHelper.downloadString(config.url)
+        check = await httpHelper.downloadString(host)
     } catch (ex) {
         throw {
             type: 'awdtest.fail',
             test : 'jenkins.buildSuccess',
-            text:  `Jenkins URL is invalid`
+            text:  `Jenkins Host is invalid`
         }
     }
 
@@ -36,10 +38,10 @@ module.exports = async function(config){
         throw {
             type: 'awdtest.fail',
             test : 'jenkins.buildSuccess',
-            text:  `Jenkins URL unreachable`
+            text:  `Jenkins host unreachable`
         }
 
-    let url = urljoin(config.url, 'job', encodeURIComponent(config.job), 'lastBuild/api/json'),
+    let url = urljoin(host, 'job', encodeURIComponent(config.job), 'lastBuild/api/json'),
         jsonraw = null, 
         json = null
     

@@ -8,15 +8,17 @@ const request = require('request'),
     ensureReachable = async (config)=>{
         return new Promise((resolve, reject)=>{
             try {
-                let code = 0
-                request( { uri: config.url }, 
+                let code = 0,
+                    host = config.host || config.url
+
+                request( { uri: host }, 
                     function(error, response) {
                         if (error){
                             if (error.errno === 'ENOTFOUND' || error.errno === 'EAI_AGAIN')  
                                 return reject({
                                     type: 'awdtest.fail',
                                     test : 'net.httpCheck',
-                                    text:  `${config.url} could not be reached.`
+                                    text:  `${host} could not be reached.`
                                 })
     
                             return reject(error)
@@ -53,18 +55,19 @@ const request = require('request'),
 
 module.exports = async function(config){
     // validate settings
-    if (!config.url)
+    if (!config.url && !config.host)
         throw {
             type : 'configError',
-            text : '.url required'
+            text : '.host required'
         }
+        
+    const host = config.url || config.host
 
-    if (!config.url.toLowerCase().startsWith('http://') && !config.url.toLowerCase().startsWith('https://'))
+    if (!host.toLowerCase().startsWith('http://') && !host.toLowerCase().startsWith('https://'))
         throw {
             type : 'configError',
-            text : '.url must start with "http(s)://"'
+            text : '.host must start with "http(s)://"'
         }
-
 
     await ensureReachable(config)
 }

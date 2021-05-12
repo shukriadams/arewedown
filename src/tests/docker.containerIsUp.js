@@ -1,15 +1,15 @@
 /**
- * Does a docker Engine API query @ watcher.url, expects to find a running container with name 
+ * Does a docker Engine API query @ watcher.host, expects to find a running container with name 
  * watcher.container.
  */
 const httpHelper = require('madscience-httputils'),
     urljoin = require('urljoin')
 
 module.exports = async function(config){
-    if (!config.url)
+    if (!config.host)
         throw {
             type : 'configError',
-            text : '.url required'
+            text : '.host required'
         }
 
     if (!config.container)
@@ -22,12 +22,12 @@ module.exports = async function(config){
         jsonraw
 
     try {
-        jsonraw = await httpHelper.downloadString(urljoin(`${config.url}:${port}`, 'containers/json'))
+        jsonraw = await httpHelper.downloadString(urljoin(`${config.host}:${port}`, 'containers/json'))
     } catch (ex) {
         throw {
             type: 'awdtest.fail',
             test : 'jenkins.buildSuccess',
-            text:  `URL is invalid: ${ex.toString()}`
+            text:  `Host is invalid: ${ex.toString()}`
         }
     }        
 
@@ -35,7 +35,7 @@ module.exports = async function(config){
         throw {
             type: 'awdtest.fail',
             test : 'jenkins.buildSuccess',
-            text:  `URL unreachable`
+            text:  `Host unreachable`
         }
 
     containers = JSON.parse(jsonraw.body),

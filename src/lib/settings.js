@@ -3,10 +3,13 @@
 let fs = require('fs-extra'),
     yaml = require('js-yaml'),
     process = require('process'),
+    dotenv = require('dotenv'),
     sanitize = require('sanitize-filename'),
     allWatcherNames = [],
     settingsPath = './config/settings.yml',
         _settings = {}
+
+dotenv.config()
 
 if (fs.existsSync('./config/settings.dev.yml'))
     settingsPath = './config/settings.dev.yml'
@@ -29,6 +32,7 @@ function exitIfNotSet(value, message){
     console.log(`ERROR: ${message}`)
     process.exit(1)
 }    
+
 
 // apply default settings
 _settings = Object.assign({
@@ -256,5 +260,36 @@ for (const name in _settings.watchers){
     // todo : warn on multiple defaults
     exitIfNotSet(watcher.interval, `Watcher "${name}" has no interval`)
 }
+
+// parse environment variables
+function processNode(node){
+    for (let child in node)
+        if (typeof node[child] === 'string')
+            node[child] = parseEnvironmentVariables(node[child])
+        else if (typeof node[child] === 'object' ) 
+            processNode(node[child])
+         else if (Array.isArray(node[child])) 
+            for (item of node[child])
+                processNode(item)
+}
+
+function parseEnvironmentVariables(value){
+
+    const match = value.match(/{{env.(.*)}}/i)
+
+    if (match){
+        const value = match.pop()
+
+        if (process.env[value])
+            return process.env[value]
+        else {
+            console.log(`ERROR : config expects environment variable "${value}", but this was not found. `)
+            return process.exit(1)
+        }
+    }
+
+    return value
+}
+processNode(_settings)
 
 module.exports = _settings
