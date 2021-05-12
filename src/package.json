@@ -13,7 +13,8 @@
         "start": "node index",
         "debug": "node --inspect=0.0.0.0:3001 index",
         "debug-brk": "node --inspect-brk=0.0.0.0:3001 index",
-        "test": "node test/all"
+        "test": "cd test && ./../node_modules/mocha/bin/mocha --recursive --timeout 5000"
+
     },
     "dependencies": {
         "handlebars-layouts": "3.1.4",
@@ -54,7 +55,8 @@
     },    
     "devDependencies": {
         "glob": "7.1.6",
-        "madscience-node-assert": "https://github.com/shukriadams/node-assert.git#0.0.2",
+        "lodash.clonedeep": "4.5.0",
+        "madscience-node-assert": "https://github.com/shukriadams/node-assert.git#0.0.5",
         "mocha": "7.1.0"
     }
 }

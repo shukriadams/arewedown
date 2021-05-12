@@ -1188,6 +1188,11 @@ locate-path@^3.0.0:
     p-locate "^3.0.0"
     path-exists "^3.0.0"
 
+lodash.clonedeep@4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
+  integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
+
 lodash.defaults@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/lodash.defaults/-/lodash.defaults-4.2.0.tgz#d09178716ffea4dde9e5fb7b37f6f0802274580c"
@@ -1240,9 +1245,9 @@ log-symbols@3.0.0:
     fs-extra "6.0.0"
     request "2.88.0"
 
-"madscience-node-assert@https://github.com/shukriadams/node-assert.git#0.0.2":
+"madscience-node-assert@https://github.com/shukriadams/node-assert.git#0.0.5":
   version "0.0.1"
-  resolved "https://github.com/shukriadams/node-assert.git#9711f984f51ce384baaed8732d874acac8d59422"
+  resolved "https://github.com/shukriadams/node-assert.git#bc0988a8821958838e394777080aa33811422de3"
 
 "madscience-node-exec@https://github.com/shukriadams/node-exec.git#0.0.7":
   version "0.0.2"
