@@ -224,7 +224,7 @@ for (const watcherName in _settings.watchers){
             console.debug(`assigning all recipients "${allRecipientNames}" to watcher ${watcherName}`)
         } else {
             watcher.recipients = []
-            console.debug(`no default recipients to assign to contactless-watcher ${watcherName} - this watcher will fail silently`)
+            console.warn(`WARNING : no default recipients to assign to contactless-watcher ${watcherName} - this watcher will fail silently`)
         }
     } else {
         // ensure that recipient names match objects in recipient object

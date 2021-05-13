@@ -1,7 +1,7 @@
 (async ()=>{
-
+    
     let server,
-        daemon = require('./lib/daemon')
+        daemon = require('./lib/daemon'),
         http = require('http'),
         Express = require('express'),
         express = Express(),

@@ -40,8 +40,6 @@ module.exports = class CronProcess
 
             this.recipients.push(recipientObject)
         }
-
-        this.calcNextRun()
     }
 
     calcNextRun(){
@@ -50,7 +48,8 @@ module.exports = class CronProcess
     }
 
     start(){
-        
+        this.calcNextRun()
+
         this.log.info(`Starting watcher "${this.config.name || this.config.__name}"`)
         this.cron = new CronJob(this.config.interval, async()=>{
 
@@ -74,7 +73,7 @@ module.exports = class CronProcess
             }
         }, null, true, null, null, true /*runonitit*/)
     }
-
+    
     stop(){
         this.cron.stop()
     }
@@ -89,9 +88,6 @@ module.exports = class CronProcess
                 testRun = this.config.cmd
 
                 let thisConfigString = ''
-                //for (const prop in this.config)
-                //    thisConfigString += ` --${prop} ${this.config[prop]}`
-
                 let result = await exec.sh({ cmd : `${this.config.cmd} ${thisConfigString}` })
                 if (result.code === 0) {
                     this.isPassing = true
