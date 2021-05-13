@@ -1,13 +1,13 @@
 # Setup with Docker
 
-Docker images are available @ https://hub.docker.com/r/shukriadams/arewedown. Find an up-to-date tag there (this project does not build `:latest`). If you intend to run on a Pi, use `<TAG>-arm`
+Docker images are available @ https://hub.docker.com/r/shukriadams/arewedown. Find an up-to-date tag there (this project does not build `:latest`). If you intend to run on a Raspberry Pi, use `<TAG>-arm`
 
 - An example docker-compose.yml is
 
         version: "2"
         services:
         arewedown:
-            image: shukriadams/arewedown:<TAG-HERE>
+            image: shukriadams/arewedown:<TAG>
             container_name: arewedown
             restart: unless-stopped
             volumes:
