@@ -9,7 +9,9 @@
 # fail on errors
 set -e 
 
+ARCHITECTURE="" # set to "-arm" for arm
 repo="shukriadams/arewedown"
+BUILDCONTAINER=shukriadams/node12build:0.0.3$ARCHITECTURE
 
 # capture all arguments passed in, that is anything starting with --  
 while [ $# -gt 0 ]; do
@@ -38,6 +40,9 @@ if [ -z "$TAG" ]; then
     echo "ERROR : tag not set."
     exit 1
 fi
+
+# npm install all the things
+docker run -v $(pwd)/../src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'
 
 # write version to build
 echo $TAG > ./../src/version

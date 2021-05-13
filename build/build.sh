@@ -2,9 +2,7 @@
 set -e
 
 # tag must be passed in as an argument when calling this script
-ARCH=""
 DOCKERPUSH=0
-
 SMOKETEST=0
 ARCHITECTURE="" # set to "-arm" for arm
 
