@@ -54,7 +54,7 @@ If your have the Docker [HTTP API](https://docs.docker.com/engine/api/v1.24/) en
 
 ## System.d service running
 
-To tests if a system.d service is running you (all items required)
+To test if a system.d service is running you (all items required)
 
     watchers:
         my-service-test:
@@ -63,3 +63,7 @@ To tests if a system.d service is running you (all items required)
             user: myuser
             password: mypassword
             service: docker
+
+## Ping
+
+You can ping a host 
