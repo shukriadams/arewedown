@@ -4,6 +4,10 @@ MAINTAINER shukriadams
 
 WORKDIR /etc/arewedown
 
+# Update
+RUN apk update \
+    && apk upgrade
+
 # Add "arewedown" user
 RUN addgroup -S arewedown \
     && adduser -S arewedown -G arewedown \
