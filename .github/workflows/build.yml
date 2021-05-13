@@ -34,7 +34,7 @@ jobs:
         steps:
         - uses: actions/checkout@v1
         - name: builds linux-x64 binary and uploads to github
-          run:  cd build && sh ./build-standalone.sh --target linux
+          run:  cd build && bash ./build-standalone.sh --target linux
           env:
             DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
             DOCKER_USER: ${{ secrets.DOCKER_USER }}
