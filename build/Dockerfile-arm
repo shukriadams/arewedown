@@ -1,29 +1,26 @@
-FROM ubuntu:20.04
+FROM node:12-alpine3.13
 
-RUN apt-get update \
-    && apt-get install bash -y \
-    && apt-get install sudo -y \
-    && apt-get install git -y \
-    && apt-get install curl -y \
-    && apt-get install python3-minimal -y \
-    && apt-get install libatomic1 -y \
-    && curl -s -O https://deb.nodesource.com/node_12.x/pool/main/n/nodejs/nodejs_12.20.2-deb-1nodesource1_armhf.deb \
-    && dpkg -i nodejs_12.20.2-deb-1nodesource1_armhf.deb \
-    && rm nodejs_12.20.2-deb-1nodesource1_armhf.deb \
-    && mkdir -p /etc/arewedown \
-    && adduser -u 1000 arewedown \
-    && adduser arewedown sudo \
-    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+MAINTAINER shukriadams
+
+WORKDIR /etc/arewedown
+
+# Add "arewedown" user
+RUN addgroup -S arewedown \
+    && adduser -S arewedown -G arewedown \
     && chmod 700 -R /etc/arewedown \
-    && chown -R arewedown /etc/arewedown    
-    
-COPY ./build.tar.gz /tmp
+    && chown -R arewedown /etc/arewedown
 
-# strips the first two folders when unzipping, getting rid of /tmp/build
+# Install GNU tar
+RUN apk add --no-cache tar  
+
+# Copy and unzip build
+COPY ./build.tar.gz /tmp
 RUN tar -xzvf /tmp/build.tar.gz -C /etc/arewedown --strip 2
 
+# Delete build from /tmp
 RUN rm /tmp/build.tar.gz
 
 USER arewedown
 
-CMD cd /etc/arewedown && npm start
+EXPOSE 3000
+RUN npm start
