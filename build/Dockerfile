@@ -19,9 +19,8 @@ RUN apt-get update \
 COPY ./build.tar.gz /tmp
 
 # strips the first two folders when unzipping, getting rid of /tmp/build
-RUN tar -xzvf /tmp/build.tar.gz -C /etc/arewedown --strip 2
-
-RUN rm /tmp/build.tar.gz
+RUN tar -xzvf /tmp/build.tar.gz -C /etc/arewedown --strip 2 \
+    && rm /tmp/build.tar.gz
 
 USER arewedown
 

@@ -21,8 +21,9 @@
 
 ## Install
 
-- [Install using Docker](/docs/install-docker.md)
-- [Install using NodeJS](/docs/install-nodejs.md)
+If you're on Linux (including Raspbian) and have Docker installed, check out the [Docker installation guide](/docs/install-docker.md).
+
+If you want to install the app directly on your host system try the [NodeJS install guide](/docs/install-nodejs.md).
 
 ## Config
 

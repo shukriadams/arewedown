@@ -4,28 +4,38 @@ on:
     tags:
       - '*'
 jobs:
-    buildArm:
-        runs-on: self-hosted
-        steps:
-        # clean before building    
-        - name: cleanup
-          run: |
-            echo "Cleaning up previous run"
-            sudo rm -rf "${{ github.workspace }}"
-        - uses: actions/checkout@v1
-        - name: builds docker container and pushes to docker hub
-          run:  cd build && sh ./build.sh --dockerpush --smoketest --arc -arm
-          env:
-            DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
-            DOCKER_USER: ${{ secrets.DOCKER_USER }}
-        
+#    docker-armhf:
+#        runs-on: self-hosted
+#        steps:
+#        # clean before building    
+#        - name: cleanup
+#          run: |
+#            echo "Cleaning up previous run"
+#            sudo rm -rf "${{ github.workspace }}"
+#        - uses: actions/checkout@v1
+#        - name: builds docker container and pushes to docker hub
+#          run:  cd build && sh ./build.sh --dockerpush --smoketest --arc -arm
+#          env:
+#            DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+#            DOCKER_USER: ${{ secrets.DOCKER_USER }}
 
-    buildx86:
+#   docker-x86:
+#        runs-on: ubuntu-latest
+#        steps:
+#        - uses: actions/checkout@v1
+#        - name: builds docker container and pushes to docker hub
+#          run:  cd build && sh ./build.sh --dockerpush --smoketest
+#          env:
+#            DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+#            DOCKER_USER: ${{ secrets.DOCKER_USER }}
+
+    linux-x64:
         runs-on: ubuntu-latest
         steps:
         - uses: actions/checkout@v1
-        - name: builds docker container and pushes to docker hub
-          run:  cd build && sh ./build.sh --dockerpush --smoketest
+        - name: builds linux-x64 binary and uploads to github
+          run:  cd build && sh ./build-standalone.sh --target linux
           env:
             DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
             DOCKER_USER: ${{ secrets.DOCKER_USER }}
+            GH_TOKEN: ${{ secrets.GH_TOKEN }}
