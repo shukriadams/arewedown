@@ -54,7 +54,7 @@ If your have the Docker [HTTP API](https://docs.docker.com/engine/api/v1.24/) en
 
 ## System.d service running
 
-To test if a system.d service is running you (all items required)
+You can test if a system.d service is running - you need SSH access to the machine running the service. Note that password can be templated in via an env var (see advanced settings)
 
     watchers:
         my-service-test:
@@ -66,4 +66,11 @@ To test if a system.d service is running you (all items required)
 
 ## Ping
 
-You can ping a host 
+You can ping a host. 
+- Timeout is in seconds, and is optional. 
+
+        watchers:
+            my-ping-test:
+                test: net.ping
+                host: 192.168.0.1
+                timeout: 10 # optional

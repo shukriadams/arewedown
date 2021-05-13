@@ -11,7 +11,11 @@ module.exports = async config => {
             text : '.host required'
         }
 
-    const response = await ping.promise.probe(config.host)
+    
+    const response = await ping.promise.probe(config.host, {
+        timeout : config.timeout || 10, // in seconds
+    })
+
     if (response.alive)
         return
 
