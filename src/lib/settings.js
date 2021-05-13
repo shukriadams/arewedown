@@ -23,7 +23,7 @@ if (settingsPath === './config/settings.dev.yml' || fs.existsSync(settingsPath))
         throw e
     }
 else 
-    console.log(`WARNING: settings.yml not found - please create file in application folder ${process.cwd()}/config/. If you are running in docker, mount your external settings.yml to this location.`)
+    console.warn(`WARNING: settings.yml not found - please create file "<AreWeDown bin>/config/settings.yml". If you are running in docker, mount your external config folder to "/etc/arewdown/config", and ensure you have settings.yml in that folder.`)
 
 function exitIfNotSet(value, message){
     if (value !== null && value !== undefined)

@@ -20,8 +20,6 @@ done
 
 BUILDCONTAINER=shukriadams/node12build:0.0.3$ARCHITECTURE
 
-echo "Smoketest:${SMOKETEST}"
-
 # get tag fom current context
 TAG=$(git describe --abbrev=0 --tags)
 if [ -z $TAG ]; then
@@ -30,14 +28,16 @@ if [ -z $TAG ]; then
 fi
 
 
-
-# copy src to .stage so we can build it both locally and on Github
+# copy src to .stage so we can build it both locally and on Github without writing unwanted changes into src
 rm -rf .stage
 mkdir -p .stage
 rsync -v -r --exclude=node_modules --exclude=test --exclude=data --exclude=user-scripts --exclude=settings.yml --exclude=.* ./../src .stage
 
+# write version to build
+echo $TAG > .stage/src/version
+
 # install with --no-bin-links to avoid simlinks, this is needed to copy build content around
-docker run -v $(pwd)/.stage/src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links'
+docker run -v $(pwd)/.stage/src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'
 
 # zip the build up
 tar -czvf ./build.tar.gz .stage/src 

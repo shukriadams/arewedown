@@ -2,7 +2,7 @@
 
 ![Screenshot of AreWeDown?](https://github.com/shukriadams/arewedown/blob/master/screenshot.PNG)
 
-*Are We Down?* is a simple uptime monitoring system and dashboard. It is intended for the home or small business user who runs multiple services/networked devices on a private LAN, and who doesn't want the hassle of setting up a complex enterprise-level monitoring system. 
+*Are We Down?* is a simple uptime monitoring system and dashboard. It is intended for the home/self-hosting user who runs multiple services/networked devices on a private LAN, and who doesn't want the hassle of setting up a complex enterprise-level monitoring system. It is written in NodeJS.
 
 ## Features 
 
@@ -14,7 +14,7 @@
 - Runs on low-spec hardware like the Raspberry Pi 3.
 - Built-in dashboard will run on almost any browser, ideal for a Raspberry Pi in kiosk mode. 
 
-*Please note :*
+*NOTE:*
 
 - Never expose *Are We Down?* to the public internet - use it behind a firewall/router at all times! 
 - *Are We Down?* is currently not supported or tested on Windows.

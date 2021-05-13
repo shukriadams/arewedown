@@ -1,20 +1,28 @@
 (async ()=>{
-    
+    const process = require('process'),
+        fs = require('fs-extra'),
+        argv = require('minimist')(process.argv.slice(2))
+
+    if (argv.version){
+        const version = await fs.readFile(`${__dirname}/version`, 'utf8')
+        console.log(`AreWeDown? v${version}`)
+        return process.exit(0)
+    }
+
     let server,
         daemon = require('./lib/daemon'),
         http = require('http'),
         Express = require('express'),
         express = Express(),
-        process = require('process'),
-        fs = require('fs-extra'),
         path = require('path'),
         settings = require('./lib/settings'),
         smtp = require('./lib/smtp'),
         sh = require('madscience-node-exec').sh,
         routeFiles = fs.readdirSync(path.join(__dirname, 'routes'))
 
-    await fs.ensureDir(settings.logs)
     
+    // Execute onstart shell command - this is intended for docker builds where the user wants to 
+    // install app or set state in the container, but doesn't want to bake their own container image
     if (settings.onstart){
         console.log('onstart command executing')
 
@@ -27,18 +35,8 @@
         }
     }
 
-    express.get('/restart', async (req, res)=>{
-        if (!settings.allowHttpExit){
-            res.status(403)
-            res.end('Not allowed. set "allowHttpExit:true" to enable restart')
-            return
-        }
 
-        console.log(`Application shutting down normally`)
-        process.exit(1)
-        
-        res.end('restart request')
-    })
+    await fs.ensureDir(settings.logs)
 
     // load routes
     for (const routeFile of routeFiles){
