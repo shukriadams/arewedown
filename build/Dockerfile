@@ -1,4 +1,4 @@
-FROM node:12-alpine3.13
+FROM node:12-alpine
 
 MAINTAINER shukriadams
 
@@ -23,4 +23,4 @@ RUN rm /tmp/build.tar.gz
 USER arewedown
 
 EXPOSE 3000
-RUN npm start
+CMD [ "node", "index.js" ]
