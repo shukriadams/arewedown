@@ -54,7 +54,7 @@ If your have the Docker [HTTP API](https://docs.docker.com/engine/api/v1.24/) en
 
 ## System.d service running
 
-To tests if a system.d service is running you (all items required)
+You can test if a system.d service is running - you need SSH access to the machine running the service. Note that password can be templated in via an env var (see advanced settngs)
 
     watchers:
         my-service-test:
