@@ -23,7 +23,7 @@
 
 If you're on Linux (including Raspbian) and have Docker installed, check out the [Docker installation guide](/docs/install-docker.md).
 
-If you're on Linux x64 and don't want to use Docker, you can grab a standalone executable under [releases](/releases). (These are still experimental).
+If you're on Linux x64 and don't want to use Docker, you can grab a standalone executable under [releases](https://github.com/shukriadams/arewedown/releases). (These are still experimental).
 
 If you want to install the app from source, try the [NodeJS install guide](/docs/install-nodejs.md).
 
