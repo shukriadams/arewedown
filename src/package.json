@@ -13,7 +13,7 @@
         "start": "node index",
         "debug": "node --inspect=0.0.0.0:3001 index",
         "debug-brk": "node --inspect-brk=0.0.0.0:3001 index",
-        "test": "cd test && ./../node_modules/mocha/bin/mocha --recursive --timeout 5000",
+        "test": "./node_modules/mocha/bin/mocha --recursive --timeout 5000",
         "cover": "nyc npm run test"
     },
     "dependencies": {

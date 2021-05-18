@@ -3,16 +3,16 @@ describe('basic', async()=>{
         
         const assert = require('madscience-node-assert'),
             proxyquire =  require('proxyquire'),
-            CronProcess = proxyquire(_$+'lib/cronProcess', { './smtp': {
+            Watcher = proxyquire(_$+'lib/watcher', { './smtp': {
                 test(){
                     return '123'
                 }
             }}),
-            cronProcess = new CronProcess({
+            watcher = new Watcher({
                 __name : 'test'
             })
 
-        //assert.equal(cronProcess.test(), '123')
+        //assert.equal(watcher.test(), '123')
     })
 })
 
