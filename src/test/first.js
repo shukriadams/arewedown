@@ -1,3 +1,4 @@
+/*
 describe('basic', async()=>{
     it('should just work', async() => {
         
@@ -16,3 +17,4 @@ describe('basic', async()=>{
     })
 })
 
+*/

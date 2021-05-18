@@ -13,22 +13,34 @@ module.exports = {
             http = require('http'),
             Express = require('express'),
             express = Express(),
-            path = require('path'),
             settings = require('./settings'),
             sh = require('madscience-node-exec').sh,
-            routeFiles = fs.readdirSync(path.join(__dirname, '/../routes'))
-   
+            log = require('./logger').instance(),
+            startArgs = require('./startArgs').get()
+        
+
+        // If starting with --version flag, print version from package.json then exit
+        // When running live, package.json will get its version from git release tag - the build script is 
+        // responsible for writing that tag to package.json. 
+        // When running in dev mode, version always returns the placeholder value of "0.0.1", which must never
+        // be updated.
+        if (startArgs.version){
+            const package = await fs.readJson(`${__dirname}/../package.json`)
+            console.log(`AreWeDown? v${package.version}`)
+            return package.version // return code is test aid
+        }            
+
         
         // Execute onstart shell command - this is intended for docker builds where the user wants to 
         // install app or set state in the container, but doesn't want to bake their own container image.
         // This state is ephemeral, so this solution isn't optimal, but it at least docker novices a chance
         // to run shell commands with advanced requirements. Options are nice.
         if (settings.onstart){
-            console.log('onstart command executing')
+            log.info('onstart command executing')
     
             try {
                 const result = await sh({ cmd : settings.onstart })
-                console.log(`onstart finished with result : `, result)
+                log.info(`onstart finished with result : `, result)
             } catch(ex){
                 throw { text : `onstart failed with error : `, ex }
             }
@@ -50,7 +62,8 @@ module.exports = {
         }
         
 
-        // load routes
+        // load express routes - these are all files in .src/routes folder
+        const routeFiles = await this.findRoutes()
         for (const routeFile of routeFiles){
             const routeFileName = routeFile.match(/(.*).js/).pop(),
                 route = require(`./../routes/${routeFileName}`)
@@ -64,5 +77,16 @@ module.exports = {
         serverProcess = server.listen(settings.port)
 
         console.log(`Are We Down? started, listening on port ${settings.port}`)
-    } 
+    },
+
+    
+    /**
+     * Break out route loading for easier testing.
+     */
+    async findRoutes(){
+        const path = require('path'),
+            fs = require('fs-extra')
+
+        return await fs.readdir(path.join(__dirname, '/../routes'))
+    }
 }
