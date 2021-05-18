@@ -1,10 +1,10 @@
 describe('index', async()=>{
-    it('should return version', async(done) => {
+    it('should return version', async() => {
         
         const assert = require('madscience-node-assert'),
             proxyquire =  require('proxyquire'),
             capcon = require('capture-console'),
-            startServer = proxyquire(_$+'index', { './lib/startArgs': {
+            server = proxyquire(_$+'index', { './lib/startArgs': {
                 get(){
                     return {
                         version : true,
@@ -13,17 +13,11 @@ describe('index', async()=>{
                 }
             }})
 
-
-        const catpureconsole = new Promise((resolve, reject)=>{
-            const version = capcon.captureStdout(async()=>{
-                await startServer()
-                console.log(`version`, version)
-                done()
-            })
-        })
-
-
-        console.log(`version`, version)
+        
+        
+        //await catpureconsole()
+        //console.log(startServer)
+       // console.log(`version`, version)
 
         //assert.equal(index(), '123')
     })

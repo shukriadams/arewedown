@@ -29,8 +29,7 @@ function exitIfNotSet(value, message){
     if (value !== null && value !== undefined)
         return
 
-    console.log(`ERROR: ${message}`)
-    process.exit(1)
+    throw message
 }    
 
 
@@ -227,18 +226,15 @@ for (const watcherName in _settings.watchers){
             console.warn(`WARNING : no default recipients to assign to contactless-watcher ${watcherName} - this watcher will fail silently`)
         }
     } else {
+
         // ensure that recipient names match objects in recipient object
         for (const recipientName of watcher.recipients)
-            if (!_settings.recipients[recipientName]){
-                console.error(`Recipient name ${recipientName} in watcher ${watcherName} is invalid`)
-                process.exit(1)
-            }
+            if (!_settings.recipients[recipientName])
+                throw `Recipient name ${recipientName} in watcher ${watcherName} is invalid`
     }
 
-    if (watcher.test && ! fs.existsSync(`${__dirname}/../tests/${watcher.test}.js`)){
-        console.log(`ERROR: watcher "${watcherName}" test "${watcher.test}" does not exist`)
-        process.exit(1)
-    }
+    if (watcher.test && ! fs.existsSync(`${__dirname}/../tests/${watcher.test}.js`))
+        throw `ERROR: watcher "${watcherName}" test "${watcher.test}" does not exist`
 
      _settings.watchers[watcherName] = watcher
 }
@@ -283,8 +279,7 @@ function parseEnvironmentVariables(value){
         if (process.env[value])
             return process.env[value]
         else {
-            console.log(`ERROR : config expects environment variable "${value}", but this was not found. `)
-            return process.exit(1)
+            throw `ERROR : config expects environment variable "${value}", but this was not found.`
         }
     }
 

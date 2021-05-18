@@ -8,7 +8,6 @@ module.exports = {
     async start(){
 
         let server,
-            process = require('process'),
             fs = require('fs-extra'),
             daemon = require('./daemon'),
             http = require('http'),
@@ -31,8 +30,7 @@ module.exports = {
                 const result = await sh({ cmd : settings.onstart })
                 console.log(`onstart finished with result : `, result)
             } catch(ex){
-                console.log(`onstart failed with error : `, ex)
-                process.exit(1)
+                throw { text : `onstart failed with error : `, ex }
             }
         }
     

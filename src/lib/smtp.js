@@ -1,5 +1,4 @@
 const settings = require('./settings'),
-    process = require('process'),
     log = require('./../lib/logger').instance()
 
 module.exports = { 
@@ -53,8 +52,7 @@ module.exports = {
             await client.quit()
             console.log('smtp connection test succeeded.')
         } catch (ex){
-            log.error('smtp connection test failed. Please confirm smtp settings are valid.', ex)
-            process.exit(1)
+            throw { text : 'smtp connection test failed. Please confirm smtp settings are valid.', ex }
         }        
     }
 }
