@@ -159,7 +159,7 @@ for (const name in _settings.watchers){
     watcher.recipients = watcher.recipients || '*' 
     // convert string list to array
     if (watcher.recipients !== '*')
-        watcher.recipients = watcher.recipients.spit(',').filter(w => !!w)
+        watcher.recipients = watcher.recipients.split(',').filter(w => !!w)
 
     // force default values based on logic  
     if (!watcher.cmd && !watcher.test)
