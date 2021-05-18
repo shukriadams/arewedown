@@ -1,6 +1,6 @@
 let CronJob = require('cron').CronJob,
     path = require('path'),
-    CronProcess = require('./cronProcess'),
+    Watcher = require('./watcher'),
     fs = require('fs-extra'),
     fsUtils = require('madscience-fsUtils'),
     timebelt = require('timebelt'),
@@ -21,11 +21,11 @@ let CronJob = require('cron').CronJob,
             this.watchers = []
 
             for (const watcherName in settings.watchers){
-                const watcher = settings.watchers[watcherName]
-                if (watcher.enabled){
-                    const cronProcess = new CronProcess(watcher)
-                    this.watchers.push(cronProcess)
-                    cronProcess.start()
+                const watcherConfig = settings.watchers[watcherName]
+                if (watcherConfig.enabled){
+                    const watcher = new Watcher(watcherConfig)
+                    this.watchers.push(watcher)
+                    watcher.start()
                 } else {
                     log.info(`Skipping disabled watcher "${watcher.__name}"${watcher.error ? ` ${watcher.error}`:''}`)
                 }
