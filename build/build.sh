@@ -31,8 +31,8 @@ rm -rf .stage
 mkdir -p .stage
 rsync -v -r --exclude=node_modules --exclude=test --exclude=data --exclude=user-scripts --exclude=settings.yml --exclude=.* ./../src .stage
 
-# write version to build
-echo $TAG > .stage/src/version
+# write version to package.json in ./stag/src
+node writeVersion --version $TAG
 
 # install with --no-bin-links to avoid simlinks, this is needed to copy build content around
 docker run -v $(pwd)/.stage/src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'

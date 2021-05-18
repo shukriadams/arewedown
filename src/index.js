@@ -1,11 +1,11 @@
 (async ()=>{
-    const process = require('process'),
-        fs = require('fs-extra'),
-        argv = require('minimist')(process.argv.slice(2))
+    const startArgs = require('./lib/startArgs').get(),
+        process = require('process'),
+        fs = require('fs-extra')
 
-    if (argv.version){
-        const version = await fs.readFile(`${__dirname}/version`, 'utf8')
-        console.log(`AreWeDown? v${version}`)
+    if (startArgs.version){
+        const package = await fs.readJson(`${__dirname}/package.json`)
+        console.log(`AreWeDown? v${package.version}`)
         return process.exit(0)
     }
 

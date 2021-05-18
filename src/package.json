@@ -46,7 +46,6 @@
     "pkg": {
         "assets": [
             "./package.json",
-            "./version",
             "./node_modules/**",
             "./lib/**",
             "./public/**",
