@@ -1,58 +1,24 @@
 (async ()=>{
+
     const startArgs = require('./lib/startArgs').get(),
         process = require('process'),
+        server = require('./lib/server'),
         fs = require('fs-extra')
 
+    // If starting with --version flag, print version from package.json then exit
+    // When running live, package.json will get its version from git release tag - the build script is 
+    // responsible for writing that tag to package.json. 
+    // When running in dev mode, version always returns the placeholder value of "0.0.1", which must never
+    // be updated.
     if (startArgs.version){
         const package = await fs.readJson(`${__dirname}/package.json`)
         console.log(`AreWeDown? v${package.version}`)
         return process.exit(0)
     }
 
-    let server,
-        daemon = require('./lib/daemon'),
-        http = require('http'),
-        Express = require('express'),
-        express = Express(),
-        path = require('path'),
-        settings = require('./lib/settings'),
-        smtp = require('./lib/smtp'),
-        sh = require('madscience-node-exec').sh,
-        routeFiles = fs.readdirSync(path.join(__dirname, 'routes'))
+    // Start the server if not in unit testing mode. Else pass server on to caller, which will be testing code
+    if (!startArgs.testing)
+        await server.start()
 
-    
-    // Execute onstart shell command - this is intended for docker builds where the user wants to 
-    // install app or set state in the container, but doesn't want to bake their own container image
-    if (settings.onstart){
-        console.log('onstart command executing')
-
-        try {
-            const result = await sh({  cmd : settings.onstart })
-            console.log(`onstart finished with result`, result)
-        } catch(ex){
-            console.log(`onstart failed with`, ex)
-            process.exit(1)
-        }
-    }
-
-
-    await fs.ensureDir(settings.logs)
-
-    // load routes
-    for (const routeFile of routeFiles){
-        const name = routeFile.match(/(.*).js/).pop(),
-            routes = require(`./routes/${name}`)
-
-        routes(express)
-    }
-    
-    if(settings.transports.smtp)
-        await smtp.ensureSettingsOrExit()
-
-    await daemon.start()
-    
-    server = http.createServer(express)
-    serverProcess = server.listen(settings.port)
-    console.log(`Listening on port ${settings.port}`)
-
+    module.exports = server
 })()
