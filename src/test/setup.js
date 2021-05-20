@@ -5,7 +5,9 @@ beforeEach(done => {
         global._$ = path.resolve(`${__dirname}/../`) + '/'
         global._$t = path.resolve(`${__dirname}/`) + '/'
 
-        console.log('setup')
+        const requireMock = require('./require')
+        requireMock.clear()
+
         done()
     })()
 })

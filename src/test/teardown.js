@@ -1,6 +1,9 @@
 afterEach(done => {
     (async ()=>{
-        console.log('teardown')
+
+        const requireMock = require('./require')
+        requireMock.clear()
+
         done()
     })()
 })

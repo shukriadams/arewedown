@@ -1,19 +1,42 @@
 describe('server', async()=>{
-    it('starting with --version should return static version in package.json and exit', async() => {
-        
+    it('should return static version starting with --version, then exit', async() => {
+
         const assert = require('madscience-node-assert'),
-            proxyquire =  require('proxyquire'),
-            server = proxyquire(_$+'lib/server', { './startArgs': {
+            ctx = require(_$t+'context')
+            ctx.inject.object('./startArgs', {
                 get(){
                     return {
                         version : true,
                         testing : true
                     }
                 }
-            }})
+            })
 
-        const result =  await server.start()
+        const server = require(_$+'lib/server'),
+            result =  await server.start()
+
         assert.equal(result, '0.0.1')
+    })
+
+    it('should start the server', async() => {
+        
+        const ctx = require(_$t+'context')
+        ctx.inject.object('./daemon', {
+            start (){ }
+        })
+        ctx.inject.object('http', {
+            createServer (){
+                return {
+                    listen(){}
+                }
+            }
+        })
+        
+        const server = require(_$+'lib/server')
+        server.executeStartScript = ()=>{}
+        server.validateTransports = ()=>{}
+        server.loadRoutes = ()=>{}
+        await server.start()
     })
 })
 

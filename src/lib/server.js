@@ -9,8 +9,8 @@ module.exports = {
 
         let server,
             fs = require('fs-extra'),
-            daemon = require('./daemon'),
             http = require('http'),
+            daemon = require('./daemon'),
             Express = require('express'),
             express = Express(),
             settings = require('./settings'),
@@ -37,7 +37,7 @@ module.exports = {
         await daemon.start()
         
         server = http.createServer(express)
-        serverProcess = server.listen(settings.port)
+        server.listen(settings.port)
 
         console.log(`Are We Down? started, listening on port ${settings.port}`)
     },
@@ -47,7 +47,9 @@ module.exports = {
      * 
      */
     async printVersion(){
-        const package = await fs.readJson(`${__dirname}/../package.json`)
+        const fs = require('fs-extra'),
+            package = await fs.readJson(`${__dirname}/../package.json`)
+
         console.log(`AreWeDown? v${package.version}`)
         return package.version 
     },

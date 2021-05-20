@@ -7,7 +7,7 @@ let fs = require('fs-extra'),
     sanitize = require('sanitize-filename'),
     allWatcherNames = [],
     settingsPath = './config/settings.yml',
-        _settings = {}
+    _settings = {}
 
 dotenv.config()
 
