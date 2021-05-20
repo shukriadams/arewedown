@@ -6,7 +6,6 @@ module.exports = {
      * Starts the AreWedown? Server. 
      */
     async start(){
-
         let server,
             fs = require('fs-extra'),
             http = require('http'),
@@ -48,10 +47,10 @@ module.exports = {
      */
     async printVersion(){
         const fs = require('fs-extra'),
-            package = await fs.readJson(`${__dirname}/../package.json`)
+            packageJson = await fs.readJson(`${__dirname}/../package.json`)
 
-        console.log(`AreWeDown? v${package.version}`)
-        return package.version 
+        console.log(`AreWeDown? v${packageJson.version}`)
+        return packageJson.version 
     },
     
 

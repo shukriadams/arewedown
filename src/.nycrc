@@ -1,0 +1,12 @@
+{
+    "all": true,
+    "include": [
+        "lib/**/*.js",
+        "routes/**/*.js",
+        "tests/**/*.js",
+        "index.js"
+    ],
+    "exclude": [
+        "**/types/**"
+    ]
+}
