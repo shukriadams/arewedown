@@ -16,12 +16,22 @@ const injectClass = (path, override)=>{
 
 
 module.exports = {
+    clone : clonedeep,
     inject : {
+        
+        /**
+         * Overwrites an object
+         */
+        virtual(path, override){
+            requireMock.virtual(path, override)
+        },
 
         /**
          * Overwrites an object
          */
-        object : injectObject,
+        object(path, override){
+            requireMock.add(path, override)
+        },
 
         /**
          * Overwrites a function

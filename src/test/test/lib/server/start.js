@@ -1,5 +1,6 @@
-describe('server', async()=>{
-    it('should return static version starting with --version, then exit', async() => {
+describe('server/start', async()=>{
+
+    it('server/start::happy::should return static version starting with --version, then exit', async() => {
 
         const assert = require('madscience-node-assert'),
             ctx = require(_$t+'context')
@@ -18,7 +19,7 @@ describe('server', async()=>{
         assert.equal(result, '0.0.1')
     })
 
-    it('should start the server', async() => {
+    it('server/start::happy::should start the server', async() => {
         
         const ctx = require(_$t+'context')
         ctx.inject.object('./daemon', {
@@ -32,11 +33,13 @@ describe('server', async()=>{
             }
         })
         
-        const server = require(_$+'lib/server')
+        const server = ctx.clone(require(_$+'lib/server'))
+        // disable all server methods used in start
         server.executeStartScript = ()=>{}
         server.validateTransports = ()=>{}
         server.loadRoutes = ()=>{}
         await server.start()
+        // no assert, cover only
     })
-})
 
+})

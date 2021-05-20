@@ -84,7 +84,10 @@ module.exports = {
      * load express routes - these are all files in .src/routes folder
      */
     async loadRoutes(express){
-        const routeFiles = await this.findRoutes()
+        const path = require('path'),
+            fs = require('fs-extra'),
+            routeFiles = await fs.readdir(path.join(__dirname, '/../routes'))
+
         for (const routeFile of routeFiles){
             const routeFileName = routeFile.match(/(.*).js/).pop(),
                 route = require(`./../routes/${routeFileName}`)
@@ -110,16 +113,6 @@ module.exports = {
 
             await transport.ensureSettingsOrExit()
         }
-    },
-    
-
-    /**
-     * Break out route loading for easier testing.
-     */
-    async findRoutes(){
-        const path = require('path'),
-            fs = require('fs-extra')
-
-        return await fs.readdir(path.join(__dirname, '/../routes'))
     }
+   
 }
