@@ -1,11 +1,28 @@
 module.exports = { 
-    generateMessate(isPassing, watcherName){
-        let subject = isPassing ? `SUCCESS: ${watcherName} is up` : `WARNING: ${watcherName} is down`,
+
+    /**
+     * 
+     */
+    generateContent(isPassing, to, watcherName){
+        const settings = require('./settings'),
+            smtpConfig = settings.transports.smtp,
+            subject = isPassing ? `SUCCESS: ${watcherName} is up` : `WARNING: ${watcherName} is down`,
             message = isPassing ? `${watcherName} is up` : `${watcherName} is down`
+
+        return `From : ${smtpConfig.from}\n` +
+            `Subject : ${subject}\n` +
+            `To: ${to}\n` +
+            `\n` +
+            `${message}`
     },
 
-    async send(to, subject, message){
+
+    /**
+     * 
+     */
+    async send(to, watcherName, isPassing){
         const settings = require('./settings'),
+            mailContent = this.generateContent(isPassing, to, watcherName),
             log = require('./../lib/logger').instance(),
             smtpConfig = settings.transports.smtp,
             SMTPClient = require('smtp-client').SMTPClient,
@@ -13,13 +30,7 @@ module.exports = {
                 host: smtpConfig.server,
                 secure: smtpConfig.secure,
                 port: smtpConfig.port
-            }),
-            mailContent = 
-                `From : ${smtpConfig.from}\n` +
-                `Subject : ${subject}\n` +
-                `To: ${to}\n` +
-                `\n` +
-                `${message}`
+            })
 
         try {
             await client.connect()

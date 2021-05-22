@@ -48,6 +48,11 @@ module.exports = {
             modules[path] = mod
     },
     
+    removeObject(path){
+        if (modules[path])
+            delete modules[path]
+    },
+
     overwriteObject(path, mod){
         if (fullObjects[path]){
             let clone = clonedeep(fullObjects[path])
