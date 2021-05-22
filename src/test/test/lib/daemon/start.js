@@ -7,7 +7,7 @@ describe('daemon/start', async()=>{
             test : { enabled : true }
         }})
         
-        ctx.inject.addClass('./watcher', class{
+        ctx.inject.class('./watcher', class{
             start(){ }
         })
         

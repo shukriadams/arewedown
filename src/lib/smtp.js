@@ -1,9 +1,8 @@
-const settings = require('./settings'),
-    log = require('./../lib/logger').instance()
-
 module.exports = { 
     async send(to, subject, message){
-        let smtpConfig = settings.transports.smtp,
+        const settings = require('./settings'),
+            log = require('./../lib/logger').instance(),
+            smtpConfig = settings.transports.smtp,
             SMTPClient = require('smtp-client').SMTPClient,
             client = new SMTPClient({
                 host: smtpConfig.server,
@@ -25,6 +24,7 @@ module.exports = {
             await client.rcpt({ to })
             await client.data(mailContent)
             await client.quit()
+
             return {
                 result : 'mail sent.'
             }
@@ -34,8 +34,9 @@ module.exports = {
     },
     
     async ensureSettingsOrExit(){
-        
-        let smtpConfig = settings.transports.smtp,
+        const settings = require('./settings'),
+            log = require('./../lib/logger').instance(),
+            smtpConfig = settings.transports.smtp,
             SMTPClient = require('smtp-client').SMTPClient,
             client = new SMTPClient({
                 host: smtpConfig.server,
@@ -50,6 +51,7 @@ module.exports = {
             await client.greet({hostname: smtpConfig.server })
             await client.authPlain({username: smtpConfig.user, password: smtpConfig.pass })
             await client.quit()
+            
             console.log('smtp connection test succeeded.')
         } catch (ex){
             throw { text : 'smtp connection test failed. Please confirm smtp settings are valid.', ex }
