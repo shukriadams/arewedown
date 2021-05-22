@@ -1,7 +1,7 @@
-describe('server/validateTransports', async()=>{
+describe('lib/server/validateTransports', async()=>{
 
 
-    it('server/validateTransports::happy::should not test disabled test', async() => {
+    it('lib/server/validateTransports::happy::should not test disabled test', async() => {
 
         const ctx = require(_$t+'context')
 
@@ -19,7 +19,7 @@ describe('server/validateTransports', async()=>{
     })
 
 
-    it('server/validateTransports::unhappy::should not throw exception if transport does not have ensureSettingsOrExit method', async() => {
+    it('lib/server/validateTransports::unhappy::should not throw exception if transport does not have ensureSettingsOrExit method', async() => {
         const assert = require('madscience-node-assert'),
             ctx = require(_$t+'context')
 
@@ -42,7 +42,7 @@ describe('server/validateTransports', async()=>{
     })
 
     
-    it('server/validateTransports::happy::validates transport', async() => {
+    it('lib/server/validateTransports::happy::validates transport', async() => {
         let assert = require('madscience-node-assert'),
             ctx = require(_$t+'context'),
             validated = false

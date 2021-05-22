@@ -1,4 +1,4 @@
-describe('daemon/internalWork', async()=>{
+describe('lib/daemon/internalWork', async()=>{
 
     const createTestStructures=()=>{
         const ctx = require(_$t+'context')
@@ -17,13 +17,13 @@ describe('daemon/internalWork', async()=>{
         return ctx
     }
 
-    it('daemon/internalWork::cover', async()=>{
+    it('lib/daemon/internalWork::cover', async()=>{
         const ctx = createTestStructures()
         const daemon = ctx.clone(require(_$+'lib/daemon'))
         await daemon.internalWork()
     })
 
-    it('daemon/internalWork::cover::remove throws error', async()=>{
+    it('lib/daemon/internalWork::cover::remove throws error', async()=>{
         const ctx = createTestStructures()
         ctx.inject.object('fs-extra', { 
             remove(){ throw 'expected error' }
@@ -33,7 +33,7 @@ describe('daemon/internalWork', async()=>{
         await daemon.internalWork()
     })
 
-    it('daemon/internalWork::cover::stat throws error', async()=>{
+    it('lib/daemon/internalWork::cover::stat throws error', async()=>{
         const ctx = createTestStructures()
         ctx.inject.object('fs-extra', { 
             stat(){ throw 'expected error' }
@@ -43,7 +43,7 @@ describe('daemon/internalWork', async()=>{
         await daemon.internalWork()
     })
 
-    it('daemon/internalWork::cover::basename returns status.json', async()=>{
+    it('lib/daemon/internalWork::cover::basename returns status.json', async()=>{
         const ctx = createTestStructures()
         ctx.inject.object('path', { 
             basename(){ return 'status.json' } 

@@ -61,7 +61,7 @@
         "capture-console" : "1.0.1",
         "lodash.clonedeep": "4.5.0",
         "nyc" : "15.1.0",
-        "madscience-node-assert": "https://github.com/shukriadams/node-assert.git#0.0.5",
+        "madscience-node-assert": "https://github.com/shukriadams/node-assert.git#0.0.7",
         "mocha": "7.1.0"
     }
 }

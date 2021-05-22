@@ -1,3 +1,7 @@
+/**
+ * functional copy of timespan function in clientside code - used to replicate appearance between the two on
+ * dashboard reload.
+ */
 module.exports = (end, start) => {
     if (typeof start === 'number' || typeof start === 'string')
         start = new Date(start)

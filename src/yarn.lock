@@ -1855,9 +1855,9 @@ log-symbols@3.0.0:
     fs-extra "6.0.0"
     request "2.88.0"
 
-"madscience-node-assert@https://github.com/shukriadams/node-assert.git#0.0.5":
+"madscience-node-assert@https://github.com/shukriadams/node-assert.git#0.0.7":
   version "0.0.1"
-  resolved "https://github.com/shukriadams/node-assert.git#bc0988a8821958838e394777080aa33811422de3"
+  resolved "https://github.com/shukriadams/node-assert.git#598b93334a43cbfa97e5dc601be6d6a85c378ae7"
 
 "madscience-node-exec@https://github.com/shukriadams/node-exec.git#0.0.7":
   version "0.0.2"

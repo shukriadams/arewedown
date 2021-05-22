@@ -1,4 +1,4 @@
-describe('history/writePassing', async()=>{
+describe('lib/history/writePassing', async()=>{
 
     const createTestStructures =()=>{
         const ctx = require(_$t+'context')
@@ -12,7 +12,7 @@ describe('history/writePassing', async()=>{
         return ctx
     }
 
-    it('history/writePassing::happy', async()=>{
+    it('lib/history/writePassing::happy', async()=>{
         const ctx = createTestStructures(),
             history = ctx.clone(require(_$+'lib/history')),
             changed = await history.writePassing('test', new Date())
@@ -20,7 +20,7 @@ describe('history/writePassing', async()=>{
         ctx.assert.true(changed)
     })
 
-    it('history/writeFailing::happy', async()=>{
+    it('lib/history/writeFailing::happy', async()=>{
         const ctx = createTestStructures(),
             history = ctx.clone(require(_$+'lib/history'))
 

@@ -1,7 +1,7 @@
-describe('server/executeStartScript', async()=>{
+describe('lib/server/executeStartScript', async()=>{
     
 
-    it('server/executeStartScript::happy::should not execute start script if start script is null ', async() => {
+    it('lib/server/executeStartScript::happy::should not execute start script if start script is null ', async() => {
         
         let ctx = require(_$t+'context'),
             assert = require('madscience-node-assert'),
@@ -28,7 +28,7 @@ describe('server/executeStartScript', async()=>{
     })
 
     
-    it('server/executeStartScript::happy::should execute start script', async() => {
+    it('lib/server/executeStartScript::happy::should execute start script', async() => {
         
         let ctx = require(_$t+'context'),
             assert = require('madscience-node-assert'),
@@ -61,7 +61,7 @@ describe('server/executeStartScript', async()=>{
     })
 
         
-    it('server/executeStartScript::unhappy::should trap exception on script error', async() => {
+    it('lib/server/executeStartScript::unhappy::should trap exception on script error', async() => {
         
         let ctx = require(_$t+'context'),
             assert = require('madscience-node-assert')

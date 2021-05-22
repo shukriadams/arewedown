@@ -1,6 +1,6 @@
-describe('array/split', async()=>{
+describe('lib/array/split', async()=>{
 
-    it('array/split::happy::shout split array', async() => {
+    it('lib/array/split::happy::shout split array', async() => {
         const arrayHelper = require(_$+'lib/array'),
             assert = require('madscience-node-assert'),
             result = arrayHelper.split('test ,, 123,', ',')

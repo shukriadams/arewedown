@@ -1,6 +1,6 @@
-describe('server/loadRoutes', async()=>{
+describe('lib/server/loadRoutes', async()=>{
     
-    it('server/loadRoutes::happy::should load routes without error', async() => {
+    it('lib/server/loadRoutes::happy::should load routes without error', async() => {
 
         const server = require(_$+'lib/server'),
             fakeExpress = {

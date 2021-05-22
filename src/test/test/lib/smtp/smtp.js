@@ -1,4 +1,4 @@
-describe('smtp', async()=>{
+describe('lib/smtp', async()=>{
 
     const createTestStructures =()=>{
         const ctx = require(_$t+'context')
@@ -19,7 +19,7 @@ describe('smtp', async()=>{
         return ctx
     }
 
-    it('smtp/send::happy', async()=>{
+    it('lib/smtp/send::happy', async()=>{
         const ctx = createTestStructures(),
             smtp = ctx.clone(require(_$+'lib/smtp')),
             result = await smtp.send()
@@ -27,7 +27,7 @@ describe('smtp', async()=>{
         ctx.assert.equal(result.result, 'mail sent.')
     })
 
-    it('smtp/ensureSettingsOrExit::cover', async()=>{
+    it('lib/smtp/ensureSettingsOrExit::cover', async()=>{
         const ctx = createTestStructures(),
             smtp = ctx.clone(require(_$+'lib/smtp'))
             
