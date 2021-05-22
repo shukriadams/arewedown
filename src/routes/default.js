@@ -1,6 +1,6 @@
 
 const settings = require('./../lib/settings'),
-    handlebars = require('./../lib/handlebars')
+    handlebarsLoader = require('madscience-handlebarsloader')
 
 module.exports = app =>{
 
@@ -33,7 +33,7 @@ module.exports = app =>{
         if (!dashboardNode && definedDashboardKeys.length)
             dashboardNode = definedDashboardKeys[0]
             
-        const view = handlebars.getView('dashboard')
+        const view = await handlebarsLoader.getPage('dashboard')
         res.send(view({
             dashboardNode,
             dashboardLoadTimeout : settings.dashboardLoadTimeout,

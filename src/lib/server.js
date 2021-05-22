@@ -11,6 +11,7 @@ module.exports = {
             http = require('http'),
             daemon = require('./daemon'),
             Express = require('express'),
+            handlebarsLoader = require('madscience-handlebarsloader'),
             express = Express(),
             settings = require('./settings'),
             startArgs = require('./startArgs').get()
@@ -29,12 +30,21 @@ module.exports = {
         // ensure/validate all the things
         await fs.ensureDir(settings.logs)
         await this.validateTransports()
+        
 
 
         // ready to start - load/start all the things
         await this.loadRoutes(express)
         await daemon.start()
-        
+
+        // config
+        handlebarsLoader.initialize({ 
+            forceInitialize : !settings.cacheViews,
+            helpers : `${__dirname}/handlebars-helpers`,
+            pages : `${__dirname}/../views/pages`,
+            partials : `${__dirname}/../views/partials`,
+        })
+
         server = http.createServer(express)
         server.listen(settings.port)
 

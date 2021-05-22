@@ -39,9 +39,7 @@ describe('server/executeStartScript', async()=>{
                 return {
                     info(content){
                         // should not be called for this test
-                        
                         logged = content
-                        console.log('S>>>', logged)
                     }
                 }
             }

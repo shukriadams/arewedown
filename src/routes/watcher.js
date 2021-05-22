@@ -1,4 +1,4 @@
-const handlebars = require('./../lib/handlebars'),
+const handlebarsLoader = require('madscience-handlebarsloader'),
     path = require('path'),
     fs = require('fs-extra'),
     jsonfile= require('jsonfile'),
@@ -12,7 +12,7 @@ module.exports = function(app){
         try {
             const watcher = settings.watchers[req.params.watcher]
             if (!watcher){
-                const view = handlebars.getView('invalidWatcher')
+                const view = await handlebarsLoader.getPage('invalidWatcher')
                 return res.send(view({
                     title : req.params.watcher
                 }))
@@ -57,7 +57,7 @@ module.exports = function(app){
                 }
             }
             
-            let view = handlebars.getView('watcher')
+            let view = await handlebarsLoader.getPage('watcher')
             res.send(view({
                 title : `${settings.header} : ${watcher.name} history`,
                 history

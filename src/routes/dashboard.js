@@ -1,5 +1,5 @@
 const settings = require('./../lib/settings'),
-    handlebars = require('./../lib/handlebars'),
+    handlebarsLoader = require('madscience-handlebarsloader')
     arrayHelper = require('./../lib/array'),
     daemon = require('./../lib/daemon'),
     timespan = require('./../lib/timespan')
@@ -16,7 +16,7 @@ module.exports = app => {
             hasErrors = false
 
         if (!settings.dashboards || !Object.keys(settings.dashboards).length){
-            let view = handlebars.getView('noDashboards')
+            let view = await handlebarsLoader.getPage('noDashboards')
             return res.send(view({
                 hasErrors
             }))
@@ -24,14 +24,14 @@ module.exports = app => {
 
         let dashboard = settings.dashboards[dashboardNode]
         if (!dashboard){
-            let view = handlebars.getView('invalidDashboard')
+            let view = await handlebarsLoader.getPage('invalidDashboard')
             return res.send(view({
                 title : dashboardNode,
                 hasErrors : true
             }))
         }
 
-        const view = handlebars.getView('dashboardInner'),
+        const view = await handlebarsLoader.getPage('dashboardInner'),
             dashboardWatchers = arrayHelper.split(dashboard.watchers, ','), // clone array, we don't want to change source
             // get cronprocesses that are running and used on the current dashboard
             watchers = daemon.watchers.slice(0).filter((job)=>{
