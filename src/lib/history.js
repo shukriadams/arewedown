@@ -9,8 +9,10 @@ module.exports = {
         let settings = require('./settings'),
             fs = require('fs-extra'),
             path = require('path'),
+            log = require('./../lib/logger').instance(),
             downFlag = path.join(settings.logs, safeName, 'flag'),
-            statusChanged = false,
+            changed = false,
+            downDate = null,
             historyLogFolder = path.join(settings.logs, safeName, 'history')
 
         await fs.ensureDir(historyLogFolder)
@@ -22,6 +24,13 @@ module.exports = {
 
         // site is back up after fail was previous detected, clean up flag and write log
         if (await fs.exists(downFlag)){
+            
+            try {
+                downDate = (await fs.readJson(downFlag)).date
+            } catch(ex){
+                log.error(`Downflag "${downFlag}" is corrupt`)
+            }
+
             await fs.remove(downFlag)
 
             await fs.writeJson(path.join(historyLogFolder, `${date.getTime()}.json`), {
@@ -29,7 +38,7 @@ module.exports = {
                 date
             })
 
-            statusChanged = true
+            changed = true
         }
 
         // if no history exists, write start entry, status flag counts for 1, history will be 1 more
@@ -39,7 +48,10 @@ module.exports = {
                 date 
             })
 
-        return statusChanged
+        return { 
+            changed,
+            downDate
+        }
     },
 
     async writeFailing(safeName, date){
@@ -47,7 +59,7 @@ module.exports = {
             fs = require('fs-extra'),
             path = require('path'),
             downFlag = path.join(settings.logs, safeName, 'flag'),
-            statusChanged = false,
+            changed = false,
             historyLogFolder = path.join(settings.logs, safeName, 'history')
 
         if (!await fs.exists(downFlag)){
@@ -67,9 +79,12 @@ module.exports = {
                 date : this.lastRun
             })
 
-            statusChanged = true
+            changed = true
         }
 
-        return statusChanged
+        return {
+            changed
+        }
+
     }
 }

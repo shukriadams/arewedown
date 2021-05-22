@@ -1,4 +1,9 @@
 module.exports = { 
+    generateMessate(isPassing, watcherName){
+        let subject = isPassing ? `SUCCESS: ${watcherName} is up` : `WARNING: ${watcherName} is down`,
+            message = isPassing ? `${watcherName} is up` : `${watcherName} is down`
+    },
+
     async send(to, subject, message){
         const settings = require('./settings'),
             log = require('./../lib/logger').instance(),

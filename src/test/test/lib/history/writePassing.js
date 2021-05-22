@@ -15,9 +15,9 @@ describe('lib/history/writePassing', async()=>{
     it('lib/history/writePassing::happy', async()=>{
         const ctx = createTestStructures(),
             history = ctx.clone(require(_$+'lib/history')),
-            changed = await history.writePassing('test', new Date())
+            status = await history.writePassing('test', new Date())
 
-        ctx.assert.true(changed)
+        ctx.assert.true(status.changed)
     })
 
     it('lib/history/writeFailing::happy', async()=>{
@@ -28,8 +28,8 @@ describe('lib/history/writePassing', async()=>{
             exists(){ return false }
         }) 
 
-        changed = await history.writeFailing('test', new Date())
-        ctx.assert.true(changed)
+        const status = await history.writeFailing('test', new Date())
+        ctx.assert.true(status.changed)
     })
 
 })

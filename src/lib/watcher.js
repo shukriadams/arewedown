@@ -1,5 +1,4 @@
-let CronJob = require('cron').CronJob,
-    smtp = require('./smtp'),
+let smtp = require('./smtp'),
     exec = require('madscience-node-exec'),
     history = require('./history'),
     logger = require('./logger'),
@@ -46,7 +45,7 @@ module.exports = class CronProcess
     }
 
     start(){
-        this.calcNextRun()
+        const CronJob = require('cron').CronJob
 
         this.log.info(`Starting watcher "${this.config.name || this.config.__name}"`)
         this.cron = new CronJob(this.config.interval, async()=>{
@@ -62,21 +61,20 @@ module.exports = class CronProcess
                 }
         
                 this.busy = true
-                await this.work()
+                await this.tick()
 
             } catch (ex){
                 this.log.error(ex)
             } finally {
                 this.busy = false
             }
+
         }, null, true, null, null, true /*runonitit*/)
-    }
-    
-    stop(){
-        this.cron.stop()
+
+        this.calcNextRun()
     }
 
-    async work(){
+    async tick(){
         this.lastRun = new Date()
         let testRun = ''
 
@@ -133,19 +131,17 @@ module.exports = class CronProcess
             this.log.info(this.errorMessage)
 
         // write state of watcher to filesystem
-        let statusChanged = false
-        if (this.isPassing){
-            statusChanged = await history.writePassing(this.config.__safeName, this.lastRun)
-            if (statusChanged) 
-                this.log.info(`Status changed, "${this.config.__name}" is passing.`)
-        } else {
-            statusChanged = await history.writeFailing(this.config.__safeName, this.lastRun)
-            if (statusChanged) 
-                this.log.info(`Status changed, "${this.config.__name}" is failing.`)
-        }
+        let status = null
+        if (this.isPassing)
+            status = await history.writePassing(this.config.__safeName, this.lastRun)
+        else 
+            status = await history.writeFailing(this.config.__safeName, this.lastRun)
+
+        if (status.changed) 
+            this.log.info(`Status changed, "${this.config.__name}" is ${this.isPassing? 'passing': 'failing'}.`)
 
         // send alerts if status changed
-        if (statusChanged){
+        if (status.changed){
             this.log.debug(`Status changed detected for job ${this.config.__name}`)
             let subject = this.isPassing ? `SUCCESS: ${this.config.__name} is up` : `WARNING: ${this.config.__name} is down`,
                 message = this.isPassing ? `${this.config.__name} is up` : `${this.config.__name} is down`
