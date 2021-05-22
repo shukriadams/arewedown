@@ -1,7 +1,3 @@
-const settings = require('./settings'),
-    fs = require('fs-extra'),
-    path = require('path')
-
 module.exports = {
 
     /**
@@ -10,8 +6,10 @@ module.exports = {
      * @param {Date} date Date of the event being marked.
      */
     async writePassing(safeName, date){
-
-        let downFlag = path.join(settings.logs, safeName, 'flag'),
+        let settings = require('./settings'),
+            fs = require('fs-extra'),
+            path = require('path'),
+            downFlag = path.join(settings.logs, safeName, 'flag'),
             statusChanged = false,
             historyLogFolder = path.join(settings.logs, safeName, 'history')
 
@@ -45,7 +43,10 @@ module.exports = {
     },
 
     async writeFailing(safeName, date){
-        let downFlag = path.join(settings.logs, safeName, 'flag'),
+        let settings = require('./settings'),
+            fs = require('fs-extra'),
+            path = require('path'),
+            downFlag = path.join(settings.logs, safeName, 'flag'),
             statusChanged = false,
             historyLogFolder = path.join(settings.logs, safeName, 'history')
 
