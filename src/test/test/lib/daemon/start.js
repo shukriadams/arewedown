@@ -1,8 +1,9 @@
 describe('daemon/start', async()=>{
 
-    it('daemon/start::happy::start daemon', async() => {
+    const setupTestConditions = ()=> {
         const ctx = require(_$t+'context')
-        ctx.inject.object('./settings', { watchers: {
+        
+        ctx.inject.overwriteObject('./settings', { watchers: {
             test : { enabled : true }
         }})
         
@@ -13,9 +14,25 @@ describe('daemon/start', async()=>{
         ctx.inject.object('cron', {
             CronJob : class { }
         })
+        return ctx
+    }
 
-        const  daemon =  ctx.clone(require(_$+'lib/daemon'))
+    it('daemon/start::happy::start daemon', async() => {
+       const ctx = setupTestConditions()
+
+       const  daemon =  ctx.clone(require(_$+'lib/daemon'))
+       daemon.start()
+    })
+
+    it('daemon/start::cover::watched disabled', async() => {
+        const ctx = setupTestConditions()
+
+        ctx.inject.overwriteObject('./settings', { watchers: {
+            test : { enabled : false }
+        }})
+        const daemon =  ctx.clone(require(_$+'lib/daemon'))
         daemon.start()
     })
+
 
 })

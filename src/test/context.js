@@ -33,6 +33,10 @@ module.exports = {
             requireMock.add(path, override)
         },
 
+        overwriteObject(path, obj){
+            requireMock.overwriteObject(path, obj)
+        },
+
         addClass(path, cls){
             requireMock.addClass(path, cls)
         },

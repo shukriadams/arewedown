@@ -1,9 +1,4 @@
-const path = require('path'),
-    fs = require('fs-extra'),
-    fsUtils = require('madscience-fsUtils'),
-    timebelt = require('timebelt'),
-    log = require('./../lib/logger').instance(),
-    settings = require('./settings')
+const log = require('./../lib/logger').instance()
 
 module.exports =  {
 
@@ -13,23 +8,29 @@ module.exports =  {
 
     async start(){
         const Watcher = require('./watcher'),
+            settings = require('./settings'),
             CronJob = require('cron').CronJob
 
         for (const watcherName in settings.watchers){
             const watcherConfig = settings.watchers[watcherName]
-            if (watcherConfig.enabled){
-                const watcher = new Watcher(watcherConfig)
-                this.watchers.push(watcher)
-                watcher.start()
-            } else {
-                log.info(`Skipping disabled watcher "${watcher.__name}"${watcher.error ? ` ${watcher.error}`:''}`)
-            }
+            if (!watcherConfig.enabled)
+                continue
+                
+            const watcher = new Watcher(watcherConfig)
+            this.watchers.push(watcher)
+            watcher.start()
         }
 
         this.internalWorker = new CronJob(settings.internalWorkerTimer, this.internalWork, null, true, null, null, true /*runonitit*/)
     },
 
     async internalWork(){
+        const settings = require('./settings'),
+            timebelt = require('timebelt'),
+            fsUtils = require('madscience-fsUtils'),
+            fs = require('fs-extra'),
+            path = require('path')
+
         try {
             if (settings.logRetention > 0) {
                 const files = await fsUtils.readFilesUnderDir(settings.logs)
