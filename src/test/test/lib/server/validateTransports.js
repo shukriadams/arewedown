@@ -35,10 +35,10 @@ describe('server/validateTransports', async()=>{
             // no ensureSettingsOrExit method here 
         })
 
-        const server = require(_$+'lib/server')
-        const exception = await ctx.assert.throws(async() => await server.validateTransports() )    
+        const server = require(_$+'lib/server'),
+            exception = await ctx.assert.throws(async() => await server.validateTransports() )
+            
         assert.includes(exception, 'missing expected method "ensureSettingsOrExit"')
-        // no assert, coverage only
     })
 
     

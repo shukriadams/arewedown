@@ -66,8 +66,7 @@ describe('server/executeStartScript', async()=>{
     it('server/executeStartScript::unhappy::should trap exception on script error', async() => {
         
         let ctx = require(_$t+'context'),
-            assert = require('madscience-node-assert'),
-            logged = null
+            assert = require('madscience-node-assert')
 
         ctx.inject.object('./logger', {
             instance(){

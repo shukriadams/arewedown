@@ -22,9 +22,11 @@ describe('server/start', async()=>{
     it('server/start::happy::should start the server', async() => {
         
         const ctx = require(_$t+'context')
+        
         ctx.inject.object('./daemon', {
             start (){ }
         })
+
         ctx.inject.object('http', {
             createServer (){
                 return {

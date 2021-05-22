@@ -1,8 +1,11 @@
 module.exports = {
-    split: function(string, by){
-        let array = string.split(by)
-        array = array.filter((item)=>{ return item.length? item: null })
-        array = array.map((item)=>{return item.trim()})
-        return array
+
+    /**
+     * Splits a string array, all items are trimmed. removes empty.
+     */
+    split(string, by){
+        return string.split(by)
+            .filter( item=> !!item )
+            .map(item => item.trim())
     }
 }

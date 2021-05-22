@@ -34,7 +34,7 @@ module.exports = app => {
         const view = handlebars.getView('dashboardInner'),
             dashboardWatchers = arrayHelper.split(dashboard.watchers, ','), // clone array, we don't want to change source
             // get cronprocesses that are running and used on the current dashboard
-            watchers = daemon.getWatchers().slice(0).filter((job)=>{
+            watchers = daemon.watchers.slice(0).filter((job)=>{
                 if (!dashboardWatchers.includes(job.config.__name))
                     return null
 

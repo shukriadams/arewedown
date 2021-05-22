@@ -4,6 +4,7 @@
  */
 let modules = {},
     virtualModules = {},
+    classes = {},
     Module = require('module'),
     clonedeep = require('lodash.clonedeep'),
     originalRequire = Module.prototype.require
@@ -23,6 +24,10 @@ Module.prototype.require = function(){
     if (arguments.length && virtualModules[arguments[0]]){
         return virtualModules[arguments[0]]
     }
+    
+    if (arguments.length && classes[arguments[0]]){
+        return classes[arguments[0]]
+    }
 
     return originalRequire.apply(this, arguments)
 }
@@ -32,6 +37,10 @@ module.exports = {
     add (path, mod){
         modules[path] = mod
     },
+
+    addClass (path, cls){
+        classes[path] = cls
+    },
     
     virtual (path, mod){
         virtualModules[path] = mod
@@ -40,6 +49,7 @@ module.exports = {
     clear () {
         modules = {}
         virtualModules = {}
+        classes = {}
     }
 
 }

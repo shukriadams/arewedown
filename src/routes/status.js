@@ -9,9 +9,10 @@ module.exports = app => {
     app.get('/status/failing', async (req, res)=>{
         try {
            
-            let cronJobs = daemon.getWatchers().slice(0) // clone array, we don't want to change source
-
-            const failingJobs = cronJobs.filter(job => job.isPassing && !job.config.__hasErrors ? null : job)
+            let cronJobs = daemon.watchers.slice(0),
+                failingJobs = cronJobs.filter(job => 
+                    job.isPassing 
+                    && !job.config.__hasErrors ? null : job)
 
             res.send(failingJobs.length.toString())
         }catch(ex){

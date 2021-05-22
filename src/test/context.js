@@ -33,6 +33,10 @@ module.exports = {
             requireMock.add(path, override)
         },
 
+        addClass(path, cls){
+            requireMock.addClass(path, cls)
+        },
+
         /**
          * Overwrites a function
          */

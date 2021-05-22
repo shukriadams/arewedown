@@ -250,6 +250,9 @@ if (_settings.transports.smtp && _settings.transports.smtp.enabled){
 }
 
 // validate watchers
+if (!Object.keys(_settings.watchers).length)
+    log.warn('No watchers were defined in settings file')
+
 for (const name in _settings.watchers){
     const watcher = _settings.watchers[name]
 
