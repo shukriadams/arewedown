@@ -15,7 +15,35 @@ const injectClass = (path, override)=>{
 
 
 
+
+
 module.exports = {
+    express : {
+        req : {
+            params : {},
+            query : {}
+        },
+        res : { 
+            download(){},
+            end(){},
+            status(){ },
+            send(){}
+        },
+        getRoute(routePath){
+            let route =  require(routePath),
+                routeInternals
+
+            const expressStub = {
+                get(route, handler) { routeInternals = handler},
+                post(route, handler) { routeInternals = handler},
+                delete(route, handler) { routeInternals = handler}
+            }
+
+            route(expressStub)
+            return routeInternals
+        }
+    },
+
     clone : clonedeep,
     
     loadHandlebarsHelper(path){
