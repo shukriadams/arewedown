@@ -1,16 +1,15 @@
-const log = require('./../lib/logger').instance(),
-    daemon = require('./../lib/daemon')
-
-module.exports = app => {
+module.exports = express => {
 
     /**
      * Returns a count of failing jobs. Returns 0 if all jobs are passing.
      */
-    app.get('/status/failing', async (req, res)=>{
+    express.get('/status/failing', async (req, res)=>{
+        const log = require('./../lib/logger').instance()
+
         try {
            
-            let cronJobs = daemon.watchers.slice(0),
-                failingJobs = cronJobs.filter(job => 
+            const daemon = require('./../lib/daemon'),
+                failingJobs = daemon.watchers.filter(job => 
                     job.isPassing 
                     && !job.config.__hasErrors ? null : job)
 
@@ -22,11 +21,4 @@ module.exports = app => {
         }
     })
 
-    
-    /**
-     * Simple alive check
-     */
-    app.get('/status/isalive', (req, res)=>{
-        res.send('ARE WE DOWN? service is running')
-    })
 }

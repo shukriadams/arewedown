@@ -1,9 +1,4 @@
-
-const settings = require('./../lib/settings'),
-    handlebarsLoader = require('madscience-handlebarsloader')
-
-module.exports = app =>{
-
+module.exports = express =>{
 
     /**
      * This is the default view of this site. To load use
@@ -18,27 +13,36 @@ module.exports = app =>{
      * If no (:dashboard) parameter is supplied, the first dashboard is automatically targetted.
      * 
      */
-    app.get('/', async (req, res)=>{
-        let definedDashboardKeys = Object.keys(settings.dashboards),
-            dashboardNode = req.query.dashboard
-        
-        // take first dashboard marked as default
-        for (let dashboardName of definedDashboardKeys)
-            if (settings.dashboards[dashboardName].default === true){
-                dashboardNode = dashboardName
-                break
-            }
+    express.get('/', async (req, res)=>{
+        const log = require('./../lib/logger').instance()
 
-        // if no default, take first dashboard
-        if (!dashboardNode && definedDashboardKeys.length)
-            dashboardNode = definedDashboardKeys[0]
+        try {
+            let settings = require('./../lib/settings'),
+                handlebarsLoader = require('madscience-handlebarsloader'),
+                definedDashboardKeys = Object.keys(settings.dashboards),
+                dashboardNode
             
-        const view = await handlebarsLoader.getPage('dashboard')
-        res.send(view({
-            dashboardNode,
-            dashboardLoadTimeout : settings.dashboardLoadTimeout,
-            dashboardRefreshInterval : settings.dashboardRefreshInterval,
-        }))
-    })
+            // take first dashboard marked as default
+            for (let dashboardName of definedDashboardKeys)
+                if (settings.dashboards[dashboardName].default){
+                    dashboardNode = dashboardName
+                    break
+                }
 
+            // if no default, take first dashboard
+            if (!dashboardNode && definedDashboardKeys.length)
+                dashboardNode = definedDashboardKeys[0]
+                
+            const view = await handlebarsLoader.getPage('dashboard')
+            res.send(view({
+                dashboardNode,
+                dashboardLoadTimeout : settings.dashboardLoadTimeout,
+                dashboardRefreshInterval : settings.dashboardRefreshInterval,
+            }))
+        } catch (ex){
+            log.error(ex)
+            res.status(500)
+            res.end('Something went wrong - check logs for details.')
+        }
+    })
 }

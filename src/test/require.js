@@ -5,7 +5,7 @@
 let modules = {},
     virtualModules = {},
     classes = {},
-    fullObjects = {},
+    //fullObjects = {},
     Module = require('module'),
     clonedeep = require('lodash.clonedeep'),
     originalRequire = Module.prototype.require
@@ -21,11 +21,11 @@ Module.prototype.require = function(){
 
         return overridden
     }
-    
+    /*
     if (arguments.length && fullObjects[arguments[0]]){
         return fullObjects[arguments[0]]
     }
-
+    */
     if (arguments.length && virtualModules[arguments[0]]){
         return virtualModules[arguments[0]]
     }
@@ -54,11 +54,11 @@ module.exports = {
     },
 
     overwriteObject(path, mod){
-        if (fullObjects[path]){
-            let clone = clonedeep(fullObjects[path])
-            fullObjects[path] = Object.assign(clone, mod)
+        if (modules[path]){
+            let clone = clonedeep(modules[path])
+            modules[path] = Object.assign(clone, mod)
         } else
-            fullObjects[path] = mod
+            modules[path] = mod
     },
 
     addClass (path, cls){
@@ -73,7 +73,7 @@ module.exports = {
         modules = {}
         virtualModules = {}
         classes = {}
-        fullObjects = {}
+        //fullObjects = {}
     }
 
 }

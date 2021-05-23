@@ -1,16 +1,18 @@
-const handlebarsLoader = require('madscience-handlebarsloader'),
-    path = require('path'),
-    fs = require('fs-extra'),
-    jsonfile= require('jsonfile'),
-    fsUtils = require('madscience-fsUtils'),
-    log = require('./../lib/logger').instance(),
-    timebelt = require('timebelt'),
-    settings = require('./../lib/settings')
 
-module.exports = function(app){
-    app.get('/watcher/:watcher', async function(req, res){
+module.exports = express =>{
+    express.get('/watcher/:watcher', async (req, res) =>{
+
+        const log = require('./../lib/logger').instance()
+
         try {
-            const watcher = settings.watchers[req.params.watcher]
+            const settings = require('./../lib/settings'),
+                watcher = settings.watchers[req.params.watcher],
+                handlebarsLoader = require('madscience-handlebarsloader'),
+                path = require('path'),
+                fs = require('fs-extra'),
+                fsUtils = require('madscience-fsUtils'),
+                timebelt = require('timebelt')
+        
             if (!watcher){
                 const view = await handlebarsLoader.getPage('invalidWatcher')
                 return res.send(view({
@@ -33,7 +35,7 @@ module.exports = function(app){
             files = files.sort()
 
             for(const file of files){
-                let data = await jsonfile.readFile(path.join(historyFolder, file))
+                let data = await fs.readJson(path.join(historyFolder, file))
                 history.push(data)
             }
             

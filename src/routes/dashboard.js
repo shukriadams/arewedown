@@ -52,9 +52,9 @@ module.exports = express => {
                 watchers 
             }))
         } catch (ex){
+            log.error(ex)
             res.status(500)
             res.end('Something went wrong - check logs for details.')
-            log.error(ex)
         }
     })
 }

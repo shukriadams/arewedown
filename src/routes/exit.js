@@ -1,5 +1,4 @@
-const settings = require('./../lib/settings'),
-    process = require('process')
+
 
 module.exports = express => {
 
@@ -8,17 +7,27 @@ module.exports = express => {
      * as a properly daemonized app will instantly restart.
      */
     express.get('/exit', async (req, res)=>{
+        const log = require('./../lib/logger').instance()
 
-        if (!settings.allowHttpExit){
-            res.status(403)
-            res.end('Not allowed. set "allowHttpExit:true" to enable restart')
-            return
+        try {
+            const settings = require('./../lib/settings'),
+                process = require('process')
+
+            if (!settings.allowHttpExit){
+                res.status(403)
+                res.end('Not allowed. set "allowHttpExit:true" to enable restart')
+                return
+            }
+
+            const message = 'Application shutting down from /exit request'
+            console.log(message)
+            res.end(message)
+            process.exit(0)
+
+        } catch (ex){
+            log.error(ex)
+            res.status(500)
+            res.end('Something went wrong - check logs for details.')
         }
-
-        const message = 'Application shutting down from /exit request'
-        console.log(message)
-        res.end(message)
-        process.exit(0)
     })
-
 }
