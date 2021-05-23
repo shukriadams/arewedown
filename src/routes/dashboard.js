@@ -29,11 +29,9 @@ module.exports = express => {
             const view = await handlebarsLoader.getPage('dashboardInner'),
                 dashboardWatchers = arrayHelper.split(dashboard.watchers, ','), // clone array, we don't want to change source
                 // get cronprocesses that are running and used on the current dashboard
-                watchers = daemon.watchers.filter( job => dashboardWatchers.includes(job.config.__name) )
+                watchers = daemon.watchers.filter(watcher => dashboardWatchers.includes(watcher.config.__name) )
 
-            hasErrors = watchers.filter((job)=>{
-                return !job.isPassing
-            }).length > 0
+            hasErrors = watchers.filter(watcher => !watcher.isPassing).length > 0
 
             watchers.sort((a,b)=>{
                 return a.isPassing - b.isPassing || a.config.name.localeCompare(b.config.name)

@@ -5,6 +5,15 @@ describe('routes/dashboard/get', async()=>{
             daemon =  require(_$+'lib/daemon'),
             dashboard = ctx.express.getRoute(_$+'routes/dashboard')
 
+        const settings = {
+            dashboards : { default : { watchers : 'test'}},
+            watchers : { test : { host: 'http://example.com' } }
+        }
+
+        ctx.inject.object('./../lib/settings', settings)
+        // need to override for daemon too     
+        ctx.inject.object('./settings', settings)   
+
         // stub out cron or it will spawn actual threads
         ctx.inject.object('cron', {
             CronJob : class { 

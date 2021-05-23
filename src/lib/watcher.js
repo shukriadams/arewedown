@@ -46,7 +46,7 @@ module.exports = class {
         const CronJob = require('cron').CronJob
 
         this.log.info(`Starting watcher "${this.config.name || this.config.__name}"`)
-        this.cron = new CronJob(this.config.interval, this.tick, null, true, null, null, true /*runonitit*/)
+        this.cron = new CronJob(this.config.interval, this.tick.bind(this), null, true, null, null, true /*runonitit*/)
         this.calcNextRun()
     }
     

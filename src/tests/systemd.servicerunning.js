@@ -1,12 +1,13 @@
 /**
  * 
  */
-const SSH = require('simple-ssh')
+
 
 
 
 module.exports = async function(config){
-
+    const SSH = require('simple-ssh')
+    
     // validate settings
     if (!config.host)
         throw {
@@ -41,7 +42,7 @@ module.exports = async function(config){
     return new Promise((resolve, reject)=>{
         try {
             ssh.exec(`systemctl show -p SubState --value ${config.service}`, {
-                out: function(stdout) {
+                out: stdout => {
                     stdout = stdout.trim()
                     if (stdout === 'running')
                         return resolve()
@@ -51,7 +52,6 @@ module.exports = async function(config){
                         test : 'systemd.servicerunning',
                         text:  `Service "${config.service}" not running.`
                     })
-                    
                 }
             }).start()
         }catch(ex){

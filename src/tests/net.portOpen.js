@@ -1,9 +1,11 @@
 /**
  * Uses Netcat to check if a TCP port is in use
  */
-const NetcatClient = require('netcat/client')
+
 
 module.exports = async function(config){
+    const NetcatClient = require('netcat/client')
+
     // validate settings
     if (!config.host)
         throw {
@@ -20,7 +22,7 @@ module.exports = async function(config){
     return new Promise((resolve, reject)=>{
         try {
             const nc = new NetcatClient()
-            nc.addr(config.host).scan(config.port, function(ports){
+            nc.addr(config.host).scan(config.port, ports =>{
                 if (ports[config.port] === 'open')
                     return resolve()
 
@@ -29,7 +31,6 @@ module.exports = async function(config){
                     test : 'net.portInUse',
                     text:  `Port "${config.port}" closed.`
                 })
-                
             })
         }catch(ex){
             reject(ex)

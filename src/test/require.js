@@ -14,7 +14,9 @@ let modules = {},
 Module.prototype.require = function(){
 
     if (arguments.length && modules[arguments[0]]){
-
+        if (typeof modules[arguments[0]] === 'function')
+            return modules[arguments[0]]
+            
         const target = originalRequire.apply(this, arguments),
             clone = clonedeep(target),
             overridden = Object.assign(clone, modules[arguments[0]])

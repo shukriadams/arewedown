@@ -2,10 +2,12 @@
  * Does a docker Engine API query @ watcher.host, expects to find a running container with name 
  * watcher.container.
  */
-const httpHelper = require('madscience-httputils'),
-    urljoin = require('urljoin')
 
-module.exports = async function(config){
+
+module.exports = async config =>{
+    const httpHelper = require('madscience-httputils'),
+        urljoin = require('urljoin')
+
     if (!config.host)
         throw {
             type : 'configError',
@@ -26,16 +28,16 @@ module.exports = async function(config){
     } catch (ex) {
         throw {
             type: 'awdtest.fail',
-            test : 'jenkins.buildSuccess',
+            test : 'docker.containerIsUp',
             text:  `Host is invalid: ${ex.toString()}`
         }
     }        
 
-    if (jsonraw.statusCode === 404)
+    if (jsonraw.statusCode !== 200)
         throw {
             type: 'awdtest.fail',
-            test : 'jenkins.buildSuccess',
-            text:  `Host unreachable`
+            test : 'docker.containerIsUp',
+            text:  `Host returned status "${jsonraw.statusCode}".`
         }
 
     containers = JSON.parse(jsonraw.body),
@@ -50,15 +52,14 @@ module.exports = async function(config){
 
             throw {
                 type: 'awdtest.fail',
-                test : 'net.portInUse',
+                test : 'docker.containerIsUp',
                 text:  `container state is "${containerState}"`
             }                
         }
 
     throw {
         type: 'awdtest.fail',
-        test : 'net.portInUse',
-        text:  containerState
+        test : 'docker.containerIsUp',
+        text:  `Container "${config.container}" not found.`
     }
-    
 }

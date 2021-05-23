@@ -2,10 +2,12 @@
 // http://<myjenkins>/job/<myjob>/lastBuild/api/json
 // or
 // http://user:password@<myjenkins>/job/<myjob>/lastBuild/api/json
-const httpHelper = require('madscience-httputils'),
-    urljoin = require('urljoin')
+
 
 module.exports = async function(config){
+    const httpHelper = require('madscience-httputils'),
+        urljoin = require('urljoin')
+
     // validate settings
     if (!config.host && !config.url)
         throw {
@@ -34,11 +36,11 @@ module.exports = async function(config){
         }
     }
 
-    if (check.statusCode === 404)
+    if (check.statusCode !== 200)
         throw {
             type: 'awdtest.fail',
             test : 'jenkins.buildSuccess',
-            text:  `Jenkins host unreachable`
+            text:  `Host returned status "${check.statusCode}".`
         }
 
     let url = urljoin(host, 'job', encodeURIComponent(config.job), 'lastBuild/api/json'),

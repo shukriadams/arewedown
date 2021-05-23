@@ -1,9 +1,11 @@
 /**
  * 
  */
-const ping = require('ping')
+
 
 module.exports = async config => {
+    const ping = require('ping')
+
     // validate settings
     if (!config.host)
         throw {
@@ -19,6 +21,7 @@ module.exports = async config => {
     if (response.alive)
         return
 
+    // output is multiline, merge into single line, remove first two entries
     const output = response.output
         .split('\n')
         .filter(r => !!r)
