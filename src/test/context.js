@@ -17,6 +17,19 @@ const injectClass = (path, override)=>{
 
 module.exports = {
     clone : clonedeep,
+    
+    loadHandlebarsHelper(path){
+        let agoHelper = require(path),
+            helperInternal
+            
+        agoHelper({
+                registerHelper(name, callback){ helperInternal = callback }
+            }
+        )
+
+        return helperInternal
+    },
+
     inject : {
         
         /**

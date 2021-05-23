@@ -33,4 +33,28 @@ describe('lib/smtp', async()=>{
             
         await smtp.ensureSettingsOrExit()
     })
+
+    it('lib/smtp/ensureSettingsOrExit::unhappy::throw exception on settings check', async()=>{
+        const ctx = createTestStructures(),
+            smtp = ctx.clone(require(_$+'lib/smtp'))
+        ctx.inject.class('smtp-client', {
+            SMTPClient : class {
+                connect(){ throw 'error'}
+            }
+        })
+
+        await ctx.assert.throws(async() => await smtp.ensureSettingsOrExit() )
+    })
+
+    it('lib/smtp/ensureSettingsOrExit::unhappy::throw exception on send', async()=>{
+        const ctx = createTestStructures(),
+            smtp = ctx.clone(require(_$+'lib/smtp'))
+        ctx.inject.class('smtp-client', {
+            SMTPClient : class {
+                connect(){ throw 'error'}
+            }
+        })
+
+        await smtp.send()
+    })
 })

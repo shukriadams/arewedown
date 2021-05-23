@@ -3,7 +3,7 @@ module.exports = Handlebars => {
         const ago = require('s-ago').default
 
         if (!date)
-            return
+            return null
         
         if (typeof date === 'string')
             date = new Date(date)
