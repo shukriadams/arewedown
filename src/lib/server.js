@@ -113,9 +113,6 @@ module.exports = {
         const settings = require('./settings').get()
 
         for (const transportName in settings.transports){
-            if (!settings.transports[transportName].enabled)
-                continue
-
             const transport = require(`./${transportName}`)
             if (!transport.ensureSettingsOrExit)
                 throw `transport method "${transportName}" missing expected method "ensureSettingsOrExit"`

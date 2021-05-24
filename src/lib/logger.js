@@ -1,14 +1,18 @@
-let fs = require('fs-extra'),
-    winstonWrapper = require('winston-wrapper'),
-    _watcherLogs = null,
-    _global,
-    path = require('path'),
-    settings = require('./settings').get()
+let _watcherLogs,
+    _global
 
 module.exports = {
     
+    reset(){
+        _watcherLogs = null
+        _global = null
+    },
+
     // returns an instance of the global log
     instance (){
+        const winstonWrapper = require('winston-wrapper'),
+            settings = require('./settings').get()
+
         if (!_global)
             _global = winstonWrapper.new(settings.logs, settings.logLevel).log
 
@@ -17,7 +21,11 @@ module.exports = {
 
     // returns an instance of logger
     instanceWatcher(name) {
-        
+        const fs = require('fs-extra'), 
+            winstonWrapper = require('winston-wrapper'),
+            path = require('path'),
+            settings = require('./settings').get()
+
         if (!_watcherLogs){
             _watcherLogs = {}
 
@@ -30,7 +38,8 @@ module.exports = {
             }
         }
 
-        return _watcherLogs[name]
+        // if log still failed to create
+        return _watcherLogs[name] 
     }
 
 }

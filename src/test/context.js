@@ -58,8 +58,8 @@ module.exports = {
         return helperInternal
     },
     
-    settings(override){
-        require(_$+'lib/settings').override(override)
+    settings(forceSettings){
+        require(_$+'lib/settings').load(forceSettings)
     },
 
     inject : {

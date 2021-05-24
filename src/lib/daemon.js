@@ -12,11 +12,9 @@ module.exports =  {
             CronJob = require('cron').CronJob
 
         for (const watcherName in settings.watchers){
-            const watcherConfig = settings.watchers[watcherName]
-            if (!watcherConfig.enabled)
-                continue
+            const watcherConfig = settings.watchers[watcherName],
+                watcher = new Watcher(watcherConfig)
                 
-            const watcher = new Watcher(watcherConfig)
             this.watchers.push(watcher)
             watcher.start()
         }

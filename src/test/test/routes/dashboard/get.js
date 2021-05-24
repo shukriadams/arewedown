@@ -6,8 +6,9 @@ describe('routes/dashboard/get', async()=>{
             dashboard = ctx.express.getRoute(_$+'routes/dashboard')
 
         const settings = {
-            dashboards : { default : { watchers : 'test'}},
-            watchers : { test : { host: 'http://example.com' } }
+            dashboards : { default : { watchers : 'test,another' } },
+            // need wto watcgers to hit all sort and other collection logic
+            watchers : { test : { host: 'http://example.com' }, another : { host: 'http://example.com' } }
         }
  
         ctx.settings(settings)   
@@ -18,6 +19,9 @@ describe('routes/dashboard/get', async()=>{
                 nextDates(){ return '' }
             }
         })
+        ctx.inject.object('./logger', { instanceWatcher(){
+            return { info(){}, warn(){}, debug(){}, error(){} }
+        }})
 
         await daemon.start()
         dashboard(ctx.express.req, ctx.express.res)

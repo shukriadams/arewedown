@@ -5,6 +5,7 @@ afterEach(done => {
         requireMock.clear()
 
         require(_$+'lib/settings').reset()
+        require(_$+'lib/logger').reset()
         
         done()
     })()

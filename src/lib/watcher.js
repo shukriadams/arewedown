@@ -2,8 +2,7 @@ module.exports = class {
 
     constructor(config = {}){
 
-        const settings = require('./settings').get(),
-            logger = require('./logger')
+        const logger = require('./logger')
 
         this.config = config
         this.log = logger.instanceWatcher(config.__name)
@@ -12,23 +11,6 @@ module.exports = class {
         this.busy = false
         this.lastRun = new Date()
         this.nextRun = new Date()
-        this.recipients = []
-        
-        // watcher.recipients is optional. It is a list of strings which must correspond to people in settings.recipients array.
-        // force default 
-        if (!this.config.recipients)
-            this.config.recipients = []
-
-        for (let recipientName of this.config.recipients){
-            let recipientObject = settings.recipients[recipientName]
-
-            if (!recipientObject){
-                this.log.error(`Recipient "${recipientName}" in watcher "${this.config.__name}" could not be matched to a recipient in settings.`)
-                continue
-            }
-
-            this.recipients.push(recipientObject)
-        }
     }
 
     calcNextRun(){
@@ -142,38 +124,19 @@ module.exports = class {
             }
         
         for (const transportName in settings.transports){
-            const transport = settings.transports[transportName]
-            if (!transport.enabled){
-                this.log.debug(`${transportName} is disabled, not using`)
-                continue
-            }
-
             const transportHandler = transportHandlers[transportName]
             if (!transportHandler){
                 this.log.error(`ERROR : no handler defined for transport ${transportName}`)
                 continue
             }
-                
-            this.log.debug(`Attempting to send notification changed detected for job ${transportName}`)
 
             for (let recipientName of this.config.recipients){
                 const recipient = settings.recipients[recipientName]
-                if (!recipient){
-                    this.log.error(`Recipient name "${recipientName}" is invalid. Name must be listed under "recipients" node in settings.yml`)
-                    continue
-                }
-
-                if (!recipient.enabled){
-                    this.log.debug(`Recipient ${recipient} disabled, bypassing all alerts for them.`)
-                    continue
-                }
-
                 for (let recipientMethod in recipient){
                     let result = await transportHandler.send(recipient[recipientMethod], this.config.__name, this.isPassing)
                     this.log.info(`Sent alert to ${recipient[recipientMethod]} for process ${this.config.__name}. Result: `, result)
                 }
-            }                    
-
+            }
         }
     }
 }

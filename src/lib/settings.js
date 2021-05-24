@@ -1,5 +1,4 @@
-let _settings = null,
-    _override = null
+let _settings = null
 
 module.exports = {
 
@@ -53,7 +52,9 @@ module.exports = {
 
 
     /**
-     * Loads settings from yml file and various env var sources
+     * Loads settings from yml file and various env var sources. Also validates settings after load - app can be forced to exit
+     * in event of serious misconfiguration.
+     * 
      * @param {object} forcedIncomingSettings Used by testing only
      */
     load(forcedIncomingSettings = null){
@@ -62,6 +63,7 @@ module.exports = {
             dotenv = require('dotenv'),
             sanitize = require('sanitize-filename'),
             allWatcherNames = [],
+            disabledRecipients = [],
             settingsPath = './config/settings.yml'
 
         // apply env vars from optional .env file in project root
@@ -147,8 +149,10 @@ module.exports = {
             }, _settings.recipients[recipient])
         
             // remove if disabled
-            if (!_settings.recipients[recipient].enabled)
+            if (!_settings.recipients[recipient].enabled){
+                disabledRecipients.push(recipient)
                 delete _settings.recipients[recipient]
+            }
         }
         
         // apply default transport settings
@@ -212,14 +216,8 @@ module.exports = {
         
             allWatcherNames.push(name)
         
-            // ensure user didn't force null on this
+            // ensure user didn't force null on this, from here on we assume this value is set
             watcher.recipients = watcher.recipients || '*' 
-            // convert string list to array if string is not * (if * will be handled later)
-            if (watcher.recipients !== '*')
-                watcher.recipients = watcher.recipients
-                    .split(',')
-                    .map(w => w ? w.trim():w)
-                    .filter(w => !!w)
         
             // force default values based on logic  
             if (!watcher.cmd && !watcher.test)
@@ -274,9 +272,6 @@ module.exports = {
         for (const watcherName in _settings.watchers){
             const watcher = _settings.watchers[watcherName]
         
-            // ensure value, user can force null
-            watcher.recipients = watcher.recipients || '*'
-        
             if (watcher.recipients === '*'){
                 // replace with array of all recipients, or emty array
                 if (allRecipientNames.length){
@@ -286,13 +281,23 @@ module.exports = {
                     watcher.recipients = []
                     console.warn(`WARNING : no default recipients to assign to contactless-watcher ${watcherName} - this watcher will fail silently`)
                 }
-            } 
+            } else {
+                // convert string list to array if string is not * (if * will be handled later)
+                watcher.recipients = watcher.recipients
+                    .split(',')
+                    .map(w => w ? w.trim() : w)
+                    .filter(w => !!w)
+            }
 
-            // ensure that recipient names match objects in recipient object
+            // remove disabled watchers
+            watcher.recipients = watcher.recipients.filter(r => !disabledRecipients.includes(r))
+
+            // ensure that recipient names exist in global recipient list
             for (const recipientName of watcher.recipients)
                 if (!_settings.recipients[recipientName])
                     throw `Recipient name ${recipientName} in watcher ${watcherName} is not defined under global recipients.`
 
+            // ensure test exists - we cannot verify cmd as that's entirely up to user, and must fail at watcher execute level
             if (watcher.test && !fs.existsSync(`${__dirname}/../tests/${watcher.test}.js`))
                 throw `ERROR: watcher "${watcherName}" specifies non-existent test "${watcher.test}".`
         
@@ -323,31 +328,17 @@ module.exports = {
          
         this.searchAndReplaceTemplatedEnvVars(_settings)
     },
-    
-    /**
-     * For testing only - allows easy override of app settings
-     */
-    override(override){
-        if (!_settings)
-            this.load()
-
-        _override = Object.assign(JSON.parse(JSON.stringify(_settings)), override)
-    },
-
+   
 
     /**
      * 
      */
     reset(){
-        _override = null
         _settings = null
     },
 
 
     get(){
-        if (_override)
-            return _override
-
         if (!_settings)
             this.load()
         
