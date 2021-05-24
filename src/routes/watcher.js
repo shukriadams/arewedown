@@ -1,5 +1,5 @@
+module.exports = express => {
 
-module.exports = express =>{
     express.get('/watcher/:watcher', async (req, res) =>{
 
         const log = require('./../lib/logger').instance()

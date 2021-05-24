@@ -1,5 +1,3 @@
-const log = require('./../lib/logger').instance()
-
 module.exports =  {
 
     watchers : [],
@@ -24,6 +22,7 @@ module.exports =  {
 
     async internalWork(){
         const settings = require('./settings').get(),
+            log = require('./../lib/logger').instance()
             timebelt = require('timebelt'),
             fsUtils = require('madscience-fsUtils'),
             fs = require('fs-extra'),

@@ -1,10 +1,6 @@
 /**
- * 
+ * SSHs onto a remote host to determine if a system.d process is running.
  */
-
-
-
-
 module.exports = async function(config){
     const SSH = require('simple-ssh')
     

@@ -2,8 +2,6 @@
  * Does a docker Engine API query @ watcher.host, expects to find a running container with name 
  * watcher.container.
  */
-
-
 module.exports = async config =>{
     const httpHelper = require('madscience-httputils'),
         urljoin = require('urljoin')

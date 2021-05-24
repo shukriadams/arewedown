@@ -2,9 +2,6 @@
  * Performs a simple HTTP lookup of watcher.url. Any HTTP code between 200 and 299 will count
  * as a test pass, all else will fail
  */
-
-
-// attempts to reach the given url, throws exception if does not receive 200 response
 module.exports = async config => {
     // validate settings
     if (!config.url && !config.host)

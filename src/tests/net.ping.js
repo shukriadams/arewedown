@@ -1,8 +1,6 @@
 /**
- * 
+ * Pings a host.
  */
-
-
 module.exports = async config => {
     const ping = require('ping')
 

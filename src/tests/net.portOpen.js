@@ -1,8 +1,6 @@
 /**
  * Uses Netcat to check if a TCP port is in use
  */
-
-
 module.exports = async function(config){
     const NetcatClient = require('netcat/client')
 

@@ -2,8 +2,6 @@
 // http://<myjenkins>/job/<myjob>/lastBuild/api/json
 // or
 // http://user:password@<myjenkins>/job/<myjob>/lastBuild/api/json
-
-
 module.exports = async function(config){
     const httpHelper = require('madscience-httputils'),
         urljoin = require('urljoin')
