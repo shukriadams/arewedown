@@ -4,7 +4,7 @@ afterEach(done => {
         const requireMock = require('./require')
         requireMock.clear()
 
-        require(_$+'lib/settings').revert()
+        require(_$+'lib/settings').reset()
         
         done()
     })()

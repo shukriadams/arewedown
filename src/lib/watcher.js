@@ -18,12 +18,6 @@ module.exports = class {
         // force default 
         if (!this.config.recipients)
             this.config.recipients = []
-            
-        // recipients can be a comma-separated string list, if so, split to array
-        if (typeof this.config.recipients === 'string')
-            this.config.recipients = this.config.recipients
-                .split(',')
-                .filter(r => !!r)
 
         for (let recipientName of this.config.recipients){
             let recipientObject = settings.recipients[recipientName]

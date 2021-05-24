@@ -11,7 +11,13 @@ module.exports = {
             throw message
     },
 
-    parseEnvironmentVariables(value){
+
+    /**
+     * Checks a setting value for "{{env.<VALUE>}}" content, if found, replaces entire value with the environment variable named <VALUE>. Use this
+     * to store sensitive information like passwords in env variables instead of in settings.yml
+     * @param {string} value 
+     */
+    replaceTemplatedEnvVars(value){
         
         const process = require('process'),
             match = value.match(/{{env.(.*)}}/i)
@@ -29,30 +35,34 @@ module.exports = {
         return value
     },
 
+
     /**
-     * parse environment variables
+     * 
      */
-    processNode(node){
+    searchAndReplaceTemplatedEnvVars(node){
         for (let child in node)
             if (typeof node[child] === 'string')
-                node[child] = this.parseEnvironmentVariables(node[child])
-            else if (typeof node[child] === 'object' ) 
-                this.processNode(node[child])
+                node[child] = this.replaceTemplatedEnvVars(node[child])
+            // always handle arrays before objects, as arrays are also objects in JS
             else if (Array.isArray(node[child])) 
                 for (item of node[child])
-                    this.processNode(item)
-    },
+                    this.searchAndReplaceTemplatedEnvVars(item)
+            else if (typeof node[child] === 'object' ) 
+                this.searchAndReplaceTemplatedEnvVars(node[child])
+        },
 
-    load(){
+
+    /**
+     * Loads settings from yml file and various env var sources
+     * @param {object} forcedIncomingSettings Used by testing only
+     */
+    load(forcedIncomingSettings = null){
         let fs = require('fs-extra'),
             yaml = require('js-yaml'),
-            process = require('process'),
             dotenv = require('dotenv'),
             sanitize = require('sanitize-filename'),
             allWatcherNames = [],
             settingsPath = './config/settings.yml'
-
-        _settings = {}
 
         // apply env vars from optional .env file in project root
         dotenv.config()
@@ -71,7 +81,9 @@ module.exports = {
             }
         else 
             console.warn(`WARNING: settings.yml not found - please create file "<AreWeDown root folder>/config/settings.yml". If you are running in docker, mount your config volume folder to "/etc/arewdown/config" and ensure you have settings.yml in that folder.`)
-        
+
+        // allow forcedIncomingSettings to override all settings load from file
+        _settings = forcedIncomingSettings || _settings
         
         // default settings
         _settings = Object.assign({
@@ -180,8 +192,7 @@ module.exports = {
         
                 // string of user names to receive alerts on watcher status change. 
                 // can be * to use all defined recipients
-                // will be converted to string array
-                // string array may be empty
+                // is converted to string array
                 recipients : '*',
         
                 // external command. either test or cmd must be given
@@ -203,9 +214,12 @@ module.exports = {
         
             // ensure user didn't force null on this
             watcher.recipients = watcher.recipients || '*' 
-            // convert string list to array
+            // convert string list to array if string is not * (if * will be handled later)
             if (watcher.recipients !== '*')
-                watcher.recipients = watcher.recipients.split(',').filter(w => !!w)
+                watcher.recipients = watcher.recipients
+                    .split(',')
+                    .map(w => w ? w.trim():w)
+                    .filter(w => !!w)
         
             // force default values based on logic  
             if (!watcher.cmd && !watcher.test)
@@ -256,7 +270,7 @@ module.exports = {
         }
         
         // if a watcher has no explicit recipients list, assign all recipient names to list
-        const allRecipientNames = Object.keys(_settings.recipients).join(',')
+        const allRecipientNames = Object.keys(_settings.recipients)
         for (const watcherName in _settings.watchers){
             const watcher = _settings.watchers[watcherName]
         
@@ -267,26 +281,25 @@ module.exports = {
                 // replace with array of all recipients, or emty array
                 if (allRecipientNames.length){
                     watcher.recipients = allRecipientNames
-                    console.debug(`assigning all recipients "${allRecipientNames}" to watcher ${watcherName}`)
+                    console.debug(`assigning all recipients "${allRecipientNames.join(',')}" to watcher ${watcherName}`)
                 } else {
                     watcher.recipients = []
                     console.warn(`WARNING : no default recipients to assign to contactless-watcher ${watcherName} - this watcher will fail silently`)
                 }
-            } else {
-        
-                // ensure that recipient names match objects in recipient object
-                for (const recipientName of watcher.recipients)
-                    if (!_settings.recipients[recipientName])
-                        throw `Recipient name ${recipientName} in watcher ${watcherName} is invalid`
-            }
-        
-            if (watcher.test && ! fs.existsSync(`${__dirname}/../tests/${watcher.test}.js`))
-                throw `ERROR: watcher "${watcherName}" test "${watcher.test}" does not exist`
+            } 
+
+            // ensure that recipient names match objects in recipient object
+            for (const recipientName of watcher.recipients)
+                if (!_settings.recipients[recipientName])
+                    throw `Recipient name ${recipientName} in watcher ${watcherName} is not defined under global recipients.`
+
+            if (watcher.test && !fs.existsSync(`${__dirname}/../tests/${watcher.test}.js`))
+                throw `ERROR: watcher "${watcherName}" specifies non-existent test "${watcher.test}".`
         
             _settings.watchers[watcherName] = watcher
         }
         
-        // validate SMTP (if enabled)
+        // validate SMTP if enabled
         if (_settings.transports.smtp && _settings.transports.smtp.enabled){
             this.failIfNotSet(_settings.transports.smtp.server, 'settings "transports.smtp" is missing expected value ".server"')
             this.failIfNotSet(_settings.transports.smtp.port, 'settings "transports.smtp" is missing expected value ".port"')
@@ -307,7 +320,8 @@ module.exports = {
             this.failIfNotSet(watcher.interval, `Watcher "${name}" has no interval`)
         }
         
-        this.processNode(_settings)
+         
+        this.searchAndReplaceTemplatedEnvVars(_settings)
     },
     
     /**
@@ -320,11 +334,13 @@ module.exports = {
         _override = Object.assign(JSON.parse(JSON.stringify(_settings)), override)
     },
 
+
     /**
-     * For testing only
+     * 
      */
-    revert(){
+    reset(){
         _override = null
+        _settings = null
     },
 
 
