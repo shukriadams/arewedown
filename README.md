@@ -4,7 +4,7 @@
 
 *Are We Down?* is a simple uptime monitoring system and dashboard. It is ideal for the home/self-hosting user who runs multiple services/networked devices on a private LAN, and who doesn't want the complexity of  an enterprise-level monitoring system.
 
-[![codecov](https://codecov.io/gh/shukriadams/arewedown/branch/master/graph/badge.svg?token=DXO5XYWW2T)](https://codecov.io/gh/shukriadams/arewedown)
+[![codecov](https://codecov.io/gh/shukriadams/arewedown/branch/develop/graph/badge.svg?token=DXO5XYWW2T)](https://codecov.io/gh/shukriadams/arewedown)
 
 ## Features 
 
