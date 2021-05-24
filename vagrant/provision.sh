@@ -9,6 +9,7 @@ sudo apt-get install nodejs  -y
 sudo npm install yarn -g
 sudo npm install pkg@5.1.0 -g
 sudo npm install nyc@15.1.0 -g
+sudo npm install codecov -g
 
 # docker
 sudo apt install docker.io -y

@@ -15,7 +15,8 @@
         "debug-brk": "node --inspect-brk=0.0.0.0:3001 index",
         "test": "./node_modules/mocha/bin/mocha --recursive --timeout 5000",
         "debugtest": "./node_modules/mocha/bin/mocha --inspect-brk=0.0.0.0:3001 --recursive --timeout 5000",        
-        "cover": "nyc npm run test"
+        "cover": "nyc npm run test",
+        "cover-upload" : "nyc --reporter=lcov npm run test && codecov"
     },
     "dependencies": {
         "handlebars-layouts": "3.1.4",

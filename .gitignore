@@ -19,3 +19,4 @@ src/config/settings.*.yml
 build/linux64
 build/logs
 src/.nyc_output
+src/coverage/
