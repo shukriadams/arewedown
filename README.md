@@ -34,7 +34,7 @@ For complete settings, check the [advanced settings guide](/docs/advanced-settin
 
 `Settings.yml` Is divided up into 3 main sections. 
 
-    transmissions:
+    transports:
         ...
 
     recipients:
@@ -51,7 +51,7 @@ Transmissions are used to send out alerts when watcher states change. Tranmissio
 
 You can send email using any SMTP server. To use a Gmail account try
 
-    transmissions:
+    transports:
         smtp:
             server : smtp.gmail.com
             port : 465
