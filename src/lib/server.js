@@ -13,7 +13,7 @@ module.exports = {
             Express = require('express'),
             handlebarsLoader = require('madscience-handlebarsloader'),
             express = Express(),
-            settings = require('./settings'),
+            settings = require('./settings').get(),
             startArgs = require('./startArgs').get()
         
 
@@ -71,7 +71,7 @@ module.exports = {
      * to run shell commands with advanced requirements. Options are nice.
      */
     async executeStartScript(){
-        const settings = require('./settings'),
+        const settings = require('./settings').get(),
             sh = require('madscience-node-exec').sh,
             log = require('./logger').instance()
 
@@ -110,7 +110,7 @@ module.exports = {
      * validate active transport's settings by attempting to contact provider 
      */
     async validateTransports(){
-        const settings = require('./settings')
+        const settings = require('./settings').get()
 
         for (const transportName in settings.transports){
             if (!settings.transports[transportName].enabled)

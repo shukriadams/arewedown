@@ -2,7 +2,7 @@ module.exports = class {
 
     constructor(config = {}){
 
-        const settings = require('./settings'),
+        const settings = require('./settings').get(),
             logger = require('./logger')
 
         this.config = config
@@ -141,7 +141,7 @@ module.exports = class {
     }
 
     async sendAlerts(){
-        let settings = require('./settings'),
+        let settings = require('./settings').get(),
             smtp = require('./smtp'),
             transportHandlers = {
                 smtp

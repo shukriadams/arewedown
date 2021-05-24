@@ -8,7 +8,7 @@ module.exports = express => {
         const log = require('./../lib/logger').instance()
 
         try {
-            let settings = require('./../lib/settings'),
+            let settings = require('./../lib/settings').get(),
                 handlebarsLoader = require('madscience-handlebarsloader'),
                 arrayHelper = require('./../lib/array'),
                 daemon = require('./../lib/daemon'),

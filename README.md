@@ -34,7 +34,7 @@ For complete settings, check the [advanced settings guide](/docs/advanced-settin
 
 `Settings.yml` Is divided up into 3 main sections. 
 
-    transmissions:
+    transports:
         ...
 
     recipients:
@@ -43,15 +43,15 @@ For complete settings, check the [advanced settings guide](/docs/advanced-settin
     watchers:
         ....
 
-### Transmissions
+### Transports
 
-Transmissions are used to send out alerts when watcher states change. Tranmissions are tested and logged automatically when *AreWeDown?* starts, so check logs to ensure your settings work.
+Transports are used to send out alerts when watcher states change. Tranmissions are tested and logged automatically when *AreWeDown?* starts, so check logs to ensure your settings work.
 
 #### SMTP
 
 You can send email using any SMTP server. To use a Gmail account try
 
-    transmissions:
+    transports:
         smtp:
             server : smtp.gmail.com
             port : 465

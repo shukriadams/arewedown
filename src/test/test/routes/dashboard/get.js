@@ -9,10 +9,8 @@ describe('routes/dashboard/get', async()=>{
             dashboards : { default : { watchers : 'test'}},
             watchers : { test : { host: 'http://example.com' } }
         }
-
-        ctx.inject.object('./../lib/settings', settings)
-        // need to override for daemon too     
-        ctx.inject.object('./settings', settings)   
+ 
+        ctx.settings(settings)   
 
         // stub out cron or it will spawn actual threads
         ctx.inject.object('cron', {
@@ -27,7 +25,7 @@ describe('routes/dashboard/get', async()=>{
 
     it('routes/dashboard/get::invalid dashboard', async() => {
         const ctx =  require(_$t+'context')
-        ctx.inject.object('./settings', { dashboards : null })
+        ctx.settings({ dashboards : null })
         ctx.express.req.params.dashboard = 'bogusdashboard'
         const dashboard = ctx.express.getRoute(_$+'routes/dashboard')
         
@@ -37,7 +35,7 @@ describe('routes/dashboard/get', async()=>{
     
     it('routes/dashboard/get::throws error', async() => {
         const ctx =  require(_$t+'context')
-        ctx.express.res.send =()=>{ throw 'error'}
+        ctx.express.res.send =()=>{ throw 'error' }
         const dashboard = ctx.express.getRoute(_$+'routes/dashboard')
         dashboard(ctx.express.req, ctx.express.res)
     })

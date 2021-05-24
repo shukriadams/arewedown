@@ -4,7 +4,7 @@ module.exports = {
      * 
      */
     generateContent(isPassing, to, watcherName){
-        const settings = require('./settings'),
+        const settings = require('./settings').get(),
             smtpConfig = settings.transports.smtp,
             subject = isPassing ? `SUCCESS: ${watcherName} is up` : `WARNING: ${watcherName} is down`,
             message = isPassing ? `${watcherName} is up` : `${watcherName} is down`
@@ -21,7 +21,7 @@ module.exports = {
      * 
      */
     async send(to, watcherName, isPassing){
-        const settings = require('./settings'),
+        const settings = require('./settings').get(),
             mailContent = this.generateContent(isPassing, to, watcherName),
             log = require('./../lib/logger').instance(),
             smtpConfig = settings.transports.smtp,
@@ -50,7 +50,7 @@ module.exports = {
     },
     
     async ensureSettingsOrExit(){
-        const settings = require('./settings'),
+        const settings = require('./settings').get(),
             log = require('./../lib/logger').instance(),
             smtpConfig = settings.transports.smtp,
             SMTPClient = require('smtp-client').SMTPClient,

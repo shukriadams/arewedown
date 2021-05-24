@@ -10,7 +10,7 @@ describe('lib/watcher/sendAlerts', async()=>{
         ctx.inject.object('./logger', { 
             instanceWatcher(){ return { info(){}, debug(){}, error(){} }}
         })       
-        ctx.inject.object('./settings', { 
+        ctx.settings({ 
             transports : {
                 smtp : {
                     enabled : true
@@ -38,7 +38,7 @@ describe('lib/watcher/sendAlerts', async()=>{
 
     it('lib/watcher/sendAlerts::happy::transport disabled', async()=>{
         const ctx = createTestStructures()
-        ctx.inject.object('./settings', { 
+        ctx.settings({ 
             transports : { smtp : { enabled : false } }
         }) 
 
@@ -50,7 +50,7 @@ describe('lib/watcher/sendAlerts', async()=>{
 
     it('lib/watcher/sendAlerts::happy::undefined transport handler', async()=>{
         const ctx = createTestStructures()
-        ctx.inject.object('./settings', { 
+        ctx.settings({ 
             transports : { bogusTransport : { enabled: true } }
         }) 
 
@@ -72,9 +72,7 @@ describe('lib/watcher/sendAlerts', async()=>{
 
     it('lib/watcher/sendAlerts::happy::dsiabled recipient', async()=>{
         const ctx = createTestStructures()
-        ctx.inject.object('./settings', { 
-            recipients : { testuser : { enabled : false } }
-        }) 
+        ctx.settings({ recipients : { testuser : { enabled : false } } }) 
 
         const Watcher = require(_$+'lib/watcher'),
             watcher = new Watcher({

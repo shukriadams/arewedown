@@ -5,7 +5,7 @@ describe('lib/server/validateTransports', async()=>{
 
         const ctx = require(_$t+'context')
 
-        ctx.inject.object('./settings', {
+        ctx.settings({
             transports: {
                 testTransport : {
                     enabled : false
@@ -23,7 +23,7 @@ describe('lib/server/validateTransports', async()=>{
         const assert = require('madscience-node-assert'),
             ctx = require(_$t+'context')
 
-        ctx.inject.object('./settings', {
+        ctx.settings({
             transports: {
                 testTransport : {
                     enabled : true
@@ -47,7 +47,7 @@ describe('lib/server/validateTransports', async()=>{
             ctx = require(_$t+'context'),
             validated = false
 
-        ctx.inject.object('./settings', {
+        ctx.settings({
             transports: {
                 testTransport : {
                     enabled : true

@@ -2,9 +2,7 @@ describe('lib/watcher/ctor', async()=>{
     
     const createTestStructures =()=>{
         const ctx = require(_$t+'context')
-        ctx.inject.overwriteObject('./settings', { 
-            recipients : { testuser : {} }
-        })
+        ctx.settings({ recipients : { testuser : {} } })
         ctx.inject.object('./logger', { 
             instanceWatcher(){ return { error(){} } }
         })
@@ -28,9 +26,7 @@ describe('lib/watcher/ctor', async()=>{
 
     it('lib/watcher/ctor::unhappy::cover undefined recipient', async()=>{
         const ctx = createTestStructures()
-        ctx.inject.overwriteObject('./settings', { 
-            recipients : { }
-        })
+        ctx.settings({ recipients : { } })
         const Watcher = require(_$+'lib/watcher')
         new Watcher({
             recipients : 'testuser,'

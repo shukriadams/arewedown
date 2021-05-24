@@ -8,7 +8,7 @@ module.exports =  {
 
     async start(){
         const Watcher = require('./watcher'),
-            settings = require('./settings'),
+            settings = require('./settings').get(),
             CronJob = require('cron').CronJob
 
         for (const watcherName in settings.watchers){
@@ -25,7 +25,7 @@ module.exports =  {
     },
 
     async internalWork(){
-        const settings = require('./settings'),
+        const settings = require('./settings').get(),
             timebelt = require('timebelt'),
             fsUtils = require('madscience-fsUtils'),
             fs = require('fs-extra'),

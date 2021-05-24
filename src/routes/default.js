@@ -17,7 +17,7 @@ module.exports = express =>{
         const log = require('./../lib/logger').instance()
 
         try {
-            let settings = require('./../lib/settings'),
+            let settings = require('./../lib/settings').get(),
                 handlebarsLoader = require('madscience-handlebarsloader'),
                 definedDashboardKeys = Object.keys(settings.dashboards),
                 dashboardNode

@@ -6,7 +6,7 @@ module.exports = {
      * @param {Date} date Date of the event being marked.
      */
     async writePassing(safeName, date){
-        let settings = require('./settings'),
+        let settings = require('./settings').get(),
             fs = require('fs-extra'),
             path = require('path'),
             log = require('./../lib/logger').instance(),
@@ -55,7 +55,7 @@ module.exports = {
     },
 
     async writeFailing(safeName, date){
-        let settings = require('./settings'),
+        let settings = require('./settings').get(),
             fs = require('fs-extra'),
             path = require('path'),
             downFlag = path.join(settings.logs, safeName, 'flag'),

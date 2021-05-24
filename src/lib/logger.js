@@ -3,7 +3,7 @@ let fs = require('fs-extra'),
     _watcherLogs = null,
     _global,
     path = require('path'),
-    settings = require('./settings')
+    settings = require('./settings').get()
 
 module.exports = {
     

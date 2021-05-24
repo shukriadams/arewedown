@@ -2,7 +2,7 @@ describe('routes/watcher/get', async()=>{
 
     const createTestStructures =()=>{
         const ctx = require(_$t+'context')
-        ctx.inject.overwriteObject('./../lib/settings', { watchers : { test : {} }})
+        ctx.settings({ watchers : { test : {} }})
 
         // need to return 3 history items to cover percent range - 2 items with identical date for zero range, and one with
         // outlying date for large range

@@ -5,7 +5,7 @@ module.exports = express =>{
         const log = require('./../lib/logger').instance()
 
         try {
-            const settings = require('./../lib/settings'),
+            const settings = require('./../lib/settings').get(),
                 watcher = settings.watchers[req.params.watcher],
                 handlebarsLoader = require('madscience-handlebarsloader'),
                 path = require('path'),

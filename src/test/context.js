@@ -57,6 +57,10 @@ module.exports = {
 
         return helperInternal
     },
+    
+    settings(override){
+        require(_$+'lib/settings').override(override)
+    },
 
     inject : {
         

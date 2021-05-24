@@ -10,7 +10,7 @@ module.exports = express => {
         const log = require('./../lib/logger').instance()
 
         try {
-            const settings = require('./../lib/settings'),
+            const settings = require('./../lib/settings').get(),
                 process = require('process')
 
             if (!settings.allowHttpExit){

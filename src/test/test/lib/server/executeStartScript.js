@@ -18,9 +18,7 @@ describe('lib/server/executeStartScript', async()=>{
             }
         })
 
-        ctx.inject.object('./settings', {
-            onstart : null
-        })
+        ctx.settings({ onstart : null })
 
         const server = require(_$+'lib/server')
         await server.executeStartScript()
@@ -45,15 +43,11 @@ describe('lib/server/executeStartScript', async()=>{
             }
         })
 
-        // suppress
         ctx.inject.object('madscience-node-exec', {
             sh(){ }
         })
 
-
-        ctx.inject.object('./settings', {
-            onstart : 'some script'
-        })
+        ctx.settings({ onstart : 'some script' })
 
         const server = require(_$+'lib/server')
         await server.executeStartScript()
@@ -84,10 +78,7 @@ describe('lib/server/executeStartScript', async()=>{
             }
         })
 
-
-        ctx.inject.object('./settings', {
-            onstart : 'some script'
-        })
+        ctx.settings({ onstart : 'some script' })
 
         const server = require(_$+'lib/server')
         const exception = await ctx.assert.throws(async() => await server.executeStartScript() )    

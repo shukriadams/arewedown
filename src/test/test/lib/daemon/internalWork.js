@@ -2,7 +2,8 @@ describe('lib/daemon/internalWork', async()=>{
 
     const createTestStructures=()=>{
         const ctx = require(_$t+'context')
-        ctx.inject.object('./settings', { logRetention: 1 })
+        ctx.settings({ logRetention: 1 })
+        
         ctx.inject.object('timebelt', { daysDifference(){ return 2 } })
         ctx.inject.object('madscience-fsUtils', {
             readFilesUnderDir(){ return ['123'] }

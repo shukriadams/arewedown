@@ -3,7 +3,7 @@ describe('daemon/start', async()=>{
     const setupTestConditions = ()=> {
         const ctx = require(_$t+'context')
         
-        ctx.inject.overwriteObject('./settings', { watchers: {
+        ctx.settings({ watchers: {
             test : { enabled : true }
         }})
         
@@ -26,10 +26,10 @@ describe('daemon/start', async()=>{
 
     it('daemon/start::cover::watched disabled', async() => {
         const ctx = setupTestConditions()
-
-        ctx.inject.overwriteObject('./settings', { watchers: {
+        ctx.settings({ watchers: {
             test : { enabled : false }
         }})
+        
         const daemon =  ctx.clone(require(_$+'lib/daemon'))
         daemon.start()
     })

@@ -2,7 +2,7 @@ describe('lib/smtp', async()=>{
 
     const createTestStructures =()=>{
         const ctx = require(_$t+'context')
-        ctx.inject.object('./settings', { transports : { smtp : {} } })
+        ctx.settings({ transports : { smtp : {} } })
         ctx.inject.class('smtp-client', {
             SMTPClient : class {
                 connect(){}
