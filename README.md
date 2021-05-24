@@ -43,9 +43,9 @@ For complete settings, check the [advanced settings guide](/docs/advanced-settin
     watchers:
         ....
 
-### Transmissions
+### Transports
 
-Transmissions are used to send out alerts when watcher states change. Tranmissions are tested and logged automatically when *AreWeDown?* starts, so check logs to ensure your settings work.
+Transports are used to send out alerts when watcher states change. Transports are tested and logged automatically when *AreWeDown?* starts, so check logs to ensure your settings work.
 
 #### SMTP
 
