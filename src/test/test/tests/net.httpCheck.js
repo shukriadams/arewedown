@@ -33,7 +33,8 @@ describe('tests/net.httpCheck', async()=>{
         })
         const test = require(_$+'tests/net.httpCheck')
         
-        await ctx.assert.throws(async() => await test({ host : 'http://example.com' }) )
+        const exception = await ctx.assert.throws(async() => await test({ host : 'http://example.com' }) )
+        ctx.assert.includes(exception.text, 'Expected HTTP code')
     })
 
     it('tests/net.httpCheck::happy', async() => {

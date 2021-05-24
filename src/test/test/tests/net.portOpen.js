@@ -30,8 +30,9 @@ describe('tests/net.portOpen', async()=>{
             addr(){ return { scan(port, cb){ cb( { 1234 : 'close'  } )} } }
         })
 
-        const test = require(_$+'tests/net.portOpen')
-        await ctx.assert.throws(async() => await test({ host: '127.0.0.1', port: 1234 }) )
+        const test = require(_$+'tests/net.portOpen'),
+            exception = await ctx.assert.throws(async() => await test({ host: '127.0.0.1', port: 1234 }) )
+        ctx.assert.includes(exception.text, 'closed')
     })
 
     it('tests/net.portOpen::unhappy exception', async() => {

@@ -45,6 +45,6 @@ module.exports = async config => {
     throw { 
         type : 'awdtest.fail', 
         test : 'net.httpCheck',
-        text : `Expected HTTP code ${expectedCode}, got ${response.statusCode}.`
+        text : `Expected HTTP code ${expectedStatus}, got ${receivedStatus}.`
     }
 }

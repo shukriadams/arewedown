@@ -70,7 +70,7 @@ describe('tests/jenkins.buildSuccess', async()=>{
         await ctx.assert.throws(async() => await test({ host : 'test', job : 'myjob' }))
     })
 
-    it('tests/jenkins.buildSuccess::unhappy job aborted', async() => {
+    it('tests/jenkins.buildSuccess::unhappy job not passing', async() => {
         let test = require(_$+'tests/jenkins.buildSuccess'),
             ctx =  require(_$t+'context'),
             calls = 0
@@ -79,7 +79,8 @@ describe('tests/jenkins.buildSuccess', async()=>{
             downloadString(){ if (calls == 0) { calls ++; return { statusCode: 200} } return { statusCode: 200, body : '{ "result" : "aborted" }' }  }
         })
 
-        await ctx.assert.throws(async() => await test({ host : 'test', job : 'myjob' }))
+        const exception = await ctx.assert.throws(async() => await test({ host : 'test', job : 'myjob' }))
+        ctx.assert.includes(exception.text, 'Jenkins job has unwanted status')
     })
 
     it('tests/jenkins.buildSuccess::happy job is passing', async() => {

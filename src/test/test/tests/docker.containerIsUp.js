@@ -11,8 +11,10 @@ describe('tests/docker.containerIsUp', async()=>{
 
     it('tests/docker.containerIsUp::unhappy host not defined', async() => {
         const test = require(_$+'tests/docker.containerIsUp'),
-            ctx = require(_$t+'context')
-        await ctx.assert.throws(async() => await test({  }))
+            ctx = require(_$t+'context'),
+            exception = await ctx.assert.throws(async() => await test({  }))
+
+        ctx.assert.equal(exception.text, '.host required')
     })
 
     it('tests/docker.containerIsUp::unhappy container name not defined', async() => {
@@ -47,8 +49,11 @@ describe('tests/docker.containerIsUp', async()=>{
         ctx.inject.object('madscience-httputils', {
             downloadString(){ return { statusCode: 200, body : JSON.stringify([ {Names : '/mycontainer', State : 'not-running'} ]) }}
         })
-        const test = require(_$+'tests/docker.containerIsUp')
-        await ctx.assert.throws(async() => await test({ host : 'test', container : 'mycontainer' }))
+
+        const test = require(_$+'tests/docker.containerIsUp'),
+            exception = await ctx.assert.throws(async() => await test({ host : 'test', container : 'mycontainer' }))
+
+        ctx.assert.includes(exception.text, 'container state is')
     })
 
     it('tests/docker.containerIsUp::unhappy container not found', async() => {

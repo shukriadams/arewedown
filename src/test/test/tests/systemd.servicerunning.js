@@ -58,8 +58,10 @@ describe('tests/systemd.servicerunning', async()=>{
             }
         })
 
-        const test = require(_$+'tests/systemd.servicerunning')
-        await ctx.assert.throws(async() => await test({ host, user, password, service }) )
+        const test = require(_$+'tests/systemd.servicerunning'),
+            exception = await ctx.assert.throws(async() => await test({ host, user, password, service }) )
+
+        ctx.assert.includes(exception.text, 'not running')
     })
     
     it('tests/systemd.servicerunning::unhappy unhandled exception', async() => {
