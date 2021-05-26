@@ -1,10 +1,19 @@
+# Builds standalone executable binaries of Are We Down?
+#
 # use on linux :
-# bash ./build-standalone.sh --target <TARGET> --upload --token <GITHUB TOKEN>
-#
+# bash ./build-standalone.sh --target linux
+# --target values : linux|win|armv7
+# 
 # use on windows :
-# sh build-standalone.sh --target TARGET
+# sh build-standalone.sh --target win
 #
-# Ignore  "Warning Cannot resolve '`./routes/${ name }`'
+# use on arm7 :
+# sh build-standalone.sh --target arm7
+#
+# Ignore  "Warning Cannot resolve '`./routes/${ name }`' errors
+#
+# To upload build artefacts to github, the GH_TOKEN env var must be set, with the github api token
+
 
 # fail on errors
 set -e 
@@ -67,10 +76,10 @@ elif [ "$target" = "win" ]; then
     
     # run app and ensure exit code was 0
     ($filename --version)
-elif [ "$target" = "armhf" ]; then
+elif [ "$target" = "armv7" ]; then
     # NOTE : currently not working with pkg
-    filename=./armhf/arewedown
-    name="arewedown_armhf"
+    filename=./armv7/arewedown
+    name="arewedown_armv7"
     
     npm install
 
@@ -88,7 +97,7 @@ elif [ "$target" = "dev" ]; then
     # run app and ensure exit code was 0
     (${filename} --version )
 else
-    echo "ERROR : ${target} is not a valid --target, allowed values are [linux|win|armhf|dev]"
+    echo "ERROR : ${target} is not a valid --target, allowed values are [linux|win|armv7|dev]"
     exit 1
 fi
 

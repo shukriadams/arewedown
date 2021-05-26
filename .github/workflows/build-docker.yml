@@ -1,0 +1,42 @@
+name: builds docker images
+on: 
+  push:
+    tags:
+      - '*'
+
+jobs:
+    
+    docker-arm7:
+        runs-on: self-hosted
+        steps:
+        # clean before building    
+        - name: cleanup
+          run: |
+            echo "Cleaning up previous run"
+            sudo rm -rf "${{ github.workspace }}"
+        - uses: actions/checkout@v1
+        - name: builds armv7 container and pushes to docker hub
+          run:  cd build && sh ./build-dockerImage.sh --dockerpush --smoketest --buildarch -arm --arch armv7
+          env:
+            DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+            DOCKER_USER: ${{ secrets.DOCKER_USER }}
+
+    docker-amd64:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v1
+        - name: builds amd64 container and pushes to docker hub
+          run:  cd build && sh ./build-dockerImage.sh --dockerpush --smoketest --arch amd64
+          env:
+            DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+            DOCKER_USER: ${{ secrets.DOCKER_USER }}
+
+    manifest:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v1
+        - name: builds manifest
+          run:  cd build && sh ./build-dockerManifest.sh
+          env:
+            DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+            DOCKER_USER: ${{ secrets.DOCKER_USER }}            

@@ -1,0 +1,17 @@
+name: builds standalone binaries
+on: 
+  push:
+    tags:
+      - '*'
+jobs:
+
+    linux-x64:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v1
+        - name: builds linux-x64 binary and uploads to github
+          run:  cd build && bash ./build-standalone.sh --target linux
+          env:
+            DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+            DOCKER_USER: ${{ secrets.DOCKER_USER }}
+            GH_TOKEN: ${{ secrets.GH_TOKEN }}

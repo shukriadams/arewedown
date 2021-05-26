@@ -4,19 +4,22 @@ set -e
 # tag must be passed in as an argument when calling this script
 DOCKERPUSH=0
 SMOKETEST=0
-ARCHITECTURE="" # set to "-arm" for arm
-
+ARCH="amd64" # set to amd64|arm32v6
+BUILDARCH="" # set to "-arm" for arm, -arm corresponds to 32v6 at the moment
 while [ -n "$1" ]; do 
     case "$1" in
     --dockerpush) DOCKERPUSH=1 ;;
     --smoketest) SMOKETEST=1 ;;
-    --arc)
-        ARCHITECTURE="$2" shift;;         
+    --arch)
+        ARCH="$2" shift;;
+    --buildarch)
+        BUILDARCH="$2" shift;;
+
     esac 
     shift
 done
 
-BUILDCONTAINER=shukriadams/node12build:0.0.3$ARCHITECTURE
+BUILDCONTAINER=shukriadams/node12build:0.0.3$BUILDARCH
 
 # get tag fom current context
 TAG=$(git describe --abbrev=0 --tags)
@@ -40,7 +43,7 @@ docker run -v $(pwd)/.stage/src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/
 # zip the build up
 tar -czvf ./build.tar.gz .stage/src 
 
-docker build -f Dockerfile$ARCHITECTURE -t shukriadams/arewedown . 
+docker build -f Dockerfile-$ARCH -t shukriadams/arewedown . 
 
 # test mount container
 if [ $SMOKETEST -eq 1 ]; then
@@ -62,8 +65,8 @@ fi
 
 if [ $DOCKERPUSH -eq 1 ]; then
     docker login -u $DOCKER_USER -p $DOCKER_PASS 
-    docker tag shukriadams/arewedown:latest shukriadams/arewedown:$TAG$ARCHITECTURE 
-    docker push shukriadams/arewedown:$TAG$ARCHITECTURE
+    docker tag shukriadams/arewedown:latest shukriadams/arewedown:$TAG-$ARCH 
+    docker push shukriadams/arewedown:$TAG-$ARCH
 fi
 
 echo "Build done"
