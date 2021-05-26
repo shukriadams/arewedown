@@ -4,8 +4,8 @@ set -e
 # tag must be passed in as an argument when calling this script
 DOCKERPUSH=0
 SMOKETEST=0
-ARCH="amd64" # set to amd64|arm32v6
-BUILDARCH="" # set to "-arm" for arm, -arm corresponds to 32v6 at the moment
+ARCH="amd64" # set to amd64|arm32v7
+BUILDARCH="" # set to "-arm" for arm, -arm corresponds to arm32v7 at the moment
 while [ -n "$1" ]; do 
     case "$1" in
     --dockerpush) DOCKERPUSH=1 ;;
@@ -35,7 +35,7 @@ mkdir -p .stage
 rsync -v -r --exclude=node_modules --exclude=test --exclude=data --exclude=user-scripts --exclude=settings.yml --exclude=.* ./../src .stage
 
 # write version to package.json in ./stag/src
-node writeVersion --version $TAG
+docker run -v $(pwd):/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build && node writeVersion --version $TAG'
 
 # install with --no-bin-links to avoid simlinks, this is needed to copy build content around
 docker run -v $(pwd)/.stage/src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'
