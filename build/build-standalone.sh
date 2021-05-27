@@ -3,12 +3,12 @@
 # use on linux :
 # bash ./build-standalone.sh --target linux
 # --target values : linux|win|armv7
-# 
+#
 # use on windows :
 # sh build-standalone.sh --target win
 #
 # use on arm7 :
-# sh build-standalone.sh --target arm7
+# sh build-standalone.sh --target armv7 --buildarch -arm
 #
 # Ignore  "Warning Cannot resolve '`./routes/${ name }`' errors
 #
@@ -16,13 +16,11 @@
 
 
 # fail on errors
-set -e 
+set -e
 
-ARCHITECTURE="" # set to "-arm" for arm
 repo="shukriadams/arewedown"
-BUILDCONTAINER=shukriadams/node12build:0.0.3$ARCHITECTURE
 
-# capture all arguments passed in, that is anything starting with --  
+# capture all arguments passed in, that is anything starting with --
 while [ $# -gt 0 ]; do
     if [[ $1 == *"--"* ]]; then
         param="${1/--/}"
@@ -36,6 +34,7 @@ if [ "$target" = "" ]; then
     exit 1
 fi
 
+BUILDCONTAINER=shukriadams/node12build:0.0.3$buildarch
 
 # force get tags, these don't always seem to be pulled by jenkins
 if [ ! "$target" = "dev" ]; then
@@ -59,7 +58,7 @@ echo $TAG > ./../src/version
 if [ "$target" = "linux" ]; then
     filename=./linux64/arewedown
     name="arewedown_linux64"
-    
+
     npm install
 
     $(npm bin)/pkg ./../src/. --targets node12-linux-x64 --output $filename
@@ -69,24 +68,24 @@ if [ "$target" = "linux" ]; then
 elif [ "$target" = "win" ]; then
     filename=./win64/arewedown.exe
     name="arewedown_win64.exe"
-    
+
     npm install
 
     $(npm bin)/pkg ./../src/. --targets node12-windows-x64 --output $filename
-    
+
     # run app and ensure exit code was 0
     ($filename --version)
 elif [ "$target" = "armv7" ]; then
     # NOTE : currently not working with pkg
     filename=./armv7/arewedown
     name="arewedown_armv7"
-    
+
     npm install
 
     $(npm bin)/pkg ./../src/. --targets node12-linux-armv7 --output $filename
 
     # run app and ensure exit code was 0
-    (${filename} --version ) 
+    (${filename} --version )
 elif [ "$target" = "dev" ]; then
     # this mode is for dev, and on vagrant only
     filename=./linux64/arewedown
@@ -110,7 +109,7 @@ echo "App built"
 
 # if --GH_TOKEN <string> or env var specified, push build to github
 if [ ! -z $GH_TOKEN ]; then
-    
+
     echo "uploading to github"
 
     GH_REPO="https://api.github.com/repos/$repo"
@@ -135,3 +134,5 @@ if [ ! -z $GH_TOKEN ]; then
 
     echo "Uploaded"
 fi
+
+

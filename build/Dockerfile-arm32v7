@@ -1,5 +1,8 @@
 FROM ubuntu:20.04
 
+LABEL maintainer="shukri.adams@gmail.com" \
+    src="https://github.com/shukriadams/arewedown" 
+
 RUN apt-get update \
     && apt-get install bash -y \
     && apt-get install sudo -y \
@@ -17,12 +20,7 @@ RUN apt-get update \
     && chmod 700 -R /etc/arewedown \
     && chown -R arewedown /etc/arewedown    
     
-COPY ./build.tar.gz /tmp
-
-# strips the first two folders when unzipping, getting rid of /tmp/build
-RUN tar -xzvf /tmp/build.tar.gz -C /etc/arewedown --strip 2
-
-RUN rm /tmp/build.tar.gz
+COPY ./.stage/src/. /etc/arewedown
 
 USER arewedown
 

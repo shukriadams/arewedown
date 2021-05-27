@@ -40,9 +40,6 @@ docker run -v $(pwd):/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build && node wri
 # install with --no-bin-links to avoid simlinks, this is needed to copy build content around
 docker run -v $(pwd)/.stage/src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'
 
-# zip the build up
-tar -czvf ./build.tar.gz .stage/src 
-
 docker build -f Dockerfile-$ARCH -t shukriadams/arewedown . 
 
 # test mount container
