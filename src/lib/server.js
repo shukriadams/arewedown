@@ -31,7 +31,7 @@ module.exports = {
         await fs.ensureDir(settings.logs)
         await this.validateTransports()
         
-
+        express.set('json spaces', 4)
 
         // ready to start - load/start all the things
         await this.loadRoutes(express)

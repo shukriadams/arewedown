@@ -15,6 +15,7 @@ module.exports = express => {
         
             if (!watcher){
                 const view = await handlebarsLoader.getPage('invalidWatcher')
+                res.status(404)
                 return res.send(view({
                     title : req.params.watcher
                 }))

@@ -1,22 +1,29 @@
 module.exports = express => {
 
     /**
-     * Returns a count of failing jobs. Returns 0 if all jobs are passing.
+     * Returns a json string with the status of jobs
      */
-    express.get('/status/failing', async (req, res)=>{
+    express.get('/status', async (req, res)=>{
         const log = require('./../lib/logger').instance()
 
         try {
            
             const daemon = require('./../lib/daemon'),
-                failingJobs = daemon.watchers.filter(job => 
-                    job.isPassing 
-                    && !job.config.__hasErrors ? null : job)
+                failing = daemon.watchers.filter(watcher => 
+                    watcher.isPassing 
+                    && !watcher.config.__hasErrors ? null : watcher)
 
-            res.send(failingJobs.length.toString())
+            res.json({
+                watchers : {
+                    total : daemon.watchers.length,
+                    failing : failing.length
+                } 
+            })
         }catch(ex){
             res.status(500)
-            res.end('Something went wrong - check logs for details.')
+            res.json({
+                error : 'Something went wrong - check logs for details.'
+            })
             log.error(ex)
         }
     })

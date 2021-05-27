@@ -7,7 +7,7 @@
     "license": "MIT",
     "bin": "index.js",
     "engines": {
-        "node": ">=0.10.x"
+        "node": ">=0.12.x"
     },
     "scripts": {
         "start": "node index",
@@ -59,7 +59,6 @@
     },    
     "devDependencies": {
         "glob": "7.1.6",
-        "capture-console" : "1.0.1",
         "lodash.clonedeep": "4.5.0",
         "nyc" : "15.1.0",
         "madscience-node-assert": "https://github.com/shukriadams/node-assert.git#0.0.7",

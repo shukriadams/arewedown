@@ -12,7 +12,7 @@ module.exports = express => {
         }catch(ex){
             log.error(`error loading content with params:"`, req.params, ex)
             res.status(404)
-            res.end('That file doesn\t exist')
+            res.end('That file does not exist')
         }
     })
 }

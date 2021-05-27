@@ -20,6 +20,7 @@ module.exports = express => {
 
             if (!dashboard){
                 let view = await handlebarsLoader.getPage('invalidDashboard')
+                res.status(404)
                 return res.send(view({
                     title : dashboardNode,
                     hasErrors : true
