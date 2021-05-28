@@ -32,9 +32,15 @@ If you want to install the app from source, try the [NodeJS install guide](/docs
 
 ## Config
 
-For complete settings, check the [advanced settings guide](/docs/advanced-settings.md).
+The most basic setup of *Are We Down?* can be done with the config
 
-`Settings.yml` Is divided up into 3 main sections. 
+    watchers:
+        mysite:
+            host: mysite.example.com
+
+This sets up a single watcher which you can view on your dashboard. For more details settings, check the [advanced settings guide](/docs/advanced-settings.md).
+
+The settings file is divided up into 3 main sections. 
 
     transports:
         ...

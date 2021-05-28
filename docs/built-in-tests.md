@@ -9,7 +9,7 @@ The simplest and default watcher is the HTTP check. It requests a URL and fails 
 
     watchers:
         mytest:
-            url: http://example.com
+            host: http://example.com
             code : 200 # optional
 
 *AreWeDown?* has several built-in tests ([all tests](https://github.com/shukriadams/arewedown/tree/master/src/tests))
@@ -28,7 +28,7 @@ Tests if a port at the given address is open. Works on TCP only.
 
 Test if a jenkins job is passing. Requires Jenkins server URL and the name of the job in jenkins. 
 
-- URL can be any URL that gives access to the server, this is often with built-in credentials. 
+- Host can be any URL that gives access to the server, this is often with built-in credentials. 
 - Job name can be the human-friendly version, we'll make it URL-safe.
 - Test passes on success only, all other outcomes will be read as a failure. 
 - Status is optional, and a comma-separated list. Default value is "success". This filters on the string values returned by Jenkins' API for job status, which is 
