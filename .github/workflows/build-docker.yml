@@ -16,7 +16,7 @@ jobs:
             sudo rm -rf "${{ github.workspace }}"
         - uses: actions/checkout@v1
         - name: builds armv7 container and pushes to docker hub
-          run:  cd build && sh ./build-dockerImage.sh --dockerpush --smoketest --buildarch -arm --arch armv7
+          run:  cd build && sh ./build-dockerImage.sh --dockerpush --smoketest --buildarch -arm --arch arm32v7
           env:
             DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
             DOCKER_USER: ${{ secrets.DOCKER_USER }}
