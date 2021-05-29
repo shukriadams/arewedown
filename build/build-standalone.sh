@@ -38,7 +38,7 @@ BUILDCONTAINER=shukriadams/node12build:0.0.4$buildarch
 
 # force get tags, these don't always seem to be pulled by jenkins
 if [ ! "$target" = "dev" ]; then
-    git fetch --all --tags
+    git fetch --all --tags -f
 fi
 
 TAG=$(git describe --abbrev=0 --tags)

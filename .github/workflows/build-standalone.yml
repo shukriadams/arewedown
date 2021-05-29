@@ -19,11 +19,6 @@ jobs:
     win-x64:
         runs-on: self-hosted
         steps:
-        # clean before building    
-        - name: cleanup
-          run: |
-            echo "Cleaning up previous run"
-            rmdir "${{ github.workspace }}"
         - uses: actions/checkout@v1
         - name: builds win-x64 binary and uploads to github
           run:  cd build && bash ./build-standalone.sh --target win
