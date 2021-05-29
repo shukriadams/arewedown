@@ -21,4 +21,5 @@ build/linux64
 build/logs
 src/.nyc_output
 src/coverage/
-
+build/node_modules
+build/win64

@@ -50,12 +50,13 @@ if [ -z "$TAG" ]; then
 fi
 
 # npm install all the things
-docker run -v $(pwd)/../src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'
 
 # write version to build
 echo $TAG > ./../src/version
 
-if [ "$target" = "linux" ]; then
+if [ $target = "linux" ]; then
+    docker run -v $(pwd)/../src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'
+
     filename=./linux64/arewedown
     name="arewedown_linux64"
 
@@ -65,7 +66,14 @@ if [ "$target" = "linux" ]; then
 
     # run app and ensure exit code was 0
     (${filename} --version )
-elif [ "$target" = "win" ]; then
+elif [ $target = "win" ]; then
+    npm install pkg@5.1.0 -g
+    npm install yarn -g
+    
+    cd ./../src
+    yarn --no-bin-links --production
+    cd ./../build
+
     filename=./win64/arewedown.exe
     name="arewedown_win64.exe"
 
@@ -75,7 +83,9 @@ elif [ "$target" = "win" ]; then
 
     # run app and ensure exit code was 0
     ($filename --version)
-elif [ "$target" = "armv7" ]; then
+elif [ $target = "armv7" ]; then
+    docker run -v $(pwd)/../src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'
+
     # NOTE : currently not working with pkg
     filename=./armv7/arewedown
     name="arewedown_armv7"
@@ -86,7 +96,9 @@ elif [ "$target" = "armv7" ]; then
 
     # run app and ensure exit code was 0
     (${filename} --version )
-elif [ "$target" = "dev" ]; then
+elif [ $target = "dev" ]; then
+    docker run -v $(pwd)/../src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'
+
     # this mode is for dev, and on vagrant only
     filename=./linux64/arewedown
     name="arewedown_linux64"
