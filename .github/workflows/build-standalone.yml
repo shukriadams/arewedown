@@ -21,7 +21,9 @@ jobs:
         steps:
         - uses: actions/checkout@v2
         - name: builds win-x64 binary and uploads to github
-          run:  cd build && bash ./build-standalone.sh --target win
+          run: | 
+            cd build 
+            bash ./build-standalone.sh --target win
           env:
             DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
             DOCKER_USER: ${{ secrets.DOCKER_USER }}
