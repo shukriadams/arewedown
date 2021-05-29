@@ -8,16 +8,13 @@ if [ -z $TAG ]; then
    exit 1
 fi
 
+docker login -u $DOCKER_USER -p $DOCKER_PASS 
 
-if [ $DOCKERPUSH -eq 1 ]; then
-    docker login -u $DOCKER_USER -p $DOCKER_PASS 
+docker manifest create \
+    shukriadams/arewedown:$TAG \
+    --amend shukriadams/arewedown:$TAG-amd64 \
+    --amend shukriadams/arewedown:$TAG-arm32v7 
 
-    docker manifest create \
-        shukriadams/arewedown:$TAG \
-        --amend shukriadams/arewedown:$TAG-amd64 \
-        --amend shukriadams/arewedown:$TAG-arm32v7 
-
-    docker manifest push shukriadams/arewedown:$TAG
-fi
+docker manifest push shukriadams/arewedown:$TAG
 
 echo "Manifest pushed"
