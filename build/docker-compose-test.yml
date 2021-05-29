@@ -1,4 +1,4 @@
-version: "2"
+version: "3.5"
 services:
   arewedowntest:
     image: shukriadams/arewedown:latest
@@ -6,3 +6,8 @@ services:
     restart: unless-stopped
     ports:
     - "7018:3000"
+
+networks:
+   default:
+      external: true
+      name: testingNetwork    

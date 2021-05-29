@@ -5,6 +5,16 @@ on:
       - '*'
 
 jobs:
+
+    test:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v1
+        - name: run code tests and ensure 100% test coverage
+          run: cd build && sh ./test-preRelease.sh
+          env:
+            DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+            DOCKER_USER: ${{ secrets.DOCKER_USER }}
     
     docker-arm7:
         runs-on: self-hosted
@@ -16,7 +26,7 @@ jobs:
             sudo rm -rf "${{ github.workspace }}"
         - uses: actions/checkout@v1
         - name: builds armv7 container and pushes to docker hub
-          run:  cd build && sh ./build-dockerImage.sh --dockerpush --smoketest --buildarch -arm --arch arm32v7
+          run:  cd build && sh ./build-dockerImage.sh --dockerpush --smoketest --arch arm32v7
           env:
             DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
             DOCKER_USER: ${{ secrets.DOCKER_USER }}

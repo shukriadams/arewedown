@@ -19,22 +19,23 @@ describe('routes/watcher/get', async()=>{
     }
 
     it('routes/watcher/get::happy', async() => {
-        const ctx = createTestStructures()
-        const watcher = ctx.express.getRoute(_$+'routes/watcher')
-        await watcher(ctx.express.req, ctx.express.res)
+        const ctx = createTestStructures(),
+            route = ctx.express.getRoute(_$+'routes/watcher')
+
+        await route(ctx.express.req, ctx.express.res)
     })
 
     it('routes/watcher/get::history not found', async() => {
         const ctx = createTestStructures()
         ctx.inject.object('fs-extra', {  exists(){ return false } })
-        const watcher = ctx.express.getRoute(_$+'routes/watcher')
-        await watcher(ctx.express.req, ctx.express.res)
+        const route = ctx.express.getRoute(_$+'routes/watcher')
+        await route(ctx.express.req, ctx.express.res)
     })
 
     it('routes/watcher/get::invalid watcher', async() => {
         const ctx =  require(_$t+'context')
         ctx.express.req.params.watcher = 'boguswatcher'
-        const watcher = ctx.express.getRoute(_$+'routes/watcher')
-        await watcher(ctx.express.req, ctx.express.res)
+        const route = ctx.express.getRoute(_$+'routes/watcher')
+        await route(ctx.express.req, ctx.express.res)
     })
 })

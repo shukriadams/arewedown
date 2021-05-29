@@ -3,13 +3,9 @@
     "version": "0.0.1",
     "scripts": {
         "test": "./node_modules/mocha/bin/mocha --recursive --timeout 5000",
-        "debugtest": "./node_modules/mocha/bin/mocha --inspect-brk=0.0.0.0:3001 --recursive --timeout 5000",        
-        "cover": "nyc npm run test"
+        "debugtest": "./node_modules/mocha/bin/mocha --inspect-brk=0.0.0.0:3001 --recursive --timeout 5000"
     },
     "devDependencies": {
-        "glob": "7.1.6",
-        "lodash.clonedeep": "4.5.0",
-        "nyc" : "15.1.0",
         "urljoin": "0.1.5",
         "madscience-httputils": "https://github.com/shukriadams/node-httpUtils.git#0.0.7",
         "madscience-node-assert": "https://github.com/shukriadams/node-assert.git#0.0.7",

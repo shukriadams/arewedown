@@ -5,16 +5,16 @@ describe('routes/exit/get', async()=>{
         ctx.settings({ allowHttpExit: true })
         ctx.inject.overwriteObject('process', { exit() {} })
 
-        const exit = ctx.express.getRoute(_$+'routes/exit')
-        exit(ctx.express.req, ctx.express.res)
+        const route = ctx.express.getRoute(_$+'routes/exit')
+        route(ctx.express.req, ctx.express.res)
     })
 
     it('routes/exit/get::exit blocked', async() => {
         const ctx =  require(_$t+'context')
         ctx.settings({ allowHttpExit: false })
 
-        const exit = ctx.express.getRoute(_$+'routes/exit')
-        exit(ctx.express.req, ctx.express.res)
+        const route = ctx.express.getRoute(_$+'routes/exit')
+        route(ctx.express.req, ctx.express.res)
     })
 
     it('routes/exit/get::throws exception', async() => {
@@ -22,8 +22,8 @@ describe('routes/exit/get', async()=>{
         ctx.settings({ allowHttpExit: true })
         ctx.inject.overwriteObject('process', { exit() { throw 'error' }})
 
-        const exit = ctx.express.getRoute(_$+'routes/exit')
-        exit(ctx.express.req, ctx.express.res)
+        const route = ctx.express.getRoute(_$+'routes/exit')
+        route(ctx.express.req, ctx.express.res)
     })
 
 })

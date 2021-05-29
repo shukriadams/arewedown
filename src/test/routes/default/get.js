@@ -4,15 +4,15 @@ describe('routes/default/get', async()=>{
         const ctx =  require(_$t+'context')
         ctx.settings({ dashboards : { test :{ default: true } }})
 
-        const defaultRoute = ctx.express.getRoute(_$+'routes/default')
-        defaultRoute(ctx.express.req, ctx.express.res)
+        const route = ctx.express.getRoute(_$+'routes/default')
+        route(ctx.express.req, ctx.express.res)
     })
 
     it('routes/default/get::force first', async() => {
         const ctx =  require(_$t+'context')
         ctx.settings({ dashboards : { test :{ default: false } }})
 
-        const defaultRoute = ctx.express.getRoute(_$+'routes/default')
-        defaultRoute(ctx.express.req, ctx.express.res)
+        const route = ctx.express.getRoute(_$+'routes/default')
+        route(ctx.express.req, ctx.express.res)
     })
 })

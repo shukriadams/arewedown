@@ -34,7 +34,7 @@ if [ "$target" = "" ]; then
     exit 1
 fi
 
-BUILDCONTAINER=shukriadams/node12build:0.0.3$buildarch
+BUILDCONTAINER=shukriadams/node12build:0.0.4$buildarch
 
 # force get tags, these don't always seem to be pulled by jenkins
 if [ ! "$target" = "dev" ]; then

@@ -26,6 +26,7 @@ module.exports = {
         res : { 
             download(){},
             end(){},
+            json(){},
             status(){ },
             send(){}
         },

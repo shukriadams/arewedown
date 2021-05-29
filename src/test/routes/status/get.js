@@ -6,8 +6,24 @@ describe('routes/status/get', async()=>{
         ctx.inject.overwriteObject('./../lib/daemon', {
             watchers : [ { isPassing : true, config : { __hasErrors : false} }]
         })
-        const status = ctx.express.getRoute(_$+'routes/status')
-        status(ctx.express.req, ctx.express.res)
+        
+        const route = ctx.express.getRoute(_$+'routes/status')
+        route(ctx.express.req, ctx.express.res)
+    })
+
+    it('routes/status/get::unhappy::cover', async() => {
+        let ctx =  require(_$t+'context')
+            calls = 0
+
+        ctx.express.res.json = ()=>{
+            if (calls === 0){
+                calls ++
+                throw 'fail on 1st call'
+            }
+        }
+
+        const route = await ctx.express.getRoute(_$+'routes/status')
+        route(ctx.express.req, ctx.express.res)
     })
 
 })

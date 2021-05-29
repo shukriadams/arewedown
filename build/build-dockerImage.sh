@@ -1,11 +1,13 @@
 # fail on errors
 set -e
 
+
 # tag must be passed in as an argument when calling this script
 DOCKERPUSH=0
 SMOKETEST=0
 ARCH="amd64" # set to amd64|arm32v7
 BUILDARCH="" # set to "-arm" for arm, -arm corresponds to arm32v7 at the moment
+
 while [ -n "$1" ]; do 
     case "$1" in
     --dockerpush) DOCKERPUSH=1 ;;
@@ -19,7 +21,13 @@ while [ -n "$1" ]; do
     shift
 done
 
-BUILDCONTAINER=shukriadams/node12build:0.0.3$BUILDARCH
+if [ $ARCH = "arm32v7" ]; then
+   BUILDARCH="-arm" 
+fi
+
+BUILDCONTAINER=shukriadams/node12build:0.0.4$BUILDARCH
+
+
 
 # get tag fom current context
 TAG=$(git describe --abbrev=0 --tags)
@@ -44,20 +52,25 @@ docker build -f Dockerfile-$ARCH -t shukriadams/arewedown .
 
 # test mount container
 if [ $SMOKETEST -eq 1 ]; then
+
     echo "starting smoketest"
+    docker network create --driver bridge testingNetwork || true
+
     # test build
     docker-compose -f docker-compose-test.yml down 
     docker-compose -f docker-compose-test.yml up -d 
     # give container a chance to start
     sleep 15 
 
-    # confirm app has started
-    LOOKUP=$(curl -s -o /dev/null -D - localhost:7018 | grep "HTTP/1.1 200 OK") 
-    if [ -z "$LOOKUP" ] ; then
-        echo "ERROR : container test failed to return 200"
-        exit 1
-    fi
+    # get test container IP
+    TEST_CONTAINER_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' arewedowntest)
+
+    cd ../tests
+    docker run -e TEST_URL="http://${TEST_CONTAINER_IP}:3000" -v $(pwd):/tmp/test --network testingNetwork $BUILDCONTAINER sh -c 'cd /tmp/test && yarn --no-bin-links && npm test'
+
     echo "container test passed"
+    
+    cd --
 fi
 
 if [ $DOCKERPUSH -eq 1 ]; then

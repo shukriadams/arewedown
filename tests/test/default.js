@@ -1,9 +1,10 @@
 describe('tests', async()=>{
 
     it('tests/default', async() => {
-        const httputils = require('madscience-httputils'),
+        const settings = require('./../settings'),
+            httputils = require('madscience-httputils'),
             assert = require('madscience-node-assert'),
-            response = await httputils.downloadString({url : 'http://localhost:3000' })
+            response = await httputils.downloadString({ url : settings.url })
 
         assert.equal(response.statusCode, 200)
     })

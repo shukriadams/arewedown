@@ -1,7 +1,8 @@
 describe('tests/content', async()=>{
 
     it('tests/content', async() => {
-        const httputils = require('madscience-httputils'),
+        const settings = require('./../settings'),
+            httputils = require('madscience-httputils'),
             urljoin = require('urljoin'),
             assert = require('madscience-node-assert'),
             files  = [
@@ -12,7 +13,7 @@ describe('tests/content', async()=>{
             ]
 
             for (const file of files){
-                status = await httputils.getStatus(urljoin('http://localhost:3000/content', file))
+                status = await httputils.getStatus(urljoin(settings.url, 'content', file))
                 assert.equal(status, 200)
             }
 
