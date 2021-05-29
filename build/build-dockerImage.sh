@@ -43,12 +43,19 @@ mkdir -p .stage
 rsync -v -r --exclude=node_modules --exclude=test --exclude=data --exclude=user-scripts --exclude=settings.yml --exclude=.* ./../src .stage
 
 # write version to package.json in ./stag/src
-docker run -v $(pwd):/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build && node writeVersion --version $TAG'
+docker run \
+    -v $(pwd):/tmp/build \
+    $BUILDCONTAINER sh -c 'cd /tmp/build && node writeVersion --version $TAG'
 
 # install with --no-bin-links to avoid simlinks, this is needed to copy build content around
-docker run -v $(pwd)/.stage/src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'
+docker run \
+    -v $(pwd)/.stage/src:/tmp/build \
+    $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'
 
-docker build -f Dockerfile-$ARCH -t shukriadams/arewedown . 
+docker build \
+    -f Dockerfile-$ARCH \
+    -t shukriadams/arewedown \
+    . 
 
 # test mount container
 if [ $SMOKETEST -eq 1 ]; then
@@ -66,7 +73,12 @@ if [ $SMOKETEST -eq 1 ]; then
     TEST_CONTAINER_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' arewedowntest)
 
     cd ../tests
-    docker run -e TEST_URL="http://${TEST_CONTAINER_IP}:3000" -v $(pwd):/tmp/test --network testingNetwork $BUILDCONTAINER sh -c 'cd /tmp/test && yarn --no-bin-links && npm test'
+    
+    docker run \
+        -e TEST_URL="http://${TEST_CONTAINER_IP}:3000" \
+        -v $(pwd):/tmp/test \
+        --network testingNetwork \
+        $BUILDCONTAINER sh -c 'cd /tmp/test && yarn --no-bin-links && npm test'
 
     echo "container test passed"
     

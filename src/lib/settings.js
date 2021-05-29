@@ -59,18 +59,21 @@ module.exports = {
      */
     load(forcedIncomingSettings = null){
         let fs = require('fs-extra'),
+            process = require('process'),
             yaml = require('js-yaml'),
             dotenv = require('dotenv'),
             sanitize = require('sanitize-filename'),
             allWatcherNames = [],
             disabledRecipients = [],
-            settingsPath = './config/settings.yml'
+            settingsPath = process.env.AWD_SETTINGS_PATH || './config/settings.yml' // allow settings path to be passed in
 
         // apply env vars from optional .env file in project root
         dotenv.config()
-        
-        // this is used to allow dev settings that will not be committed to source control
+
+        // allow local dev settings to override all
         if (fs.existsSync('./config/settings.dev.yml'))
+            /* istanbul ignore next */
+            /* this line is extremely difficult to cover when building from github, and so edge-case, that it's best ignored */
             settingsPath = './config/settings.dev.yml'
         
         if (fs.existsSync(settingsPath))
