@@ -1,0 +1,38 @@
+# this config is designed to provide maximum line coverage, and is used by build smoketests
+transports:
+    smtp:
+        enabled: true
+        server : smtp.example.com
+        port : 465
+        secure : true
+        user : user@example.com
+        pass: mypassword
+        from : user@example.com
+    smtp2:
+        enabled: false
+        server : smtp.example.com
+        port : 465
+        secure : true
+        user : user@example.com
+        pass: mypassword
+        from : user@example.com
+
+
+recipients:
+    myuser:
+        smtp: user@example.com
+    myother:
+        enabled: false
+        smtp: user@example.com
+
+watchers:
+    example:
+        host: 192.168.1.169  
+    example2:
+        enabled: false
+        host: 192.168.1.169  
+
+dashboards:
+    default:
+    example2:
+        enabled: false

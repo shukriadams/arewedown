@@ -16,10 +16,11 @@ module.exports = express => {
                 dashboardNode = req.params.dashboard || Object.keys(settings.dashboards)[0],
                 now = new Date(),
                 hasErrors = false,
+                view = await handlebarsLoader.getPage('dashboardInner'),
                 dashboard = settings.dashboards[dashboardNode]
 
             if (!dashboard){
-                let view = await handlebarsLoader.getPage('invalidDashboard')
+                view = await handlebarsLoader.getPage('invalidDashboard')
                 res.status(404)
                 return res.send(view({
                     title : dashboardNode,
@@ -27,8 +28,7 @@ module.exports = express => {
                 }))
             }
 
-            const view = await handlebarsLoader.getPage('dashboardInner'),
-                dashboardWatchers = arrayHelper.split(dashboard.watchers, ','), // clone array, we don't want to change source
+            const dashboardWatchers = arrayHelper.split(dashboard.watchers, ','), // clone array, we don't want to change source
                 // get cronprocesses that are running and used on the current dashboard
                 watchers = daemon.watchers.filter(watcher => dashboardWatchers.includes(watcher.config.__name) )
 
