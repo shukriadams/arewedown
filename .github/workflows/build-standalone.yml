@@ -23,7 +23,7 @@ jobs:
         - name: cleanup
           run: |
             echo "Cleaning up previous run"
-            rm -rf "${{ github.workspace }}"            
+            rmdir "${{ github.workspace }}"
         - uses: actions/checkout@v1
         - name: builds win-x64 binary and uploads to github
           run:  cd build && bash ./build-standalone.sh --target win
