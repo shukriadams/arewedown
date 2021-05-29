@@ -16,16 +16,3 @@ jobs:
             DOCKER_USER: ${{ secrets.DOCKER_USER }}
             GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-    win-x64:
-        runs-on: self-hosted
-        steps:
-        - uses: actions/checkout@v2
-        - name: builds win-x64 binary and uploads to github
-          run: | 
-            cd build 
-            bash ./build-standalone.sh --target win
-          env:
-            DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
-            DOCKER_USER: ${{ secrets.DOCKER_USER }}
-            GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
