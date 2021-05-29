@@ -1,5 +1,3 @@
-# Are We Down?
-
 ![Screenshot of AreWeDown?](https://github.com/shukriadams/arewedown/blob/master/screenshot.PNG)
 
 *Are We Down?* is a simple uptime monitoring system and dashboard. It is ideal for the home/self-hosting user who runs multiple services/networked devices on a private LAN, and who doesn't want the complexity of  an enterprise-level monitoring system.
@@ -9,8 +7,8 @@
 ## Features 
 
 - Simple to configure with just a few lines of text in a single YML file. 
-- No databases or dependencies on other services
-- Tests HTTP status, along with a growing list of other useful queries.
+- No databases or dependencies on other services.
+- Does HTTP status checks, Ping, Docker container status and more.
 - Sends alerts via email (SMTP), Slack and others coming.
 - Can be extended with your own test scripts using shell scripts, Javascript (NodeJS) or Python3 scripts.
 - Runs on x86 and ARM (Docker containers are built for both) 
@@ -20,15 +18,14 @@
 *NOTE:*
 
 - Never expose *Are We Down?* to the public internet - use it behind a firewall/router at all times! 
-- *Are We Down?* is currently not supported or tested on Windows.
 
-## Install
+## Install options
 
-If you're on Linux (including Raspbian) and have Docker installed, check out the [Docker installation guide](/docs/install-docker.md).
+- [Docker ](/docs/install-docker.md) - Linux x64 + ARM7 (Raspberry Pi 3 or better)
 
-If you're on Linux and don't want to use Docker, you can grab a standalone executable under [releases](https://github.com/shukriadams/arewedown/releases) (these are still experimental).
+- [Binaries](https://github.com/shukriadams/arewedown/releases) - Linux x64 only.
 
-If you want to install the app from source, try the [NodeJS install guide](/docs/install-nodejs.md).
+- [NodeJS source](/docs/install-nodejs.md) - any OS that supports NodeJS 12.x or better.
 
 ## Config
 
@@ -36,11 +33,9 @@ The most basic setup of *Are We Down?* can be done with the config
 
     watchers:
         mysite:
-            host: mysite.example.com
+            host: http://mysite.example.com
 
-This sets up a single watcher which you can view on your dashboard. For more details settings, check the [advanced settings guide](/docs/advanced-settings.md).
-
-The settings file is divided up into 3 main sections. 
+This sets up a single watcher. The settings file is divided up into 3 main sections. 
 
     transports:
         ...
@@ -113,12 +108,12 @@ Check the [built-in tests guide](/docs/built-in-tests.md) for details on how to 
 
 You can also write tests in bash, NodeJS or Python3 if you're more into that sort of thing. There's [a guide for custom code tests](/docs/custom-tests.md) too.
 
+For details settings, check the [advanced settings guide](/docs/advanced-settings.md).
+
 ## Interested in contributing?
 
 Please check [contributing](/docs/contributing.md).
 
 ## License
 
-[MIT](https://github.com/shukriadams/arewedown/blob/master/LICENSE)
-
-
+*AreWeDown?* is available under the [MIT license](https://github.com/shukriadams/arewedown/blob/master/LICENSE).
