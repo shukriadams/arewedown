@@ -70,11 +70,9 @@ if [ $target = "linux" ]; then
     # run app and ensure exit code was 0
     (${filename} --version )
 elif [ $target = "win" ]; then
-    npm install pkg@5.1.0 -g
-    npm install yarn -g
-    
+    # note  : on windows when running in Jenkins, we don't have access to any global npm packages- only local packages can be used.
     cd ./../src
-    yarn --no-bin-links --production
+    npm install --production
     cd ./../build
 
     filename=./win64/arewedown.exe
