@@ -15,15 +15,13 @@
 - Runs on low-spec hardware like the Raspberry Pi 3.
 - Built-in dashboard will run on almost any browser, ideal for a Raspberry Pi in kiosk mode. 
 
-*NOTE:*
-
-- Never expose *Are We Down?* to the public internet - use it behind a firewall/router at all times! 
+*NOTE:* *Are We Down?* has no built-in security, do not expose it to the public internet. It is perfectly safe running behind a trusted firewall/router, that is what it was intended for. 
 
 ## Install options
 
 - [Docker ](/docs/install-docker.md) - Linux x64 + ARM7 (Raspberry Pi 3 or better)
 
-- [Binaries](https://github.com/shukriadams/arewedown/releases) - Linux x64 only.
+- [Binaries](https://github.com/shukriadams/arewedown/releases) - Linux + Windows x64. These are still experimental, ARM builds currently not possible due to hardware.
 
 - [NodeJS source](/docs/install-nodejs.md) - any OS that supports NodeJS 12.x or better.
 
@@ -103,6 +101,7 @@ There are several built-in tests
 - TCP Port open
 - Docker container up
 - Jenkins job passing
+- System.d process status
 
 Check the [built-in tests guide](/docs/built-in-tests.md) for details on how to configure these.
 

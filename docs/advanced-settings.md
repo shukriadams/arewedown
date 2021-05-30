@@ -40,8 +40,8 @@ If you do not want to store sensitive information like passwords in the `setting
 
     anyProperty: "{{env.MY_SENSITIVE_INFO}}"
 
-If you defined an environment variable `MY_SENSITIVE_INFO=1234` then `anyProperty` will have the value `1234` in memory. If the environment variable is not found, the application will fail to start.
+If you defined an environment variable `MY_SENSITIVE_INFO=1234` then `anyProperty` will have the value `1234` in memory. If the environment variable is not found, *AreWeDown?* will fail to start.
 
 ## Logs
 
-*AreWeDown?* logs, a lot. It writes its own logs to the `/etc/arewedown/logs/<DATE>.log`, and then for each watcher in `/etc/arewedown/logs/<WATCHER>/logs/<DATE>.log`. Use `docker logs arewdown` to quickly see recent log entries.        
+*AreWeDown?* logs, a lot. It writes its own logs to the `/etc/arewedown/logs/<DATE>.log`, and then for each watcher in `/etc/arewedown/logs/<WATCHER>/logs/<DATE>.log`. If *AreWeDown?* fails to start or exits abruptly, a good place to start looking is its logs. If you're running in docker, use `docker logs arewdown`.
