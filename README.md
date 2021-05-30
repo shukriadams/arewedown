@@ -19,9 +19,9 @@
 
 ## Install options
 
-- [Docker ](/docs/install-docker.md) - Linux x64 + ARM7 (Raspberry Pi 3 or better)
+- [Docker](/docs/install-docker.md) - Linux x64 + ARM7 (Raspberry Pi 3 or better)
 
-- [Binaries](https://github.com/shukriadams/arewedown/releases) - Linux + Windows x64. These are still experimental, ARM builds currently not possible due to hardware.
+- [Binaries](/docs/standalone-builds.md) - Linux + Windows x64 (these are still experimental, ARM builds currently not possible).
 
 - [NodeJS source](/docs/install-nodejs.md) - any OS that supports NodeJS 12.x or better.
 
