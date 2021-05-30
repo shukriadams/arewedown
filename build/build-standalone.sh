@@ -1,19 +1,17 @@
 # Builds standalone executable binaries of Are We Down?
-#
-# use on linux :
-# bash ./build-standalone.sh --target linux
 # --target values : linux|win|armv7
 #
-# use on windows :
-# sh build-standalone.sh --target win
+# linux :
+# bash ./build-standalone.sh --target linux
 #
-# use on arm7 :
-# sh build-standalone.sh --target armv7 --buildarch -arm
+# windows :
+# bash build-standalone.sh --target win
+#
+# arm7 :
+# bash build-standalone.sh --target armv7 
 #
 # Ignore  "Warning Cannot resolve '`./routes/${ name }`' errors
-#
 # To upload build artefacts to github, the GH_TOKEN env var must be set, with the github api token
-
 
 # fail on errors
 set -e
@@ -32,6 +30,11 @@ done
 if [ "$target" = "" ]; then
     echo "ERROR : --target not set"
     exit 1
+fi
+
+buildarch=""
+if [ $target = "armv7" ]; then
+    buildarch="-arm"
 fi
 
 BUILDCONTAINER=shukriadams/node12build:0.0.4$buildarch
@@ -146,5 +149,3 @@ if [ ! -z $GH_TOKEN ]; then
 
     echo "Uploaded"
 fi
-
-

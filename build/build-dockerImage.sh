@@ -40,7 +40,16 @@ fi
 # copy src to .stage so we can build it both locally and on Github without writing unwanted changes into src
 rm -rf .stage
 mkdir -p .stage
-rsync -v -r --exclude=node_modules --exclude=test --exclude=data --exclude=user-scripts --exclude=settings.yml --exclude=.* ./../src .stage
+rsync ./../src .stage \
+    --verbose \
+    --recursive  \
+    --exclude=node_modules \
+    --exclude=test \
+    --exclude=data \
+    --exclude=user-scripts \
+    --exclude=settings.yml \
+    --exclude=.* 
+    
 
 # write version to package.json in ./stag/src
 docker run \
