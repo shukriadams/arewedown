@@ -13,7 +13,3 @@ PRs, suggestions and bug reports are very welcome. If you're interesting in cont
 - Generally any test that targets well-known network/OS features as well as ubiquitous apps is welcome. Feel free to suggest, or PR your own implimentation.
 - Tests should be as generic and reuseable as possible. For example, instead of writing a test for a specific port like "Is SSH Server running?" a generic port test is preferred. It's up to the user to know they want to test port 22 for SSH server, but this covers the most use cases with the least amount of code.
 - Tests should ideally not require runtime additions - NPM packages can be added, but these should be stable and reliable.
-
-## Windows
-
-Even though *AreWeDown?* is a NodeJS app and runs fine on Windows, tests are implimented POSIX-first, and after that Linux-first. As there is no standard/easy way to get the required command line apps on Windows, Windows support is not feasible at this point.
