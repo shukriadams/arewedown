@@ -54,7 +54,7 @@ rsync ./../src .stage \
 # write version to package.json in ./stag/src
 docker run \
     -v $(pwd):/tmp/build \
-    $BUILDCONTAINER sh -c 'cd /tmp/build && node writeVersion --version $TAG'
+    $BUILDCONTAINER sh -c 'cd /tmp/build && node writeVersion --version $TAG --path ./.stage/src/package.json'
 
 # install with --no-bin-links to avoid simlinks, this is needed to copy build content around
 docker run \

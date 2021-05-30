@@ -10,7 +10,7 @@ jobs:
         steps:
         - uses: actions/checkout@v1
         - name: builds linux-x64 binary and uploads to github
-          run:  cd build && bash ./build-standalone.sh --target linux
+          run:  cd build && bash ./build-standalone.sh --target linux --writeVersion true
           env:
             GH_TOKEN: ${{ secrets.GH_TOKEN }}
 

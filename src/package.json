@@ -14,9 +14,9 @@
         "debug": "node --inspect=0.0.0.0:3001 index",
         "debug-brk": "node --inspect-brk=0.0.0.0:3001 index",
         "test": "./node_modules/mocha/bin/mocha --recursive --timeout 5000",
-        "debugtest": "./node_modules/mocha/bin/mocha --inspect-brk=0.0.0.0:3001 --recursive --timeout 5000",        
+        "debugtest": "./node_modules/mocha/bin/mocha --inspect-brk=0.0.0.0:3001 --recursive --timeout 5000",
         "cover": "nyc npm run test",
-        "cover-upload" : "nyc --reporter=lcov npm run test && codecov"
+        "cover-upload": "nyc --reporter=lcov npm run test && codecov"
     },
     "dependencies": {
         "handlebars-layouts": "3.1.4",
@@ -25,7 +25,7 @@
         "jsonfile": "5.0.0",
         "s-ago": "2.0.1",
         "js-yaml": "3.13.1",
-        "got" : "11.8.2",
+        "got": "11.8.2",
         "cron": "1.7.1",
         "express": "4.17.1",
         "minimist": "1.2.5",
@@ -33,12 +33,12 @@
         "fs-extra": "8.1.0",
         "winston": "2.4.0",
         "urljoin": "0.1.5",
-        "http-terminator" : "3.0.0",
+        "http-terminator": "3.0.0",
         "winston-daily-rotate-file": "1.7.2",
-        "smtp-client" : "0.4.0",
-        "simple-ssh" : "1.0.0",
-        "dotenv" : "9.0.2",
-        "ping" : "0.4.1",
+        "smtp-client": "0.4.0",
+        "simple-ssh": "1.0.0",
+        "dotenv": "9.0.2",
+        "ping": "0.4.1",
         "timebelt": "https://github.com/shukriadams/timebelt.git#0.1.10",
         "winston-wrapper": "https://github.com/shukriadams/winston-wrapper.git#0.1.0",
         "madscience-fsUtils": "https://github.com/shukriadams/node-fsUtils.git#0.0.10",
@@ -56,11 +56,11 @@
             "./tests/**",
             "./views/**"
         ]
-    },    
+    },
     "devDependencies": {
         "glob": "7.1.6",
         "lodash.clonedeep": "4.5.0",
-        "nyc" : "15.1.0",
+        "nyc": "15.1.0",
         "madscience-node-assert": "https://github.com/shukriadams/node-assert.git#0.0.7",
         "mocha": "7.1.0"
     }

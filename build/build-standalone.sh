@@ -27,7 +27,7 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-if [ "$target" = "" ]; then
+if [ $target = "" ]; then
     echo "ERROR : --target not set"
     exit 1
 fi
@@ -40,7 +40,7 @@ fi
 BUILDCONTAINER=shukriadams/node12build:0.0.4$buildarch
 
 # force get tags, these don't always seem to be pulled by jenkins
-if [ ! "$target" = "dev" ]; then
+if [ ! $target = "dev" ]; then
     git fetch --all --tags -f
 fi
 
@@ -52,16 +52,20 @@ if [ -z "$TAG" ]; then
     exit 1
 fi
 
-# npm install all the things
-
 # write version to build
-echo $TAG > ./../src/version
+if [ ! -z $writeVersion ]; then
+    node writeVersion --version $TAG --path ./../src/package.json
+fi
+
 
 if [ $target = "linux" ]; then
-    docker run -v $(pwd)/../src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'
+    cd ./../src
+    yarn --no-bin-links --production
+    cd ./../build
 
     filename=./linux64/arewedown
     name="arewedown_linux64"
+    
 
     npm install
 
@@ -85,7 +89,9 @@ elif [ $target = "win" ]; then
     # run app and ensure exit code was 0
     ($filename --version)
 elif [ $target = "armv7" ]; then
-    docker run -v $(pwd)/../src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'
+    cd ./../src
+    yarn --no-bin-links --production
+    cd ./../build
 
     # NOTE : currently not working with pkg
     filename=./armv7/arewedown
@@ -98,7 +104,9 @@ elif [ $target = "armv7" ]; then
     # run app and ensure exit code was 0
     (${filename} --version )
 elif [ $target = "dev" ]; then
-    docker run -v $(pwd)/../src:/tmp/build $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'
+    cd ./../src
+    yarn --no-bin-links --production
+    cd ./../build
 
     # this mode is for dev, and on vagrant only
     filename=./linux64/arewedown
