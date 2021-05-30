@@ -43,7 +43,7 @@
         "winston-wrapper": "https://github.com/shukriadams/winston-wrapper.git#0.1.0",
         "madscience-fsUtils": "https://github.com/shukriadams/node-fsUtils.git#0.0.10",
         "madscience-httputils": "https://github.com/shukriadams/node-httpUtils.git#0.0.1",
-        "madscience-handlebarsloader": "https://github.com/shukriadams/madscience-handlebarsloader.git#0.0.5",
+        "madscience-handlebarsloader": "https://github.com/shukriadams/madscience-handlebarsloader.git#0.0.6",
         "madscience-node-exec": "https://github.com/shukriadams/node-exec.git#0.0.7"
     },
     "pkg": {
