@@ -2,7 +2,7 @@
 
 PRs, suggestions and bug reports are very welcome. If you're interesting in contributing code, please note the following
 
-- *AreWeDown?* is written to be deliberately simply, the aim is to keep it flat and uncomplicaated. Simple projects are easier to maintain and fork, especially when abandoned.
+- *AreWeDown?* is written to be deliberately simply, the aim is to keep it flat and uncomplicated. Simple projects are easier to maintain and fork, especially when abandoned.
 - The target hardware for *AreWeDown?* is the Raspberry Pi 3 or better, so performance matters.
 - The UI is weird in that it has minimal Javascript, and absolutely no frameworks of any kind. The entire UI reloads per refresh cycle, and it also uses iframe backbuffering to prevent reload flicker. All of this is to help it run easier on low-spec devices. Please keep this in mind if contributing to the UI.
 
