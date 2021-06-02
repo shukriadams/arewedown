@@ -13,7 +13,8 @@ docker login -u $DOCKER_USER -p $DOCKER_PASS
 docker manifest create \
     shukriadams/arewedown:$TAG \
     --amend shukriadams/arewedown:$TAG-amd64 \
-    --amend shukriadams/arewedown:$TAG-arm32v7 
+    --amend shukriadams/arewedown:$TAG-arm32v6 \
+    --amend shukriadams/arewedown:$TAG-arm32v7
 
 docker manifest push shukriadams/arewedown:$TAG
 

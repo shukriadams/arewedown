@@ -1,3 +1,8 @@
+# Use (all switches are optional)
+# sh ./buildDockerImage --arch <ARCH> --smoketest --dockerpush
+
+# ARCH can be amd64|arm32v6|arm32v7, if omitted defaults to "amd64"
+
 # fail on errors
 set -e
 
@@ -5,7 +10,7 @@ set -e
 # tag must be passed in as an argument when calling this script
 DOCKERPUSH=0
 SMOKETEST=0
-ARCH="amd64" # set to amd64|arm32v7
+ARCH="amd64" # set to amd64|arm32v6|arm32v7
 BUILDARCH="" # set to "-arm" for arm, -arm corresponds to arm32v7 at the moment
 
 while [ -n "$1" ]; do 
@@ -14,14 +19,12 @@ while [ -n "$1" ]; do
     --smoketest) SMOKETEST=1 ;;
     --arch)
         ARCH="$2" shift;;
-    --buildarch)
-        BUILDARCH="$2" shift;;
-
     esac 
     shift
 done
 
-if [ $ARCH = "arm32v7" ]; then
+if [ $ARCH = "arm32v6" ] || [ $ARCH = "arm32v7" ] 
+then
    BUILDARCH="-arm" 
 fi
 
@@ -44,6 +47,7 @@ rsync ./../src .stage \
     --verbose \
     --recursive  \
     --exclude=node_modules \
+    --exclude=config \
     --exclude=test \
     --exclude=data \
     --exclude=user-scripts \
@@ -54,6 +58,7 @@ rsync ./../src .stage \
 # write version to package.json in ./stag/src
 docker run \
     -v $(pwd):/tmp/build \
+    -e TAG=$TAG \
     $BUILDCONTAINER sh -c 'cd /tmp/build && node writeVersion --version $TAG --path ./.stage/src/package.json'
 
 # install with --no-bin-links to avoid simlinks, this is needed to copy build content around
@@ -80,7 +85,12 @@ if [ $SMOKETEST -eq 1 ]; then
 
     # get test container IP
     TEST_CONTAINER_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' arewedowntest)
+    if [ -z $TEST_CONTAINER_IP ]; then
+        TEST_CONTAINER_IP=localhost
+    fi
 
+    echo "Test container running @ IP ${TEST_CONTAINER_IP}"
+     
     cd ../tests
     
     docker run \

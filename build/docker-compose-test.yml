@@ -5,7 +5,7 @@ services:
     container_name: arewedowntest
     restart: unless-stopped
     volumes:
-        - ./settings/settings.yml:/etc/arewedown/settings.yml
+        - ./config/settings.yml:/etc/arewedown/settings.yml
         - ./logs:/etc/arewedown/logs/:rw    
     ports:
     - "7018:3000"
