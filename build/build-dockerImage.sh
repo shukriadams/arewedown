@@ -64,7 +64,7 @@ docker run \
 # install with --no-bin-links to avoid simlinks, this is needed to copy build content around
 docker run \
     -v $(pwd)/.stage/src:/tmp/build \
-    $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'
+    $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production -network-timeout=100000'
 
 docker build \
     -f Dockerfile-$ARCH \
