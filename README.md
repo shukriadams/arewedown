@@ -20,7 +20,7 @@
 
 - [Docker](/docs/install-docker.md) - Linux x64 + ARMv7.
 
-- [Binaries](/docs/standalone-builds.md) - Linux + Windows x64 (these are still experimental).
+- [Binaries](/docs/binary-builds.md) - Linux + Windows x64 (these are still experimental).
 
 - [NodeJS source](/docs/install-nodejs.md) - any OS that supports NodeJS 12.x or better.
 
