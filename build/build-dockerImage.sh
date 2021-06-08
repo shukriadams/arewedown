@@ -1,7 +1,7 @@
 # Use (all switches are optional)
 # sh ./buildDockerImage --arch <ARCH> --smoketest --dockerpush
 
-# ARCH can be amd64|arm32v6|arm32v7, if omitted defaults to "amd64"
+# ARCH can be amd64|arm32v7, if omitted defaults to "amd64"
 
 # fail on errors
 set -e
@@ -10,7 +10,7 @@ set -e
 # tag must be passed in as an argument when calling this script
 DOCKERPUSH=0
 SMOKETEST=0
-ARCH="amd64" # set to amd64|arm32v6|arm32v7
+ARCH="amd64" # set to amd64|arm32v7
 BUILDARCH="" # set to "-arm" for arm, -arm corresponds to arm32v7 at the moment
 
 while [ -n "$1" ]; do 
@@ -23,7 +23,7 @@ while [ -n "$1" ]; do
     shift
 done
 
-if [ $ARCH = "arm32v6" ] || [ $ARCH = "arm32v7" ] 
+if [ $ARCH = "arm32v7" ] 
 then
    BUILDARCH="-arm" 
 fi
@@ -64,7 +64,7 @@ docker run \
 # install with --no-bin-links to avoid simlinks, this is needed to copy build content around
 docker run \
     -v $(pwd)/.stage/src:/tmp/build \
-    $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production -network-timeout=100000'
+    $BUILDCONTAINER sh -c 'cd /tmp/build/ && yarn --no-bin-links --production'
 
 docker build \
     -f Dockerfile-$ARCH \

@@ -3,7 +3,7 @@
 PRs, suggestions and bug reports are very welcome. If you're interesting in contributing code, please note the following
 
 - *AreWeDown?* is written to be deliberately simply, the aim is to keep it flat and uncomplicated. Simple projects are easier to maintain and fork, especially when abandoned.
-- The target hardware for *AreWeDown?* is the Raspberry Pi 3 or better, so performance matters.
+- The target hardware for *AreWeDown?* is the Raspberry Pi 3 or better. It does work on older models, but with a few hurdles.
 - The UI is weird in that it has minimal Javascript, and absolutely no frameworks of any kind. The entire UI reloads per refresh cycle, and it also uses iframe backbuffering to prevent reload flicker. All of this is to help it run easier on low-spec devices. Please keep this in mind if contributing to the UI.
 
  The long-term goal is for *AreWeDown?* to reach stability as quickly as possible by preventing feature creep - it watches things, it sends alerts, and it has dashboard. These can be tweaked, but no new major features will be added. In addition to being open-source, it also has an open-architecture, meaning that the end-user should be able to customize it with their own scripts as much as possible, so they aren't reliant on the project maintainers to impliment specific tests or integrations.

@@ -16,21 +16,6 @@ jobs:
             DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
             DOCKER_USER: ${{ secrets.DOCKER_USER }}
     
-    docker-arm6:
-        runs-on: self-hosted
-        steps:
-        # clean before building    
-        - name: cleanup
-          run: |
-            echo "Cleaning up previous run"
-            sudo rm -rf "${{ github.workspace }}"
-        - uses: actions/checkout@v1
-        - name: builds armv6 container and pushes to docker hub
-          run:  cd build && sh ./build-dockerImage.sh --dockerpush --smoketest --arch arm32v6
-          env:
-            DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
-            DOCKER_USER: ${{ secrets.DOCKER_USER }}
-
     docker-arm7:
         runs-on: self-hosted
         steps:

@@ -1,6 +1,6 @@
 # Setup with Docker
 
-Docker images are available @ https://hub.docker.com/r/shukriadams/arewedown. Find an up-to-date tag there (this project does not build `:latest`). If you intend to run on a Raspberry Pi, use `<TAG>-arm`
+Docker images are available on [Docker hub](https://hub.docker.com/r/shukriadams/arewedown). 
 
 - An example docker-compose.yml is
 
@@ -13,10 +13,21 @@ Docker images are available @ https://hub.docker.com/r/shukriadams/arewedown. Fi
             volumes:
             - ./config:/etc/arewedown/config
             - ./logs:/etc/arewedown/logs/:rw
-            # - ./scripts:/etc/arewedown/custom-tests # optional, see "custom tests" section of documentation
+            # optional scripts folder, see "custom tests" section of documentation
+            # - ./scripts:/etc/arewedown/custom-tests 
             ports:
             - "3000:3000"
 
+- Replace `<TAG>` with the latest two digit tag available, egs `0.2`, or something more specific.
 - Two directory volume mounts are required, one for logs, the other for config.
     - Ensure write access to the `logs` directory, the container runs with user id 1000, use `chown -R 1000 path/to/logs` to enable writes, or the app will fail.
-    - Create an empty `settings.yml` file in the config directory, this is where all application settings live.
+    - Create a `settings.yml` file in the config directory, this is where all application settings live.
+- Docker images support AMD64 and ARM32v7, the correct one will be fetched for your device.
+
+# Versions and staying up to date
+
+As of release `0.2.4` this project uses the [recommended Docker tagging convention](https://github.com/docker-library/official-images#tags-and-aliases). Each build is marked with a semantic version tag, egs `0.2.4`, which can always be traced back to a [release](https://github.com/shukriadams/arewedown/releases) on Github. Additionally, each build is given a rolling minor tag, for `0.2.4` it would be `0.2`. `0.2` would then move to `0.2.5` when the latter is released, and so on, until `0.3.0` is released, in which case `0.2` would stop being moved. This means you can set your docker orchestration system to use `0.2` and enable automatic updates to stay updated, as new builds will be backward compatible with previous ones.
+
+You should not autoupdate across minor version changes - a minor version increment means a breaking change has been introduced, requiring that you intervene, read the update notes, and possibly change something in your deployment. Yes, software version numbers have a purpose.
+
+This project does not use the `latest` tag, as this is often misused and misunderstood (there are plenty of posts explaining why).
