@@ -34,11 +34,16 @@ BUILDCONTAINER=shukriadams/node12build:0.0.4$BUILDARCH
 
 # get tag fom current context
 TAG=$(git describe --abbrev=0 --tags)
+HASH=$(git rev-parse --short HEAD)
 if [ -z $TAG ]; then
    echo "ERROR : tag not set."
    exit 1
 fi
 
+# shorten x.y.z tag to just x.y for docker "short" minor tag. If we're doing a test a release, tag will have a string appended,  egs x.y.z-test,
+# which will return an empty string
+# minorTag is done in a nodejs script because it's much easier to use regex in JS than in bourne shell.
+MINOR_TAG=$(node ./toMinorTag --version $TAG) 
 
 # copy src to .stage so we can build it both locally and on Github without writing unwanted changes into src
 rm -rf .stage
@@ -107,7 +112,15 @@ fi
 if [ $DOCKERPUSH -eq 1 ]; then
     docker login -u $DOCKER_USER -p $DOCKER_PASS 
     docker tag shukriadams/arewedown:latest shukriadams/arewedown:$TAG-$ARCH 
+    docker tag shukriadams/arewedown:latest shukriadams/arewedown:$HASH
+
     docker push shukriadams/arewedown:$TAG-$ARCH
+    docker push shukriadams/arewedown:$HASH
+
+    if [ ! -z $MINOR_TAG ]; then
+        docker tag shukriadams/arewedown:latest shukriadams/arewedown:$MINOR_TAG-$ARCH 
+        docker push shukriadams/arewedown:$MINOR_TAG-$ARCH
+    fi
 fi
 
 echo "Build done"
