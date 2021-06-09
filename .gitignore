@@ -11,6 +11,7 @@ build/build.tar.gz
 build/.stage/
 docker/settings.json
 src/.env
+src/__logs
 .vscode/launch.json
 src/yarn-error.log
 src/tests/user
