@@ -6,7 +6,9 @@
     --color-ebonyClay: #262c3a;
     --color-mirage: #19222d;
     --color-mountainMeadow: #22b66e;
+    --color-salem: #139556;
     --color-vermilion: #FA3C00;
+    --color-orange: #ff5722;
     --color-fire: #A82800;
     --color-white:#fff;
     --color-dodgerBlue: #3da6fa;
@@ -136,7 +138,7 @@ footer {
 }
 
 .watcher .cell { 
-    background-color: var(--color-vermilion);
+    background-color: var(--color-orange);
     color: var(--color-white);
 }
 
@@ -147,7 +149,7 @@ footer {
 
 
 .watcher.watcher--passing .cell--header {
-    background-color: var(--color-mountainMeadow);
+    background-color: var(--color-salem);
 }
 
 .watcher.watcher--configErrors .cell {
@@ -191,33 +193,50 @@ footer {
     transform: translate(-50%, -50%);
 }
 
+
+
 .watcherHistory {
     padding-top: var(--layout-universalMargin);
     position: relative;    
     color: var(--color-white);
-    padding: var(--layout-universalMargin);
     overflow: hidden;
-    margin: var(--layout-universalMargin);
-    white-space : nowrap; /* this does the trick */
+    margin-top: calc(var(--layout-universalMargin) * 4);
+}
+
+.watcherHistory:nth-child(even){
+    background-color: var(--color-ebonyClay);
+}
+
+.watcherHistory-items {
+    display: table;
 }
 
 .watcherHistory-item {
-    display: inline-block;
+    padding: var(--layout-universalMargin);
+    padding-top: 0;
+    display: table-cell;
     vertical-align: top;
 }
+
+@media all and (max-width: 800px) {
+    .watcherHistory-item {
+        display: block;
+    }  
+}
+
 
 .watcherHistory-durationBarWrapper{
     background-color: var(--color-fiord);
     height: 4px;
     position: relative;
-    margin-top: 8px;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
+    top: -8px;
 }
 
 .watcherHistory-durationBar {
     height: 100%;
     min-width: 1%;
-    background-color: var(--color-vermilion);
+    background-color: var(--color-orange);
 }
 
 .watcherHistory-durationBar--up {
@@ -227,8 +246,9 @@ footer {
 .watcherHistory-status {
     font-size: 28px;
     font-weight: bold;
-    width: 88px;
-    color: var(--color-vermilion);
+    width: 100px;
+    color: var(--color-orange);
+    line-height: 24px; /* fakes vertical alignment of large text in this cell relative to adjacent cells */
 }
 
 .watcherHistory-status.watcherHistory-status--up {
@@ -236,7 +256,7 @@ footer {
 }
 
 .watcherHistory-error {
-    color: var(--color-vermilion);
+    color: var(--color-orange);
     white-space : normal;
 }
 

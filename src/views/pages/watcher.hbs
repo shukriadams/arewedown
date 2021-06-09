@@ -5,26 +5,29 @@
                 <div class="watcherHistory">
                     <div class="watcherHistory-durationBarWrapper">
                         <div class="watcherHistory-durationBar watcherHistory-durationBar--{{status}}" style="width:{{durationPercent}}%"></div>
-                    </div>
-                    <div class="watcherHistory-item watcherHistory-status watcherHistory-status--{{status}}">
-                        {{status}}
-                    </div>
-                    <div class="watcherHistory-item watcherHistory-duration">
-                         for {{durationString}}
-                    </div>
-                    <div class="watcherHistory-item watcherHistory-date">
-                        <div>
-                            {{ago date}}
+                    </div>                        
+                    <div class="watcherHistory-items">
+                        <div class="watcherHistory-item watcherHistory-status watcherHistory-status--{{status}}">
+                            {{status}}
                         </div>
-                        <div>
-                          ({{date date}})
+                        <div class="watcherHistory-item watcherHistory-duration">
+                            for {{durationString}}
                         </div>
+                        <div class="watcherHistory-item watcherHistory-date">
+                            <div>
+                                {{ago date}}
+                            </div>
+                            <div>
+                            ({{date date}})
+                            </div>
+                        </div>
+                        {{#if error}}   
+                            <div class="watcherHistory-item watcherHistory-error">
+                                {{error}}
+                            </div>
+                        {{/if}}
                     </div>
-                    {{#if error}}   
-                        <div class="watcherHistory-item watcherHistory-error">
-                            {{error}}
-                        </div>
-                    {{/if}}
+
                 </div>
             {{/each}}
         {{else}}
