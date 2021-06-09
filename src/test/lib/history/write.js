@@ -9,6 +9,7 @@ describe('lib/history/writePassing', async()=>{
             readdir() { return [] },
             writeJson(){ }
         })  
+        
         return ctx
     }
 
@@ -31,5 +32,4 @@ describe('lib/history/writePassing', async()=>{
         const status = await history.writeFailing('test', new Date())
         ctx.assert.true(status.changed)
     })
-
 })

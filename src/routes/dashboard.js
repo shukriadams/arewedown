@@ -48,6 +48,7 @@ module.exports = express => {
                 if (watcher.nextRun)
                     watcher.next = timespan(watcher.nextRun, new Date())
             }
+            
             res.send(view({
                 title : `${settings.header} ${dashboard.name}`,
                 dashboardNode,

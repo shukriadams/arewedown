@@ -19,8 +19,19 @@ describe('routes/dashboard/get', async()=>{
                 nextDates(){ return '' }
             }
         })
-        ctx.inject.object('./logger', { instanceWatcher(){
-            return { info(){}, warn(){}, debug(){}, error(){} }
+
+        ctx.inject.object('./../lib/history', {
+            getLastEvent(){
+                return {
+                    date : new Date()
+                }
+            }
+        })
+
+        ctx.inject.object('./logger', { 
+            instanceWatcher(){
+                return { info(){}, warn(){}, debug(){}, error(){} 
+            }
         }})
 
         await daemon.start()

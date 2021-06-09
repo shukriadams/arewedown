@@ -13,7 +13,13 @@ describe('routes/watcher/get', async()=>{
         
         // add 2 objects to history to satisfy collection handling
         ctx.inject.object('madscience-fsUtils', {  readFilesUnderDirSync(){ return [ {}, {} ] }})
+        
         ctx.inject.object('path', { join(){ }})
+
+        ctx.inject.object('timebelt', {
+            minutesDifference : ()=> 2 // return that is above zero if math.log()
+        })
+
         ctx.express.req.params.watcher = 'test'
         return ctx
     }
