@@ -22,13 +22,15 @@ module.exports =  {
 
     async internalWork(){
         const settings = require('./settings').get(),
-            log = require('./../lib/logger').instance()
+            log = require('./../lib/logger').instance(),
             timebelt = require('timebelt'),
             fsUtils = require('madscience-fsUtils'),
             fs = require('fs-extra'),
             path = require('path')
 
         try {
+
+            // clean out all files created before settings.logRetention (days)
             if (settings.logRetention > 0) {
                 const files = await fsUtils.readFilesUnderDir(settings.logs)
                 for (const file of files){
@@ -47,6 +49,7 @@ module.exports =  {
                     }
                 }
             }
+
         } catch (ex) {
             log.error(ex)
         } 

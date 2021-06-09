@@ -2,9 +2,14 @@
 
 :root {
     --layout-universalMargin: 8px;
+    --color-fiord: #404B63;
     --color-ebonyClay: #262c3a;
     --color-mirage: #19222d;
+    --color-mountainMeadow: #22b66e;
     --color-vermilion: #FA3C00;
+    --color-fire: #A82800;
+    --color-white:#fff;
+    --color-dodgerBlue: #3da6fa;
 } 
 
 /*
@@ -39,13 +44,13 @@ a:visited {
 h1 {
     margin: 0;
     padding:0;
-    color: #3da6fa;
+    color: var(--color-dodgerBlue);
 }
 
 
 header {
     background-color: var(--color-vermilion);
-    color: #ffffff;
+    color: var(--color-white);
     font-size: 24px;
     position: fixed;
     top: 0;
@@ -61,7 +66,7 @@ main {
     padding-top: 74px; /* header height */
     position: relative;
     height: 100%;
-    color: #3da6fa;
+    color: var(--color-dodgerBlue);
 }
 
 footer {
@@ -69,7 +74,7 @@ footer {
     bottom: 0;
     left: 0;
     background-color: var(--color-vermilion);
-    color: #ffffff;
+    color: var(--color-white);
     width: 100%;
     z-index: 1;
 }
@@ -79,17 +84,17 @@ footer {
 }
 
 .layout.layout--failing {
-    background-color: #A82800;
+    background-color: var(--color-fire);
 }
 
 .layout header {
     background-color: var(--color-ebonyClay);
-    color: #3da6fa;
+    color: var(--color-dodgerBlue);
 }
 
 .layout footer {
     background-color: var(--color-ebonyClay);
-    color: #3da6fa;
+    color: var(--color-dodgerBlue);
 }
 
 .layout-titleScaffold {
@@ -131,18 +136,18 @@ footer {
 }
 
 .watcher .cell { 
-    background-color: #ff5722;
-    color: #ffffff;
+    background-color: var(--color-vermilion);
+    color: var(--color-white);
 }
 
 .watcher.watcher--passing .cell {
-    background-color: #22b66e;
+    background-color: var(--color-mountainMeadow);
     color: var(--color-mirage);
 }
 
 
 .watcher.watcher--passing .cell--header {
-    background-color: #139556;
+    background-color: var(--color-mountainMeadow);
 }
 
 .watcher.watcher--configErrors .cell {
@@ -186,44 +191,71 @@ footer {
     transform: translate(-50%, -50%);
 }
 
-
-.historyItem {
-    border-radius: 2px;
-    display: inline-block;
-    white-space: nowrap;
+.watcherHistory {
     padding-top: var(--layout-universalMargin);
-    margin-top: var(--layout-universalMargin);
-    margin-left: var(--layout-universalMargin);
     position: relative;    
-    background-color: #ff5722;
-    color: #ffffff;
+    color: var(--color-white);
     padding: var(--layout-universalMargin);
-    max-width: 100%;
     overflow: hidden;
+    margin: var(--layout-universalMargin);
+    white-space : nowrap; /* this does the trick */
 }
 
-.historyItem-header {
+.watcherHistory-item {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.watcherHistory-durationBarWrapper{
+    background-color: var(--color-fiord);
+    height: 4px;
+    position: relative;
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
+.watcherHistory-durationBar {
+    height: 100%;
+    min-width: 1%;
+    background-color: var(--color-vermilion);
+}
+
+.watcherHistory-durationBar--up {
+    background-color: var(--color-mountainMeadow);
+}
+
+.watcherHistory-status {
+    font-size: 28px;
+    font-weight: bold;
+    width: 88px;
+    color: var(--color-vermilion);
+}
+
+.watcherHistory-status.watcherHistory-status--up {
+    color: var(--color-mountainMeadow);
+}
+
+.watcherHistory-error {
+    color: var(--color-vermilion);
+    white-space : normal;
+}
+
+.watcherHistory-duration {
+    width: 122px;
+}
+
+.watcherHistory-date {
+    width: 160px;
+}
+
+.watcherHistory-header {
     margin: 0;
     padding:0;
     text-transform: uppercase;
 }
 
-
-.historyItem.historyItem--up {
-    background-color: #22b66e;
-    color: var(--color-mirage);
-}
-
-.historyItem-mainContent{
-    display: inline-block;    
-}
-
-.historyItem-padder {
-    display: inline-block;
-}
-
 .dashboard-message {
-    color: #3da6fa;
+    color: var(--color-dodgerBlue);
     position: absolute;
     top: 50%;
     left: 50%;

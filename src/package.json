@@ -59,6 +59,7 @@
     },
     "devDependencies": {
         "glob": "7.1.6",
+        "chance" : "1.1.7",
         "lodash.clonedeep": "4.5.0",
         "nyc": "15.1.0",
         "madscience-node-assert": "https://github.com/shukriadams/node-assert.git#0.0.7",

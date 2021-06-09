@@ -54,7 +54,7 @@ module.exports = {
         }
     },
 
-    async writeFailing(safeName, date){
+    async writeFailing(safeName, date, error){
         let settings = require('./settings').get(),
             fs = require('fs-extra'),
             path = require('path'),
@@ -71,7 +71,8 @@ module.exports = {
 
             await fs.writeJson(path.join(historyLogFolder, `${date.getTime()}.json`), {
                 status : 'down',
-                date 
+                date,
+                error
             })
 
             await fs.writeJson(path.join(historyLogFolder, `status.json`), {

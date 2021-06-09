@@ -21,14 +21,13 @@ module.exports = express => {
                 }))
             }
     
-            const index = parseInt(req.query.index) || 0,
+            let index = parseInt(req.query.index) || 0,
                 pagesize = parseInt(req.query.pagesize) || 50,
-                historyFolder = path.join(settings.logs, watcher.__safeName, 'history')
+                historyFolder = path.join(settings.logs, watcher.__safeName, 'history'),
+                files = [],
+                history = []
 
-            if (!await fs.exists(historyFolder))
-                throw `Expected history folder "${historyFolder}" not found.`
-
-            let history = [],
+            if (await fs.exists(historyFolder))
                 files = await fsUtils.readFilesUnderDirSync(historyFolder, false)
 
             files = files.filter((file)=>{ return file != 'status.json' })
@@ -41,26 +40,37 @@ module.exports = express => {
             }
             
             history = history.sort((a, b)=>{
-                return a.date > b.date? -1 :
-                    b.date > a.date? 1:
+                return a.date > b.date? 1 :
+                    b.date > a.date? -1:
                     0
             })
 
             if (history.length){
-                let deltaDate = new Date()
-                for (const historyItem of history){
-                    historyItem.duration = timebelt.timespanString(deltaDate, historyItem.date, ' day(s)', ' hour(s)', ' minute(s)', ' second(s)')
-                    historyItem.durationPercent = timebelt.minutesDifference(deltaDate, historyItem.date)
-                    if (historyItem.durationPercent == 0)
-                        historyItem.durationPercent = 1
-                    if (historyItem.durationPercent > 500)
-                        historyItem.durationPercent = 500
 
-                    deltaDate = historyItem.date
+                // calculate duration of each event relative to next in timeline
+                let deltaDate = new Date(),
+                    longestDuration = 0,
+                    shortestDuration = Number.MAX_VALUE
+
+                for (const event of history){
+                    event.durationString = timebelt.timespanString( event.date, deltaDate, ' day(s)', ' hour(s)', ' minute(s)', ' second(s)')
+                    event.durationMinutes = Math.log(timebelt.minutesDifference(event.date, deltaDate))
+
+                    if (event.durationMinutes > longestDuration)
+                        longestDuration = event.durationMinutes
+
+                    if (event.durationMinutes < shortestDuration)
+                        shortestDuration = event.durationMinutes
+
+                    deltaDate = event.date
                 }
+
+                for (const event of history)
+                    event.durationPercent = Math.floor(((event.durationMinutes - shortestDuration) * 100) / longestDuration) 
+
             }
             
-            let view = await handlebarsLoader.getPage('watcher')
+            const view = await handlebarsLoader.getPage('watcher')
             res.send(view({
                 title : `${settings.header} : ${watcher.name} history`,
                 history

@@ -107,7 +107,7 @@ module.exports = class {
         if (this.isPassing)
             status = await history.writePassing(this.config.__safeName, this.lastRun)
         else 
-            status = await history.writeFailing(this.config.__safeName, this.lastRun)
+            status = await history.writeFailing(this.config.__safeName, this.lastRun, this.errorMessage)
 
         // send alerts if status changed
         if (status.changed){

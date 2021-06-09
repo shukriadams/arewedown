@@ -2,14 +2,29 @@
     {{#content "body"}}
         {{#if history}}
             {{#each history}}
-                <div class="historyItem historyItem--{{status}}">
-                    <div class="historyItem-mainContent">
-                        {{status}} {{duration}}
+                <div class="watcherHistory">
+                    <div class="watcherHistory-durationBarWrapper">
+                        <div class="watcherHistory-durationBar watcherHistory-durationBar--{{status}}" style="width:{{durationPercent}}%"></div>
+                    </div>
+                    <div class="watcherHistory-item watcherHistory-status watcherHistory-status--{{status}}">
+                        {{status}}
+                    </div>
+                    <div class="watcherHistory-item watcherHistory-duration">
+                         for {{durationString}}
+                    </div>
+                    <div class="watcherHistory-item watcherHistory-date">
                         <div>
-                            {{ago date}}  ({{date date}})
+                            {{ago date}}
+                        </div>
+                        <div>
+                          ({{date date}})
                         </div>
                     </div>
-                    <div class="historyItem-padder" style="width:{{durationPercent}}px"></div>
+                    {{#if error}}   
+                        <div class="watcherHistory-item watcherHistory-error">
+                            {{error}}
+                        </div>
+                    {{/if}}
                 </div>
             {{/each}}
         {{else}}
