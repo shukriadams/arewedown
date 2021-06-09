@@ -16,8 +16,17 @@
 
                         <div class="cell cell--content">
                             {{#if isPassing}}
-                                <img class="icon-passing" src="/content/icons/passing.svg" alt="Passing" />
+                                {{#if timeInState}}
+                                    <div class="cell-passing">
+                                        Up {{timeInState}}
+                                    </div>
+                                {{else}}
+                                    <img class="icon-passing" src="/content/icons/passing.svg" alt="Passing" />
+                                {{/if}}
                             {{else}}
+                                {{#if timeInState}}
+                                    Down {{timeInState}}.
+                                {{/if}}
                                 {{errorMessage}}
                             {{/if}}
                         </div>

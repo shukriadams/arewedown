@@ -165,15 +165,24 @@ footer {
 }
 
 .cell {
-    padding: 8px /* universal Unit */;
+    padding: var(--layout-universalMargin);
     word-wrap: break-word;
     overflow: hidden;
 }
 
-.cell.cell--content{  
+.cell.cell--content {  
     height: 94px;
     max-height: 96px;
     overflow: hidden;
+}
+
+.cell-passing {
+    font-size: 24px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);    
 }
 
 .cell.cell--header {
@@ -196,7 +205,7 @@ footer {
 
 
 .watcherHistory {
-    padding-top: var(--layout-universalMargin);
+    padding: var(--layout-universalMargin) 0;
     position: relative;    
     color: var(--color-white);
     overflow: hidden;
@@ -229,7 +238,7 @@ footer {
     background-color: var(--color-fiord);
     height: 4px;
     position: relative;
-    margin-bottom: 8px;
+    margin-bottom: var(--layout-universalMargin);
     top: -8px;
 }
 

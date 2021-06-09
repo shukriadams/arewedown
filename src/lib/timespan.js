@@ -30,7 +30,7 @@ module.exports = (end, start) => {
         return `${days} day${plural(days)}`
 
     if (hours >= 1)
-        return `${hours} hour${plural(hours)}}`
+        return `${hours} hour${plural(hours)}`
     
     if (mins >= 1)
         return `${mins} minute${plural(mins)}`

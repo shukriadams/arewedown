@@ -72,7 +72,7 @@ module.exports = express => {
             
             const view = await handlebarsLoader.getPage('watcher')
             res.send(view({
-                title : `${settings.header} : ${watcher.name} history`,
+                title : `${settings.header} - ${watcher.name} history`,
                 history
             }))
 

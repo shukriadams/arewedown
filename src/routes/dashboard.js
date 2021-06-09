@@ -12,6 +12,7 @@ module.exports = express => {
                 handlebarsLoader = require('madscience-handlebarsloader'),
                 arrayHelper = require('./../lib/array'),
                 daemon = require('./../lib/daemon'),
+                history = require('./../lib/history'),
                 timespan = require('./../lib/timespan'),
                 dashboardNode = req.params.dashboard || Object.keys(settings.dashboards)[0],
                 now = new Date(),
@@ -22,6 +23,7 @@ module.exports = express => {
             if (!dashboard){
                 view = await handlebarsLoader.getPage('invalidDashboard')
                 res.status(404)
+
                 return res.send(view({
                     title : dashboardNode,
                     hasErrors : true
@@ -38,10 +40,14 @@ module.exports = express => {
                 return a.isPassing - b.isPassing || a.config.name.localeCompare(b.config.name)
             })
 
-            for (let watcher of watchers)
+            for (let watcher of watchers){
+                const watcherLastEvent = await history.getLastEvent(watcher.config.__safeName) 
+                if (watcherLastEvent)
+                    watcher.timeInState = timespan(watcherLastEvent.date, new Date())
+
                 if (watcher.nextRun)
                     watcher.next = timespan(watcher.nextRun, new Date())
-
+            }
             res.send(view({
                 title : `${settings.header} ${dashboard.name}`,
                 dashboardNode,
@@ -50,6 +56,7 @@ module.exports = express => {
                 renderDate: `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`,
                 watchers 
             }))
+            
         } catch (ex){
             log.error(ex)
             res.status(500)

@@ -53,6 +53,30 @@ module.exports = {
             downDate
         }
     },
+    
+    async getLastEvent(safeName){
+        let settings = require('./settings').get(),
+            log = require('./../lib/logger').instance(),
+            path = require('path'),
+            fsUtils = require('madscience-fsUtils'),
+            fs = require('fs-extra'),
+            historyLogFolder = path.join(settings.logs, safeName, 'history')
+
+        if (!await fs.exists(historyLogFolder))
+            return null
+        
+        const history = await fsUtils.readFilesInDir(historyLogFolder)
+        if (!history.length)
+            return null
+
+        try {
+            const event = await fs.readJson(history.sort()[0])
+            return event
+        } catch (ex){
+            log.error(`Failed to load history for "${safeName}":`, ex)
+            return null
+        }
+    },
 
     async writeFailing(safeName, date, error){
         let settings = require('./settings').get(),
