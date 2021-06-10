@@ -33,7 +33,7 @@ module.exports = express => {
             if (!dashboardNode && definedDashboardKeys.length)
                 dashboardNode = definedDashboardKeys[0]
                 
-            const view = await handlebarsLoader.getPage('dashboard')
+            const view = await handlebarsLoader.getPage('default')
             res.send(view({
                 dashboardNode,
                 dashboardLoadTimeout : settings.dashboardLoadTimeout,
