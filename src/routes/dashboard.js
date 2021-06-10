@@ -17,7 +17,7 @@ module.exports = express => {
                 dashboardNode = req.params.dashboard || Object.keys(settings.dashboards)[0],
                 now = new Date(),
                 hasErrors = false,
-                view = await handlebarsLoader.getPage('dashboardInner'),
+                view = await handlebarsLoader.getPage('dashboard'),
                 dashboard = settings.dashboards[dashboardNode]
 
             if (!dashboard){
