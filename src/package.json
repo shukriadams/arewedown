@@ -12,7 +12,7 @@
     "scripts": {
         "start": "node index",
         "debug": "node --inspect=0.0.0.0:3001 index",
-        "debug-brk": "node --inspect-brk=0.0.0.0:3001 index",
+        "break": "node --inspect-brk=0.0.0.0:3001 index",
         "test": "./node_modules/mocha/bin/mocha --recursive --timeout 5000",
         "debugtest": "./node_modules/mocha/bin/mocha --inspect-brk=0.0.0.0:3001 --recursive --timeout 5000",
         "cover": "nyc npm run test",
@@ -39,6 +39,8 @@
         "simple-ssh": "1.0.0",
         "dotenv": "9.0.2",
         "ping": "0.4.1",
+        "slack": "11.0.2",
+        "@slack/bolt" : "3.4.0",
         "timebelt": "https://github.com/shukriadams/timebelt.git#0.1.10",
         "winston-wrapper": "https://github.com/shukriadams/winston-wrapper.git#0.1.0",
         "madscience-fsUtils": "https://github.com/shukriadams/node-fsUtils.git#0.0.10",

@@ -1,6 +1,6 @@
 ![Screenshot of AreWeDown?](https://github.com/shukriadams/arewedown/blob/master/screenshot.PNG)
 
-*Are We Down?* is a simple uptime monitoring system and dashboard. It is ideal for the home/self-hosting user who runs multiple services/networked devices on a private LAN, and who doesn't want the complexity of an enterprise-level monitoring system. It lets you turn _any_ HTTP endpoint into a status indicator, and gather them all into a single dashboard, with minimal effort.
+*Are We Down?* is a simple uptime monitoring system and dashboard. It is ideal for the home/self-hosting user who runs multiple services/networked devices on a private LAN, and who doesn't want the complexity of an enterprise-level monitoring system. It lets you turn any HTTP endpoint into a status indicator, and gather them all into a single dashboard, with minimal effort.
 
 [![codecov](https://codecov.io/gh/shukriadams/arewedown/branch/develop/graph/badge.svg?token=DXO5XYWW2T)](https://codecov.io/gh/shukriadams/arewedown)
 
@@ -8,109 +8,64 @@
 
 - Simple to configure with just a few lines of text in a single YML file.
 - No databases or dependencies on other services.
-- Does HTTP status checks, Ping, Docker container status and more. 
-- Sends alerts via email (SMTP), Slack and others coming.
+- Does HTTP status checks, ping, Docker container status and more. 
+- Sends alerts via email (SMTP) and Slack.
 - Can be extended with your own test scripts using shell scripts, Javascript (NodeJS) or Python3 scripts.
 - Runs on x86 and ARM (Docker images available for the Raspberry Pi 3 or better).
 - Built-in dashboard will run on almost any browser, ideal for a Raspberry Pi in kiosk mode. 
 
-*NOTE:* *Are We Down?* has no built-in security, do not expose it to the public internet. It is perfectly safe running behind a trusted firewall/router, that is what it was intended for. 
+*NOTE:* *Are We Down?* has no built-in security, never expose it to the public internet. It is perfectly safe running behind a trusted firewall/router, that is what it was intended for. 
 
 ## Install options
 
 - [Docker](/docs/install-docker.md) - Linux x64 + ARMv7.
 
-- [Binaries](/docs/binary-builds.md) - Linux + Windows x64 (these are still experimental).
+- [Binaries](/docs/install-binaries.md) - Linux + Windows x64 (these are still experimental).
 
 - [NodeJS source](/docs/install-nodejs.md) - any OS that supports NodeJS 12.x or better.
 
 ## Config
 
-The most basic setup of *Are We Down?* can be done with the config
+The most basic setup of *Are We Down?* can be done with only
 
     watchers:
         mysite:
             host: http://mysite.example.com
 
-This sets up a single watcher. The settings file is divided up into 3 main sections. 
-
-    transports:
-        ...
-
-    recipients:
-        ...
-
-    watchers:
-        ....
+This sets up a single watcher that scans the given domain every minute for HTTP status 200, and displays this on a dashboard. 
 
 ### Transports
 
-Transports are used to send out alerts when watcher states change. 
+Transports are used to send out alerts when watcher states change. Currently supported transports are
 
-#### SMTP Transport
+- SMTP (good old email)
+- Slack
 
-You can send email using any SMTP server. To use a Gmail account try
-
-    transports:
-        smtp:
-            server : smtp.gmail.com
-            port : 465
-            secure : true
-            user : your-user@gmail.com
-            pass: your-gmail-password
-            from : your-user@gmail.com
+For details, see [transport settings](/docs/settings.md#Transports).
 
 ### Recipients
 
-Recipients are people who receive alerts. To send alerts using the `smtp` transport use
-
-    recipients:
-        BobMcName:
-            smtp: bob@example.com
-        FaceFacersson:
-            smtp: face@example.com
+Recipients are people or systems that receive alerts. For details see [recipient settings](/docs/settings.md#Recipients).
 
 ### Watchers
 
-Watchers watch things to see if they are passing or failing. 
-
-#### Default watcher settings
-
-- Watchers have a default interval of 1 minute. You can override any watcher's default with any valid cronmask (masks must be in quotes, this is a YML quirk).
-- The YML node is the default name of a watcher. You can provide an display name using the optional `name` field.
-- Watchers, like most other objects in *AreWeDown?* have an optional `enabled` field that defaulst to true. Set this to false to disable the watcher.
-- To alert specific people about a watcher failure, use `recipients` - this is an optional, comma-separated list of names defined under the top-level `recipients` section. If left empty, all recipients will receive alerts for that watcher.
-
-        watchers:
-            mytest:
-                # give it fancier name with spaces
-                name : my fancy test name!
-                # run it on a Tuesday only
-                interval: '0 0 * * TUE'
-                # don't run it at all
-                enabled: false
-                # send alerts to these recipients only
-                recipients: BobMcName,someOtherPerson,YetAnotherPerson
-
-#### Watcher tests
-
-There are several built-in tests 
+Watchers test things to see if they pass or fail. Built-in tests are
 
 - HTTP status
-- TCP Port open
+- TCP port open
 - Docker container up
 - Jenkins job passing
 - System.d process status
 
-Check the [built-in tests guide](/docs/built-in-tests.md) for details on how to configure these.
+For details, see [watcher settings](/docs/settings.md#Watchers).
 
-You can also write tests in bash, NodeJS or Python3 if you're more into that sort of thing. There's [a guide for custom code tests](/docs/custom-tests.md) too.
+### Custom tests
 
-For details settings, check the [advanced settings guide](/docs/advanced-settings.md).
+In addition to using built-in tests, you can also write tests in bash, NodeJS or Python3 if you're more into that sort of thing. For details see [custom code tests](/docs/custom-tests.md).
 
 ## Interested in contributing?
 
-Please check [contributing](/docs/contributing.md).
+See [contributing](/docs/contributing.md) if you'd like to improve this project.
 
 ## License
 

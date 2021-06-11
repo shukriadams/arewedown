@@ -18,10 +18,13 @@ module.exports = {
 
 
     /**
-     * 
+     * @param receiverTransmissionConfig {object} : recipient config for this transmission
+     * @param watcherName {string} : watcher to report status on
+     * @param isPassing {boolean} : true if watch is passing
      */
-    async send(to, watcherName, isPassing){
-        const settings = require('./settings').get(),
+    async send(receiverTransmissionConfig, watcherName, isPassing){
+        const to = receiverTransmissionConfig, // smtp receiver config is a single string containing email address
+            settings = require('./settings').get(),
             mailContent = this.generateContent(isPassing, to, watcherName),
             log = require('./../lib/logger').instance(),
             smtpConfig = settings.transports.smtp,
