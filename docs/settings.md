@@ -30,11 +30,11 @@ You can send email using any SMTP server. To use a Gmail account try
 
 ### Slack Transport
 
-Alerts can be sent to a Slack user or a Slack Channel.
+Alerts can be sent to a Slack user or a Slack Channel. 
 
-- You will need a Slack app with four scopes `channels:read, groups:read, mpim:read, im:read`. 
+- Your Slack app needs four scopes, `channels:read, groups:read, mpim:read, im:read`. 
 - Secret is also called "Signing Secret" is specific to your Slack app.
-- Token seems to always start with `xox` and is specific to your app's integration into your workspace.
+- Token normally starts with `xox` and is specific to your app's integration into your workspace.
 
         transports:
             slack:

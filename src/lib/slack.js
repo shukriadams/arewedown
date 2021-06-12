@@ -39,8 +39,8 @@ module.exports = {
         const settings = require('./settings').get(),
             log = require('./../lib/logger').instance(),
             slackConfig = settings.transports.slack,
-            { App } = require('@slack/bolt'),
-            slack = new App({
+            Slack = require('@slack/bolt').App,
+            slack = new Slack({
                 signingSecret: slackConfig.secret,
                 token: slackConfig.token
             })
@@ -60,14 +60,12 @@ module.exports = {
                 }
 
             console.log('slack connection test succeeded.')
+
         } catch (ex){
             if (ex.message === 'invalid_auth')
                 throw { message : 'Your slack token was rejected by Slack. Please use a valid token.' }
             else
                 throw { message : 'slack connection test failed. ', ex }
         }
-
     }
-    
 }
-
