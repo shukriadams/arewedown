@@ -7,14 +7,15 @@ describe('lib/slack', async()=>{
                 client = {
                     conversations : {
                         list (){
-                            return {
-                                ok : true
-                            }
+                            return { ok : true }
                         }
                     },
                     chat : {
                         postMessage(){
                             return {}
+                        },
+                        delete(){
+                            return { ok : true}
                         }
                     }
                 }
@@ -137,6 +138,14 @@ describe('lib/slack', async()=>{
         
         const slack = ctx.clone(require(_$+'lib/slack'))
         await ctx.assert.throws(async() => await slack.send('slackid', 'mywatcher', true) )
-        
     })
+
+    it('lib/smtp/slack/delete:happy', async()=>{
+        const ctx = createTestStructures(),
+            slack = ctx.clone(require(_$+'lib/slack'))
+
+        const result = await slack.delete()
+        ctx.assert.true(result.ok)
+    }) 
+
 })

@@ -61,7 +61,7 @@ To send alerts using the `slack` transport use
         BobMcName:
             slack: user/channelId
 
-Either a user or channel ID can be targeted. ID is an immutable string of random characters, not a person/channel name.
+Either a user or channel ID can be targeted. To get a user id, click on the user profile in the Slack desktop client, then look under "More". To find a channel id, open Slack in a browser and click on the channel you want to post to - the channel id is the second id in browser address bar https://app.slack.com/client/<workspace-id>/<channel-id>/user_profile/<your-own-user-id>
 
 ## Watchers
 

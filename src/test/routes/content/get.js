@@ -4,7 +4,7 @@ describe('routes/content/get', async()=>{
         const ctx =  require(_$t+'context'),
             route = ctx.express.getRoute(_$+'routes/content')
 
-        route(ctx.express.req, ctx.express.res)
+        await route(ctx.express.req, ctx.express.res)
     })
 
     it('routes/content/get::unhappy::throws exception', async() => {
@@ -12,6 +12,6 @@ describe('routes/content/get', async()=>{
             route = ctx.express.getRoute(_$+'routes/content')
 
         ctx.express.res.download = ()=>{ throw 'error' }
-        route(ctx.express.req, ctx.express.res)
+        await route(ctx.express.req, ctx.express.res)
     })
 })

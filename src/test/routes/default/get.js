@@ -5,7 +5,7 @@ describe('routes/default/get', async()=>{
         ctx.settings({ dashboards : { test :{ default: true } }})
 
         const route = ctx.express.getRoute(_$+'routes/default')
-        route(ctx.express.req, ctx.express.res)
+        await route(ctx.express.req, ctx.express.res)
     })
 
     it('routes/default/get::force first', async() => {
@@ -13,6 +13,6 @@ describe('routes/default/get', async()=>{
         ctx.settings({ dashboards : { test :{ default: false } }})
 
         const route = ctx.express.getRoute(_$+'routes/default')
-        route(ctx.express.req, ctx.express.res)
+        await route(ctx.express.req, ctx.express.res)
     })
 })

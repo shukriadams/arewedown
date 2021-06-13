@@ -7,8 +7,8 @@ module.exports = {
         const settings = require('./settings').get(),
             log = require('./../lib/logger').instance(),
             slackConfig = settings.transports.slack,
-            { App } = require('@slack/bolt'),
-            slack = new App({
+            Slack = require('@slack/bolt').App,
+            slack = new Slack({
                 signingSecret: slackConfig.secret,
                 token: slackConfig.token,
             })
@@ -16,16 +16,16 @@ module.exports = {
         try {
 
             const text = isPassing ? 
-                `${watcherName} is up again` :
-                `${watcherName} is down`
-            
-            const postresult = await slack.client.chat.postMessage({
-                token: slackConfig.token,
-                channel: receiverTransmissionConfig, // user id or channel
-                text
-            })
+                `"${watcherName}" is up again` :
+                `"${watcherName}" is down`,
+                postresult = await slack.client.chat.postMessage({
+                    token: slackConfig.token,
+                    channel: receiverTransmissionConfig, // user id or channel id
+                    text
+                })
 
             log.debug('postresult', postresult)
+            return postresult
 
         } catch (ex){
             if (ex.data && ex.data.error === 'not_in_channel')
@@ -34,7 +34,27 @@ module.exports = {
                 log.error('Slack post failed', ex)
         }
     },
-    
+
+    /**
+     * Deletes a message based on its slack api timestamp.
+     * 
+     */
+    async delete(target, ts){
+        const settings = require('./settings').get(),
+            slackConfig = settings.transports.slack,
+            Slack = require('@slack/bolt').App,
+            slack = new Slack({
+                signingSecret: slackConfig.secret,
+                token: slackConfig.token,
+            })
+
+        return await slack.client.chat.delete({
+            token: slackConfig.token,
+            channel: target, 
+            ts
+        })
+    },
+
     async ensureSettingsOrExit(){
         const settings = require('./settings').get(),
             log = require('./../lib/logger').instance(),

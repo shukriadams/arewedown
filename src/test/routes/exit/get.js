@@ -6,7 +6,7 @@ describe('routes/exit/get', async()=>{
         ctx.inject.overwriteObject('process', { exit() {} })
 
         const route = ctx.express.getRoute(_$+'routes/exit')
-        route(ctx.express.req, ctx.express.res)
+        await route(ctx.express.req, ctx.express.res)
     })
 
     it('routes/exit/get::exit blocked', async() => {
@@ -14,7 +14,7 @@ describe('routes/exit/get', async()=>{
         ctx.settings({ allowHttpExit: false })
 
         const route = ctx.express.getRoute(_$+'routes/exit')
-        route(ctx.express.req, ctx.express.res)
+        await route(ctx.express.req, ctx.express.res)
     })
 
     it('routes/exit/get::throws exception', async() => {
@@ -23,7 +23,7 @@ describe('routes/exit/get', async()=>{
         ctx.inject.overwriteObject('process', { exit() { throw 'error' }})
 
         const route = ctx.express.getRoute(_$+'routes/exit')
-        route(ctx.express.req, ctx.express.res)
+        await route(ctx.express.req, ctx.express.res)
     })
 
 })

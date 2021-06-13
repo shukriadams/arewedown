@@ -316,6 +316,13 @@ module.exports = {
             this.failIfNotSet(_settings.transports.smtp.pass, 'settings "transports.smtp" is missing expected value ".pass"')
             this.failIfNotSet(_settings.transports.smtp.from, 'settings "transports.smtp" is missing expected value ".from"')
         }
+
+        // validate slack settings if enabled
+        if (_settings.transports.slack && _settings.transports.slack.enabled){
+            this.failIfNotSet(_settings.transports.slack.token, 'settings "transports.slack" is missing expected value ".token"')
+            this.failIfNotSet(_settings.transports.slack.secret, 'settings "transports.slack" is missing expected value ".secret"')
+        }
+
         
         // validate watchers
         if (!Object.keys(_settings.watchers).length)
