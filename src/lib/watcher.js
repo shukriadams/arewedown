@@ -117,10 +117,12 @@ module.exports = class {
     }
 
     async sendAlerts(){
-        let settings = require('./settings').get(),
+        const settings = require('./settings').get(),
             smtp = require('./smtp'),
+            slack = require('./slack'),
             transportHandlers = {
-                smtp
+                smtp,
+                slack
             }
         
         for (const transportName in settings.transports){
@@ -130,12 +132,14 @@ module.exports = class {
                 continue
             }
 
-            for (let recipientName of this.config.recipients){
+            for (const recipientName of this.config.recipients){
                 const recipient = settings.recipients[recipientName]
-                for (let recipientMethod in recipient){
-                    let result = await transportHandler.send(recipient[recipientMethod], this.config.__name, this.isPassing)
-                    this.log.info(`Sent alert to ${recipient[recipientMethod]} for process ${this.config.__name}. Result: `, result)
-                }
+
+                if (!recipient[transportName])
+                    continue
+
+                const result = await transportHandler.send(recipient[transportName], this.config.__name, this.isPassing)
+                this.log.info(`Sent alert to ${recipient[transportName]} for process ${this.config.__name}. Result: `, result)
             }
         }
     }

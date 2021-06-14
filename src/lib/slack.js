@@ -21,7 +21,14 @@ module.exports = {
                 postresult = await slack.client.chat.postMessage({
                     token: slackConfig.token,
                     channel: receiverTransmissionConfig, // user id or channel id
-                    text
+                    text : 'Are We Down? alert',
+                    attachments : [
+                        {
+                            fallback : text,
+                            color : isPassing ? '#007a5a' : '#D92424' ,
+                            title : text
+                        }
+                    ]                    
                 })
 
             log.debug('postresult', postresult)
