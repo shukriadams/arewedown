@@ -191,7 +191,8 @@ footer {
     font-size: 20px;
     background-color: var(--color-vermilion);
     max-height: 65px;
-    overflow: hidden;    
+    overflow: hidden;
+    white-space: nowrap;    
 }
 
 .icon-passing {
