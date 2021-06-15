@@ -15,7 +15,9 @@ describe('lib/watcher/sendAlerts', async()=>{
                 }
             },
             recipients : {
-                testuser : { enabled : true }
+                testuser : {
+                    smtp: '1@2.3'
+                 }
             }
         })        
 
@@ -24,6 +26,26 @@ describe('lib/watcher/sendAlerts', async()=>{
     }
 
     it('lib/watcher/sendAlerts::happy::', async()=>{
+        const ctx = createTestStructures()
+        ctx.settings({ 
+            transports : {
+                smtp : {
+                    server : 'server', port : 'port', secure : true, user: 'user', pass : 'pass', from : 'from'
+                }
+            },            
+            recipients : { testuser : { } }
+        })   
+
+        const Watcher = require(_$+'lib/watcher'),
+            watcher = new Watcher({
+                recipients : ['testuser']
+            })
+
+        watcher.sendAlerts()
+    })
+
+    
+    it('lib/watcher/sendAlerts::unhappy::no recipient with transport', async()=>{
         createTestStructures()
         const Watcher = require(_$+'lib/watcher'),
             watcher = new Watcher({

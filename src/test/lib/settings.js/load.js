@@ -15,6 +15,11 @@ describe('lib/settings/load', async()=>{
         settings.load({ watchers : { test : { enabled : false } } })
     })
     
+    it('lib/settings/load::cover::force delete of disable recipient', async() => {
+        const settings = require(_$+'lib/settings')
+        settings.load({ recipients : { test : { enabled : false } } })
+    })
+
     it('lib/settings/load::cover::force delete of disable transport', async() => {
         const settings = require(_$+'lib/settings')
         settings.load({ transports : { test : { enabled : false } } })
