@@ -115,11 +115,8 @@ footer {
     margin-left: auto;
     margin-right: auto;
     padding-left: var(--layout-universalMargin);    
-    padding-right: var(--layout-universalMargin);    
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    column-gap: var(--layout-universalMargin);    
-    row-gap: var(--layout-universalMargin);    
+    padding-right: var(--layout-universalMargin);
+    text-align: center;
 }
 
 .layout-renderTime {
@@ -132,9 +129,29 @@ footer {
     text-align: center;
     border-radius: 5px;
     overflow: hidden;
-    max-width: 300px;
+    width: 300px;
     position: relative;    
+    display: inline-block;
+    margin: 2px;
+}
 
+@media all and (max-width: 940px) {
+    .watcher {
+        width: 32%;
+    }  
+}
+
+@media all and (max-width: 740px) {
+    .watcher {
+        width: 49%;
+    }  
+}
+
+@media all and (max-width: 576px) {
+    .watcher {
+        width: 100%;
+        margin-bottom: 4px;
+    }  
 }
 
 .watcher .cell { 
@@ -212,6 +229,9 @@ footer {
     color: var(--color-white);
     overflow: hidden;
     margin-top: calc(var(--layout-universalMargin) * 4);
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .watcherHistory:nth-child(even){
