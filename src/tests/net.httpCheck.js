@@ -9,16 +9,11 @@ module.exports = async config => {
             text : '.host required'
         }
         
-    const host = config.url || config.host
-
-    if (!host.toLowerCase().startsWith('http://') && !host.toLowerCase().startsWith('https://'))
-        throw {
-            type : 'configError',
-            text : '.host must start with "http(s)://"'
-        }
-
-    let receivedStatus = 'no status',
-        got = require('got')
+    let got = require('got'),
+        settings = require('./../lib/settings').get(),
+        httpHelper = require('madscience-httputils'),
+        host = httpHelper.ensureProtocol(config.url || config.host, settings.defaultTestProtocol),
+        receivedStatus = 'no status'
 
     try {
         const response = await got(host)

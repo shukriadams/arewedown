@@ -7,13 +7,6 @@ describe('tests/net.httpCheck', async()=>{
         await ctx.assert.throws(async() => await test({ }) )
     })
 
-    it('tests/net.httpCheck::unhappy host invalid', async() => {
-        const test = require(_$+'tests/net.httpCheck'),
-            ctx =  require(_$t+'context')
-
-        await ctx.assert.throws(async() => await test({ host : 'invalid-string' }) )
-    })
-
     it('tests/net.httpCheck::unhappy site not found', async() => {
         let ctx =  require(_$t+'context')
 

@@ -104,7 +104,10 @@ module.exports = {
 
             // port AWD? listens on.
             port: 3000,
-        
+            
+            // autoassigned protocol if none is given
+            defaultTestProtocol : 'http',
+
             // milliseconds dashboard reloads itself
             dashboardRefreshInterval: 5000,
         

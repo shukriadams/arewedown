@@ -4,6 +4,7 @@
 // http://user:password@<myjenkins>/job/<myjob>/lastBuild/api/json
 module.exports = async function(config){
     const httpHelper = require('madscience-httputils'),
+        settings = require('./../lib/settings').get(),
         urljoin = require('urljoin')
 
     // validate settings
@@ -22,7 +23,7 @@ module.exports = async function(config){
 
     // check if jenkins server host is valid
     let check,
-        host = config.host || config.url
+        host = httpHelper.ensureProtocol(config.host || config.url, settings.defaultTestProtocol)
 
     try {
         check = await httpHelper.downloadString(host)

@@ -2361,9 +2361,9 @@ lowercase-keys@^2.0.0:
     handlebars-layouts "3.1.4"
     madscience-fsUtils "https://github.com/shukriadams/node-fsUtils.git#0.0.6"
 
-"madscience-httputils@https://github.com/shukriadams/node-httpUtils.git#0.0.1":
+"madscience-httputils@https://github.com/shukriadams/node-httpUtils.git#0.0.7":
   version "0.0.2"
-  resolved "https://github.com/shukriadams/node-httpUtils.git#6b71bf6bff7fd26baf7749c8d69a3cd0ea8452a1"
+  resolved "https://github.com/shukriadams/node-httpUtils.git#5d02227a76648088d40847c104736a1c08f2f161"
   dependencies:
     fs-extra "6.0.0"
     request "2.88.0"
@@ -3198,13 +3198,6 @@ simple-ssh@1.0.0:
     ssh2 "^0.5.0"
     xtend "^4.0.1"
 
-slack@11.0.2:
-  version "11.0.2"
-  resolved "https://registry.yarnpkg.com/slack/-/slack-11.0.2.tgz#30f68527c5d1712b7faa3141db7716f89ac6e911"
-  integrity sha512-rv842+S+AGyZCmMMd8xPtW5DvJ9LzWTAKfxi8Gw57oYlXgcKtFuHd4nqk6lTPpRKdUGn3tx/Drd0rjQR3dQPqw==
-  dependencies:
-    tiny-json-http "^7.0.2"
-
 smtp-channel@0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/smtp-channel/-/smtp-channel-0.2.3.tgz#db660868ad3b5296775ec8078c38aa634c4dcda6"
@@ -3440,11 +3433,6 @@ through2@^3.0.0:
 "timebelt@https://github.com/shukriadams/timebelt.git#0.1.10":
   version "0.1.1"
   resolved "https://github.com/shukriadams/timebelt.git#e76641f0d97dfaf81d1402ace400e024ec7acf4c"
-
-tiny-json-http@^7.0.2:
-  version "7.3.0"
-  resolved "https://registry.yarnpkg.com/tiny-json-http/-/tiny-json-http-7.3.0.tgz#26094cba45141b9e06c7cb0d850f5b0779062459"
-  integrity sha512-dZrf9ZGZQhe8QhhPN3o4uDCQuBc3Gaq4CtbU/67hQDWXuvjLI1mayr8AOFSiUGa3F818SpIgUnC3mM673VRHGQ==
 
 to-buffer@^1.1.1:
   version "1.1.1"

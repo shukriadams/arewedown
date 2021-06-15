@@ -4,6 +4,7 @@
  */
 module.exports = async config =>{
     const httpHelper = require('madscience-httputils'),
+        settings = require('./../lib/settings').get(),
         urljoin = require('urljoin')
 
     if (!config.host)
@@ -19,10 +20,11 @@ module.exports = async config =>{
         }
 
     let port = config.port || 2375,
+        host = httpHelper.ensureProtocol(config.host, settings.defaultTestProtocol),
         jsonraw
 
     try {
-        jsonraw = await httpHelper.downloadString(urljoin(`${config.host}:${port}`, 'containers/json'))
+        jsonraw = await httpHelper.downloadString(urljoin(`${host}:${port}`, 'containers/json'))
     } catch (ex) {
         throw {
             type: 'awdtest.fail',
