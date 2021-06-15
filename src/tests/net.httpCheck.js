@@ -3,7 +3,6 @@
  * as a test pass, all else will fail
  */
 module.exports = async config => {
-    // validate settings
     if (!config.url && !config.host)
         throw {
             type : 'configError',

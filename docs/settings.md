@@ -69,7 +69,7 @@ The following built-in tests are available.
 
 ### HTTP 200 Test
 
-The simplest and default watcher is the HTTP check. It queries a URL and fails if it doesn't get a response between 200 and 299. You can specify code if the URL you're calling "passes" with an error code. f.ex a `403` error (login required) can still indicate that a service is up.
+The simplest and default watcher is the HTTP check. It queries a URL and fails if it doesn't get a HTTP code of  200. You can specify an expected code if the URL you're calling "passes" with an error code. f.ex a `403` error (login required) can still indicate that a service is up.
 
     watchers:
         mytest:
