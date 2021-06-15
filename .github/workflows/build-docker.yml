@@ -41,6 +41,11 @@ jobs:
             DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
             DOCKER_USER: ${{ secrets.DOCKER_USER }}
 
+    wait:    
+        - name: Wait 20 seconds so last container image has a chance to upload
+          run: sleep 20s
+          shell: bash
+
     manifest:
         runs-on: ubuntu-latest
         steps:
