@@ -74,11 +74,11 @@ module.exports = async function(config){
 
     const allowedStatusus = (config.status || 'success').split(',').filter(r => !!r)
 
-    if (!json || !json.result || !allowedStatusus.includes(json.result.toLowerCase()))      
+    if (!json.result || !allowedStatusus.includes(json.result.toLowerCase()))      
         throw{
             type: 'awdtest.fail',
             test : 'jenkins.buildSuccess',
-            text: `Jenkins job has unwanted status "${json.result.toLowerCase()}".`
+            text: `Jenkins job has unwanted status "${json.result}".`
         }
 }
 
