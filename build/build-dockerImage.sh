@@ -109,16 +109,19 @@ if [ $SMOKETEST -eq 1 ]; then
     cd --
 fi
 
+docker tag shukriadams/arewedown:latest shukriadams/arewedown:$TAG-$ARCH 
+docker tag shukriadams/arewedown:latest shukriadams/arewedown:$HASH-$ARCH 
+if [ ! -z $MINOR_TAG ]; then
+    docker tag shukriadams/arewedown:latest shukriadams/arewedown:$MINOR_TAG-$ARCH 
+fi
+
 if [ $DOCKERPUSH -eq 1 ]; then
     docker login -u $DOCKER_USER -p $DOCKER_PASS 
-    docker tag shukriadams/arewedown:latest shukriadams/arewedown:$TAG-$ARCH 
-    docker tag shukriadams/arewedown:latest shukriadams/arewedown:$HASH
 
     docker push shukriadams/arewedown:$TAG-$ARCH
-    docker push shukriadams/arewedown:$HASH
+    docker push shukriadams/arewedown:$HASH-$ARCH 
 
     if [ ! -z $MINOR_TAG ]; then
-        docker tag shukriadams/arewedown:latest shukriadams/arewedown:$MINOR_TAG-$ARCH 
         docker push shukriadams/arewedown:$MINOR_TAG-$ARCH
     fi
 fi
