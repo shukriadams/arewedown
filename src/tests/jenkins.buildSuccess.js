@@ -75,7 +75,8 @@ module.exports = async function(config){
 
     const allowedStatusus = (config.status || 'success').split(',').filter(r => !!r)
 
-    if (!json.result || !allowedStatusus.includes(json.result.toLowerCase()))      
+    // if result is null, build is in progress, ignore
+    if (json.result && !allowedStatusus.includes(json.result.toLowerCase()))      
         throw{
             type: 'awdtest.fail',
             test : 'jenkins.buildSuccess',
