@@ -84,8 +84,10 @@ module.exports = {
                 console.log('Error reading settings.yml', e)
                 throw e
             }
-        else 
-            console.warn(`WARNING: settings.yml not found - please create file "<AreWeDown root folder>/config/settings.yml". If you are running in docker, mount your config volume folder to "/etc/arewdown/config" and ensure you have settings.yml in that folder.`)
+        else {
+            console.warn(`!! Warning: settings.yml not found - please create it at "<AreWeDown? root folder>/config/settings.yml".`) 
+            console.warn(`!! If you are running in docker, confirm your volume mounts.`)
+        }
 
         // allow forcedIncomingSettings to override all settings load from file
         _settings = forcedIncomingSettings || _settings
@@ -267,7 +269,7 @@ module.exports = {
                     console.debug(`assigning all watchers to dashboard "${dashboard}"`)
                     _settings.dashboards[dashboard].watchers = allWatcherNames.join(',')
                 } else {
-                    console.debug(`no watchers to assign to empty dashboard "${dashboard}"`)
+                    console.debug(`!! No watchers to assign to empty dashboard "${dashboard}".`)
                     _settings.dashboards[dashboard].watchers = ''
                 }
             }
@@ -329,7 +331,7 @@ module.exports = {
         
         // validate watchers
         if (!Object.keys(_settings.watchers).length)
-            console.warn('No watchers were defined in settings file')
+            console.warn('!! No watchers were defined in settings file.')
         
         for (const name in _settings.watchers){
             const watcher = _settings.watchers[name]

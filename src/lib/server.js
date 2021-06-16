@@ -6,6 +6,8 @@ module.exports = {
      * Starts the AreWedown? Server. 
      */
     async start(){
+        console.log(`Are We Down? starting ... `)
+        
         let server,
             fs = require('fs-extra'),
             http = require('http'),
@@ -15,7 +17,6 @@ module.exports = {
             express = Express(),
             settings = require('./settings').get(),
             startArgs = require('./startArgs').get()
-        
 
         // If starting with --version flag, print version from package.json then exit
         // When running live, package.json will get its version from git release tag - the build script is 
@@ -48,7 +49,7 @@ module.exports = {
         server = http.createServer(express)
         server.listen(settings.port)
 
-        console.log(`Are We Down? started, listening on port ${settings.port}`)
+        console.log(`Are We Down? listening on port ${settings.port}.`)
     },
 
 

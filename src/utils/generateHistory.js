@@ -26,7 +26,7 @@
     
     const watchers = await fsUtils.getChildDirs('./../logs')
     if (!watchers.length){
-        console.log('No watchers founds - define at least one watcher in ./config/settings.yml')
+        console.log('!! No watchers founds - define at least one watcher in ./config/settings.yml.')
         return
     }
 

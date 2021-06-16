@@ -13,7 +13,7 @@ The `settings.yml` file is divided into three main sections
 
 ## Transports
 
-Transports are used to send out alerts when watcher states change. 
+Transports are used to send alerts when watcher states change. 
 
 ### SMTP Transport 
 
@@ -47,7 +47,7 @@ Recipients are people or systems that receive alerts.
 
 ### SMTP
 
-To send alerts using the `smtp` transport use
+To receive emails add `smtp` to a recipient and add email address to it
 
     recipients:
         BobMcName:
@@ -55,32 +55,32 @@ To send alerts using the `smtp` transport use
 
 ### Slack 
 
-To send alerts using the `slack` transport use
+To receive slack alerts add `slack` to a recipient and define either a slack user id or channel id.
 
     recipients:
         BobMcName:
             slack: user/channelId
 
-Either a user or channel ID can be targeted. To get a user id, click on the user profile in the Slack desktop client, then look under "More". To find a channel id, open Slack in a browser and click on the channel you want to post to - the channel id is the second id in browser address bar https://app.slack.com/client/<workspace-id>/<channel-id>/user_profile/<your-own-user-id>
+To get a user id, click on the user profile in the Slack desktop client, then look under "More". To find a channel id, open Slack in a browser and click on the channel you want to post to - the channel id is the second id in browser address bar https://app.slack.com/client/workspace-id/channel-id/user_profile/your-own-user-id
 
 ## Watchers
 
-The following built-in tests are available.
+Watchers let you test something at regular intervals. The following built-in tests are available.
 
-### HTTP 200 Test
+### HTTP 200
 
-The simplest and default watcher is the HTTP check. It queries a URL and fails if it doesn't get a HTTP code of  200. You can specify an expected code if the URL you're calling "passes" with an error code. f.ex a `403` error (login required) can still indicate that a service is up.
+The simplest (and default) watcher is the HTTP check. It queries a URL and fails if it doesn't get a HTTP code of 200. You can specify another HTTP code if you expect something other than 200, such as a `403` if the url prompts you to login.
 
     watchers:
         mytest:
-            host: http://example.com
+            host: example.com
 
             # optional code if you're expecting something other than 2xx
             code : 403 
 
-### Port open Test
+### Port open
 
-Tests if a port at the given address is open. Works on TCP only.
+Test if a port at the given address is open. Works on TCP only.
 
     watchers:
         port:
@@ -88,18 +88,18 @@ Tests if a port at the given address is open. Works on TCP only.
             host: 192.168.1.126
             port: 8006
 
-### Jenkins job status Test
+### Jenkins job status
 
-Test if a jenkins job is passing. Requires Jenkins server URL and job name.
+Test if a jenkins job is passing. Requires a Jenkins server URL and job name.
 
 - Host can be any URL that gives access to the server, this is often with built-in credentials. 
 - Job name can be the human-friendly version, we'll make it URL-safe, so copy this directly from your Jenkins UI if you want.
-- By default, a test passes on success only, all other outcomes will be read as failure. You can override this with `status` value, which can be a comma-separated string consisting of  `success`, `aborted` and/or `failure`. These are taken directly from the Jenkins API.
+- By default, a test passes on success only, all other outcomes will be read as failure. You can override this with `status` value, which can be a comma-separated string consisting of `success`, `aborted` and/or `failure` (These strings are taken directly from the Jenkins API).
 
         watchers:
             my_jenkins_job:
                 test : jenkins.buildSuccess
-                host: http://<USER>:<PASSWORD>@example.com
+                host: <USER>:<PASSWORD>@example.com
                 job: My Jenkins Job
 
                 # Optional.
@@ -107,12 +107,12 @@ Test if a jenkins job is passing. Requires Jenkins server URL and job name.
 
 ### Docker container up
 
-If your have the Docker [HTTP API](https://docs.docker.com/engine/api/v1.24/) enabled, you can query it to test if a container is up on a given host. 
+If your have the Docker [HTTP API](https://docs.docker.com/engine/api/v1.24/) enabled, you can query it to test if a container is up on a given docker host. 
 
     watchers:
         my-container-test:
             test: docker.containerIsUp
-            host: http://example.com
+            host: example.com
             container: myContainer # container name
 
             # Optional. Port to query, the default is 2375.
@@ -120,7 +120,7 @@ If your have the Docker [HTTP API](https://docs.docker.com/engine/api/v1.24/) en
 
 ### System.d service running
 
-You can test if a system.d service is running - you need SSH access to the machine running the service. For the security conscious, password can be templated in via an env var ([see advanced settings](#Secrets))
+You can test if a system.d service is running - you need SSH access to the machine running the service. For the security conscious, password can be templated in via an env var ([see advanced settings](#Secrets)).
 
     watchers:
         my-service-test:
@@ -139,7 +139,7 @@ You can ping a host.
         watchers:
             my-ping-test:
                 test: net.ping
-                host: 192.168.0.1
+                host: example.com
 
                 # optional
                 timeout: 10 
@@ -179,7 +179,8 @@ The following overridable default settings live in the root-level of settings.ym
     # default dashboard title 
     header: Are We Down?
 
-    # defines where logs are written. Default value is relative to application startup path. If you want to write to /var/log/arewedown for example, change this
+    # defines where logs are written. Default value is relative to application startup path. If you want to 
+    # write to /var/log/arewedown for example, change this
     logs: ./logs
 
     # Port HTTP server run ons   
@@ -191,7 +192,8 @@ The following overridable default settings live in the root-level of settings.ym
     # Interval for dashboard timeout (milliseconds)
     dashboardLoadTimeout: 5000,
 
-    # Allows app to exit with an HTTP call. This is useful if you're changing configuration in settings.yml and don't want to restart the Docker/daemon process the app runs in
+    # Allows app to exit with an HTTP call. This is useful if you're changing configuration in settings.yml and
+    # don't want to restart the Docker/daemon process the app runs in
     # If properly daemonized your app will restart instantly and with updated settings applied.
     allowHttpExit: false
 
