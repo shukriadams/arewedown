@@ -43,7 +43,7 @@ module.exports = express => {
             for (let watcher of watchers){
                 const watcherLastEvent = await history.getLastEvent(watcher.config.__safeName) 
                 if (watcherLastEvent)
-                    watcher.timeInState = timespan(watcherLastEvent.date, new Date())
+                    watcher.timeInState = timespan(new Date(), watcherLastEvent.date)
 
                 if (watcher.nextRun)
                     watcher.next = timespan(watcher.nextRun, new Date())
