@@ -40,8 +40,8 @@ module.exports = express => {
             }
             
             history = history.sort((a, b)=>{
-                return a.date > b.date? 1 :
-                    b.date > a.date? -1:
+                return a.date > b.date ? -1 :
+                    b.date > a.date? 1 :
                     0
             })
 

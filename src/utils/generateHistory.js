@@ -31,12 +31,9 @@
     }
 
     for (const watcher of watchers){
-        
+
         const watcherHistoryDir = path.join(watcher, 'history')
-        if (!await fs.exists(watcherHistoryDir)){
-            console.log(`history folder for watcher "${watcher}" not found`)
-            continue
-        }
+        await fs.ensureDir(watcherHistoryDir)
 
         // delete existing history
         const existingEvents = await fsUtils.readFilesUnderDir(watcherHistoryDir)
@@ -47,7 +44,7 @@
             startDate = new Date()
             
         for (let i = 0 ; i < maxEventsPerWatcher; i ++){
-            startDate = timebelt.addSeconds(startDate, chance.integer({min : minEventDuration, max : maxEventDuration})) 
+            startDate = timebelt.addSeconds(startDate, -1 * chance.integer({min : minEventDuration, max : maxEventDuration})) 
             isPassing = !isPassing
             
             let error = isPassing ? undefined : chance.sentence({ words: chance.integer({ min: 10, max: 300 })})
@@ -57,6 +54,22 @@
                 date : startDate,
                 error
             })
+
+            console.log(`generated history for ${watcher}`)
+
+            // write flag if latest event
+            if (i === 0){
+                await fs.writeJson(path.join(watcherHistoryDir, `status.json`),{
+                    date : startDate,
+                    status : isPassing? 'up' : 'down',
+                    error
+                })
+
+                if (!isPassing)
+                    await fs.writeJson(path.join(watcher, `flag`),{
+                        date : startDate
+                    })
+            }
         }
     }
 
