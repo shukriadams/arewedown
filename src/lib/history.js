@@ -65,12 +65,13 @@ module.exports = {
         if (!await fs.exists(historyLogFolder))
             return null
         
-        const history = await fsUtils.readFilesInDir(historyLogFolder)
+        let history = await fsUtils.readFilesInDir(historyLogFolder)
+        history = history.filter(item => !item.includes('status.json'))
         if (!history.length)
             return null
 
         try {
-            const event = await fs.readJson(history.sort()[0])
+            const event = await fs.readJson(history.sort()[history.length - 1])
             return event
         } catch (ex){
             log.error(`Failed to load history for "${safeName}":`, ex)
