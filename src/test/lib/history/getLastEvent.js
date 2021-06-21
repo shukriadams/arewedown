@@ -10,7 +10,7 @@ describe('lib/history/getLastEvent', async()=>{
         }) 
         
         ctx.inject.object('madscience-fsUtils', { 
-            readFilesInDir: ()=> [{}] // return 1 event
+            readFilesInDir: ()=> ['status.json', 'item.json'] // return 2 events, 1 will always
         }) 
 
         const event = await history.getLastEvent('test')
@@ -45,7 +45,7 @@ describe('lib/history/getLastEvent', async()=>{
         ctx.assert.null(event)
     })
 
-    it('lib/history/getLastEvent::unhappy read json throws', async()=>{
+    it('lib/history/getLastEvent::unhappy read json throws error', async()=>{
         const ctx = require(_$t+'context'),
             history = ctx.clone(require(_$+'lib/history'))
 
@@ -55,7 +55,7 @@ describe('lib/history/getLastEvent', async()=>{
         }) 
         
         ctx.inject.object('madscience-fsUtils', { 
-            readFilesInDir: ()=> [{}] // return 1 event
+            readFilesInDir: ()=> ['item.json'] // return 1 event
         }) 
 
         const event = await history.getLastEvent('test')
