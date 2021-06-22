@@ -32,32 +32,24 @@ The most basic setup of *Are We Down?* can be done with only
         mysite:
             host: http://mysite.example.com
 
-This sets up a single watcher that scans the given domain every minute for HTTP status 200, and displays this on a dashboard. 
+This sets up a single watcher that scans the given domain every minute for HTTP status 200, and displays this on a dashboard. See [settings](/docs/settings.md) for details.
 
 ### Transports
 
-Transports are used to send out alerts when watcher states change. Currently supported transports are
+Alerts can be sent with the following methods :
 
 - SMTP (good old email)
 - Slack
 
-For details, see [transport settings](/docs/settings.md#Transports).
-
-### Recipients
-
-Recipients are people or systems that receive alerts. For details see [recipient settings](/docs/settings.md#Recipients).
-
 ### Watchers
 
-Watchers test things to see if they pass or fail. Built-in tests are
+The following built-in tests are available :
 
 - HTTP status
 - TCP port open
 - Docker container up
 - Jenkins job passing
 - System.d process status
-
-For details, see [watcher settings](/docs/settings.md#Watchers).
 
 ### Custom tests
 
