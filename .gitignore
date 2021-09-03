@@ -1,7 +1,6 @@
 
 src/node_modules
 tests/node_modules
-vagrant/.vagrant
 vagrant/ubuntu-xenial-16.04-cloudimg-console.log
 src/settings.json
 src/logs
@@ -24,3 +23,5 @@ src/.nyc_output
 src/coverage/
 build/node_modules
 build/win64
+vagrant/virtio/.vagrant/
+vagrant/virtualbox/.vagrant
