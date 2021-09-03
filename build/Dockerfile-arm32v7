@@ -9,6 +9,7 @@ RUN apt-get update \
     && apt-get install git -y \
     && apt-get install curl -y \
     && apt-get install python3-minimal -y \
+    && apt-get install python3-pip -y \
     && apt-get install libatomic1 -y \
     && curl -s -O https://deb.nodesource.com/node_12.x/pool/main/n/nodejs/nodejs_12.20.2-deb-1nodesource1_armhf.deb \
     && dpkg -i nodejs_12.20.2-deb-1nodesource1_armhf.deb \
