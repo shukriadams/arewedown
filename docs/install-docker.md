@@ -21,7 +21,7 @@ Docker images are available on [Docker hub](https://hub.docker.com/r/shukriadams
 - Replace `<TAG>` with the latest two digit tag available, egs `0.2`, or something more specific.
 - Two directory volume mounts are required, one for logs, the other for config.
     - Ensure write access to the `logs` directory, the container runs with user id 1000, use `chown -R 1000 path/to/logs` to enable writes, or the app will fail.
-    - Create a `settings.yml` file in the config directory, this is where all application settings live.
+    - Create a `settings.yml` file in the config directory, this is where all application settings live. This file can be empty to begin with.
 - Docker images support AMD64 and ARM32v7, the correct one will be fetched for your device.
 
 # Versions and staying up to date
