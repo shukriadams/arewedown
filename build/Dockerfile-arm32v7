@@ -8,6 +8,7 @@ RUN apt-get update \
     && apt-get install sudo -y \
     && apt-get install git -y \
     && apt-get install curl -y \
+    && apt-get install sshpass -y \
     && apt-get install python3-minimal -y \
     && apt-get install python3-pip -y \
     && apt-get install libatomic1 -y \
