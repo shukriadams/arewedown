@@ -11,6 +11,7 @@ RUN apt-get update \
     && apt-get install sshpass -y \
     && apt-get install python3-minimal -y \
     && apt-get install python3-pip -y \
+    && apt-get install iputils-ping -y \
     && curl -s -O https://deb.nodesource.com/node_12.x/pool/main/n/nodejs/nodejs_12.20.2-deb-1nodesource1_amd64.deb \
     && dpkg -i nodejs_12.20.2-deb-1nodesource1_amd64.deb \
     && rm nodejs_12.20.2-deb-1nodesource1_amd64.deb \
