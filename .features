@@ -8,3 +8,4 @@ clicking on a bar unit shows graph for that section
 count of changes in history (x outages in last x time)
 history files need human readable dates
 json space on log files
+fix mem leak 

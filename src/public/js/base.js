@@ -1,58 +1,62 @@
-var dashboardRefreshInterval = document.querySelector('body').getAttribute('data-dashboardRefreshInterval'),
+let dashboardRefreshInterval = document.querySelector('body').getAttribute('data-dashboardRefreshInterval'),
     updateInSeconds = document.querySelector('.layout-updateTime'),
+    dashboardMenu = document.querySelector('.dashboardMenu'),
     renderTime = null, 
     dateFields = document.querySelectorAll('[data-formatDate]'),
-    nowHolder = document.querySelector('.now');
+    nowHolder = document.querySelector('.now'),
     now = new Date()
 
 if (now && nowHolder)
     nowHolder.innerHTML = now.toLocaleTimeString()
 
 if (dashboardRefreshInterval)
-    dashboardRefreshInterval = parseInt(dashboardRefreshInterval);
+    dashboardRefreshInterval = parseInt(dashboardRefreshInterval)
 
 
-for (var i = 0 ; i < dateFields.length ; i ++)
+for (let i = 0 ; i < dateFields.length ; i ++)
 {
-    let dateField = dateFields[i];
-    let date = new Date(dateField.getAttribute('data-formatDate'));
-    let formatted = date.toLocaleTimeString();
-    dateField.innerHTML = formatted;
+    let dateField = dateFields[i],
+        date = new Date(dateField.getAttribute('data-formatDate')),
+        formatted = date.toLocaleTimeString()
+
+    dateField.innerHTML = formatted
 }
 
+
 function showTimes(){
-    let agos = document.querySelectorAll('.date-ago');
-    var now = new Date();
+    let agos = document.querySelectorAll('.date-ago'),
+        now = new Date()
 
     for (let ago of agos){
-        let date = new Date(ago.getAttribute('data-value'));
-        let seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+        let date = new Date(ago.getAttribute('data-value')),
+            seconds = Math.floor((now.getTime() - date.getTime()) / 1000)
 
         if (seconds < 0) 
-            seconds = 0;
+            seconds = 0
 
-        ago.innerHTML = seconds;
+        ago.innerHTML = seconds
     }
 
-    let nexts = document.querySelectorAll('.date-next');
+    let nexts = document.querySelectorAll('.date-next')
 
     for (let next of nexts){
-        let date = new Date(next.getAttribute('data-value'));
-        let seconds = Math.floor((date.getTime() - now.getTime()) / 1000);
+        let date = new Date(next.getAttribute('data-value')),
+            seconds = Math.floor((date.getTime() - now.getTime()) / 1000)
 
         if (seconds < 0) 
-            seconds = 0;
+            seconds = 0
 
-        next.innerHTML = seconds;
+        next.innerHTML = seconds
     }    
 }
 
 function showUpdateTime(){
     if (!dashboardRefreshInterval)
-        return;
+        return
         
-    const updateTime = new Date(renderTime.getTime() + dashboardRefreshInterval);
-    const updateSeconds = Math.floor((updateTime.getTime() - new Date().getTime())/ 1000);
+    const updateTime = new Date(renderTime.getTime() + dashboardRefreshInterval),
+        updateSeconds = Math.floor((updateTime.getTime() - new Date().getTime())/ 1000)
+
     updateInSeconds.innerHTML = `${updateSeconds}s`
 }
 
@@ -104,7 +108,7 @@ function initProgressBar (progressBar){
     let nextRefresh = progressBar.getAttribute('data-nextUpdate')
 
     const interval = setInterval(()=>{
-        const nextUpdate = timespanString(nextRefresh, new Date(),  )
+        const nextUpdate = timespanString(nextRefresh, new Date(),)
         progressBar.innerHTML = nextUpdate
     }, 1000)
 }
@@ -121,5 +125,10 @@ if (cbEnableReload){
         window.parent.postMessage(`reload status:${event.currentTarget.checked}`, '*')
     })
 }
+
+if (dashboardMenu)
+    dashboardMenu.addEventListener('change', event => {
+        window.parent.postMessage(`dashboard:${dashboardMenu.value}`, '*')
+    })
 
 window.parent.postMessage(`isPassing:${isPassing}`, '*')

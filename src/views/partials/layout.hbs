@@ -14,6 +14,17 @@
                     Are We down?
                 </h1>
             </a>
+            {{#if dashboards}}
+                <div class="layout-dashboardMenuHolder"> 
+                    <select class="dashboardMenu">
+                        {{#each dashboards}}       
+                            <option value="{{this.__name}}" {{#eq ../dashboardNode this.__name}}selected{{/eq}}>
+                                {{this.name}}
+                            </option>
+                        {{/each}}
+                    </select>
+                </div>
+            {{/if}}
         </div>    
         <div class="layout-content">
             {{{block "body"}}}

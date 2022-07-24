@@ -41,7 +41,7 @@ module.exports = {
         // config
         handlebarsLoader.initialize({ 
             forceInitialize : !settings.cacheViews,
-            helpers : `${__dirname}/handlebars-helpers`,
+            helpers : `${__dirname}/../views/helpers`,
             pages : `${__dirname}/../views/pages`,
             partials : `${__dirname}/../views/partials`,
         })

@@ -69,7 +69,8 @@ module.exports = express => {
                 dashboardRefreshInterval : settings.dashboardRefreshInterval,
                 hasErrors,
                 renderDate: `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`,
-                blocks 
+                blocks,
+                dashboards :Object.keys(settings.dashboards).length > 1 ? settings.dashboards : null
             }))
             
         } catch (ex){

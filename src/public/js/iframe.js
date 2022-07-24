@@ -9,7 +9,7 @@
         reload = true
 
     if (dashboardRefreshInterval)
-        dashboardRefreshInterval = parseInt(dashboardRefreshInterval);
+        dashboardRefreshInterval = parseInt(dashboardRefreshInterval)
     
     window.addEventListener('message', message => {
         if (message.data.startsWith('reload status:'))
@@ -17,7 +17,15 @@
 
         if (message.data.startsWith('isPassing:'))
             isPassing = message.data === 'isPassing:true' 
-        
+
+        if (message.data.startsWith('dashboard:')){
+            dashboard = message.data.replace('dashboard:', '')
+            window.location = `${window.location.pathname}?dashboard=${encodeURI(dashboard)}`
+
+            update()
+        }
+
+            
         document.title = `${isPassing ? `` : 'ERRORS! ' }Are We Down?` 
     })
 
@@ -29,7 +37,7 @@
         
         // handles iframe load failure - if the frame fails to load, all active frames are 
         // hidden and the underlying fail state shows through
-        var timeOut = setTimeout(function(){
+        var timeOut = setTimeout(() =>{
             if (!reload)
                 return
 
@@ -37,13 +45,13 @@
             inactiveFrame.classList.remove('iframe--show')
         }, dashboardLoadTimeout) // how long we wait before giving up on page reload
 
-        inactiveFrame.onload = function(){
+        inactiveFrame.onload = () => {
 
             // if the frame loaded successfully, disable the failure warning
             clearTimeout(timeOut)
 
             // backbuffer new page to prevent reload flickering on slow devices like raspberry pi's
-            setTimeout(function(){
+            setTimeout(()=>{
                 if (!reload)
                     return
     

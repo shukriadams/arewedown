@@ -20,7 +20,7 @@ module.exports = express => {
             let settings = require('./../lib/settings').get(),
                 handlebarsLoader = require('madscience-handlebarsloader'),
                 definedDashboardKeys = Object.keys(settings.dashboards),
-                dashboardNode
+                dashboardNode = req.query.dashboard
             
             // take first dashboard marked as default
             for (let dashboardName of definedDashboardKeys)
