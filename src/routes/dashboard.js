@@ -48,6 +48,20 @@ module.exports = express => {
                 if (watcher.nextRun)
                     watcher.next = timespan(watcher.nextRun, new Date())
             }
+
+            // break into blocks of 4, UI layout expects this
+            let blocks = [],
+                block 
+                
+            for (let i = 0 ; i < watchers.length ; i ++ ){
+                if (i % 6 === 0){
+                    block = []
+                    blocks.push(block)
+                }
+
+                block.push(watchers[i])
+            }
+        
             
             res.send(view({
                 title : `${settings.header} ${dashboard.name}`,
@@ -55,7 +69,7 @@ module.exports = express => {
                 dashboardRefreshInterval : settings.dashboardRefreshInterval,
                 hasErrors,
                 renderDate: `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`,
-                watchers 
+                blocks 
             }))
             
         } catch (ex){

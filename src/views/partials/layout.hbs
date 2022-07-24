@@ -2,31 +2,24 @@
     <head>
         {{{block "basehead"}}}
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="/content/css/style.css" type="text/css">
+        <link rel="stylesheet" href="/content/css/bootstrip.css" type="text/css">
+        <link rel="stylesheet" href="/content/css/bootstrip-theme-default.css" type="text/css">
+        <link rel="stylesheet" href="/content/css/overrides.css" type="text/css">
         <title>{{title}}</title>
     </head>
     <body class="layout {{#if hasErrors}}layout--failing{{/if}}">
-        <div class="content">
-            
-            <header>
-                <div class="grid">
-                    <div class="layout-titleScaffold">
-                        <a href="/">
-                            <h1 class="layout-title">
-                                {{title}}
-                            </h1>
-                        </a>
-                    </div>
-                </div>
-            </header>
-
-            <main>
-                {{{block "body"}}}
-            </main>
-
-            <footer>
-                {{{block "footer"}}}
-            </footer>
+        <div class="layout-header">
+            <a href="/">
+                <h1>
+                    Are We down?
+                </h1>
+            </a>
+        </div>    
+        <div class="layout-content">
+            {{{block "body"}}}
+        </div>
+        <div class="layout-footer">
+            {{{block "footer"}}}
         </div>
         <script src="/content/js/base.js"></script>
     </body>

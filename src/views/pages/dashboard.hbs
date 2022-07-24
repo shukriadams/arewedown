@@ -1,50 +1,50 @@
 {{#extend "layout"}}
     {{#content "body"}}
-        <div class="grid">
 
-            {{#if watchers}}
-                {{#each watchers}}
-                    <div class="watcher {{#if config.__hasErrors}}watcher--configErrors{{/if}} {{#if isPassing}}watcher--passing{{/if}}">
-                        <a href="/watcher/{{config.__name}}" target="_PARENT">
-
-                            <div class="cell cell--header">
-                                {{config.name}} 
-                            </div>
-
-                            <div class="cell cell--content">
-                                {{#if isPassing}}
-                                    {{#if timeInState}}
-                                        <div class="cell-passing">
-                                            Up {{timeInState}}
+            {{#if blocks}}
+                {{#each blocks}}
+                    <x-columns class="--six">
+                        {{#each this}}
+                            <a href="/watcher/{{config.__name}}" target="_PARENT">
+                                <x-card class="watcher {{#if config.__hasErrors}}watcher--configErrors{{/if}} {{#if isPassing}}watcher--passing{{/if}}">
+                                        <div class="cell cell--header">
+                                            {{config.name}} 
                                         </div>
-                                    {{else}}
-                                        <img class="icon-passing" src="/content/icons/passing.svg" alt="Passing" />
-                                    {{/if}}
-                                {{else}}
-                                    {{#if timeInState}}
-                                        Down {{timeInState}}.
-                                    {{/if}}
-                                    {{errorMessage}}
-                                {{/if}}
-                            </div>
 
-                            <div class="cell watcher-nextUpdateWrapper">
-                                {{#if config.__hasErrors}}
-                                    Disabled (config errors)
-                                {{else}}
-                                    Next check : <span class="watcher-nextUpdate" data-nextUpdate="{{nextRun}}">{{next}}</span> 
-                                {{/if}}
-                            </div>
-                        </a>
-                    </div>
+                                        <div class="cell cell--content">
+                                            {{#if isPassing}}
+                                                {{#if timeInState}}
+                                                    <div class="cell-passing">
+                                                        Up {{timeInState}}
+                                                    </div>
+                                                {{else}}
+                                                    <img class="icon-passing" src="/content/icons/passing.svg" alt="Passing" />
+                                                {{/if}}
+                                            {{else}}
+                                                {{#if timeInState}}
+                                                    Down {{timeInState}}.
+                                                {{/if}}
+                                                {{errorMessage}}
+                                            {{/if}}
+                                        </div>
+
+                                        <div class="cell watcher-nextUpdateWrapper">
+                                            {{#if config.__hasErrors}}
+                                                Disabled (config errors)
+                                            {{else}}
+                                                Next check : <span class="watcher-nextUpdate" data-nextUpdate="{{nextRun}}">{{next}}</span> 
+                                            {{/if}}
+                                        </div>
+                                </x-card> 
+                            </a>
+                        {{/each}}
+                    </x-columns>
                 {{/each}}
             {{else}}
                 <div class="dashboard-message">
                     Nothing to show yet - add/enable some watchers
                 </div>
             {{/if}}
-            
-        </div>
 
     {{/content}}
     {{#content "footer"}}

@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap');
+
+:root {
+    --layout-universalMargin: 8px;
+    --color-fiord: #404B63;
+    --color-ebonyClay: #262c3a;
+    --color-mirage: #19222d;
+    --color-mountainMeadow: #22b66e;
+    --color-salem: #139556;
+    --color-vermilion: #FA3C00;
+    --color-orange: #ff5722;
+    --color-fire: #A82800;
+    --color-white:#fff;
+    --color-dodgerBlue: #3da6fa;
+
+    --bootstrip-layout-gutter: 0;
+} 
+
+body {
+    background-color: var(--color-mirage);
+}
+
+h1 {
+    margin: 0;
+    padding:0;
+    font-weight: bold;
+    font-size: 3em;
+}
+
+
+.layout-header {
+    height: 64px;
+    text-align: center;
+    background-color: var(--color-ebonyClay);
+}
+
+.layout-header a {
+    color: var(--color-dodgerBlue);
+}
+
+.layout-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: var(--color-ebonyClay);
+    color: var(--color-dodgerBlue);
+    width: 100%;
+    z-index: 1;
+    text-align: center;
+    height: 42px;
+    padding-top: 8px;    
+}
+
+.layout-content {
+    padding: 16px;
+}
+
+.watcher {
+    background-color: inherit;
+    text-align: center;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;    
+    margin: 2px;
+}
+
+.watcher .cell { 
+    background-color: var(--color-orange);
+    color: var(--color-white);
+}
+
+.watcher.watcher--passing .cell {
+    background-color: var(--color-mountainMeadow);
+    color: var(--color-mirage);
+}
+
+.watcher.watcher--passing .cell--header {
+    background-color: var(--color-salem);
+}
+
+.watcher.watcher--configErrors .cell {
+    background-color: darkgrey;
+}
+
+.watcher.watcher--configErrors .cell--header {
+    background-color: grey;
+}
+
+.watcher-nextUpdateWrapper {
+    height: 38px;
+}
+
+.cell {
+    padding: var(--layout-universalMargin);
+    word-wrap: break-word;
+    overflow: hidden;
+}
+
+.cell.cell--content {  
+    height: 94px;
+    max-height: 96px;
+    overflow: hidden;
+}
+
+.cell-passing {
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap; 
+}
+
+.cell.cell--header {
+    font-weight: bold;
+    font-size: 20px;
+    background-color: var(--color-vermilion);
+    max-height: 65px;
+    overflow: hidden;
+    white-space: nowrap;    
+}
+
+.icon-passing {
+    height: 80px;
+    width: 80px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

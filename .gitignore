@@ -26,3 +26,7 @@ build/win64
 vagrant/virtio/.vagrant/
 vagrant/virtualbox/.vagrant
 vagrant/hyperv/.vagrant
+src/public/css/bootstrip-theme-darkmoon.css
+src/public/css/bootstrip-theme-default.css
+src/public/css/bootstrip.css
+src/public/js/bootstrip.js
