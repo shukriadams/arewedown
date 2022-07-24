@@ -1,6 +1,7 @@
 let dashboardRefreshInterval = document.querySelector('body').getAttribute('data-dashboardRefreshInterval'),
     updateInSeconds = document.querySelector('.layout-updateTime'),
     dashboardMenu = document.querySelector('.dashboardMenu'),
+    restartServer = document.querySelector('.restartServer'),
     renderTime = null, 
     dateFields = document.querySelectorAll('[data-formatDate]'),
     nowHolder = document.querySelector('.now'),
@@ -12,9 +13,7 @@ if (now && nowHolder)
 if (dashboardRefreshInterval)
     dashboardRefreshInterval = parseInt(dashboardRefreshInterval)
 
-
-for (let i = 0 ; i < dateFields.length ; i ++)
-{
+for (let i = 0 ; i < dateFields.length ; i ++) {
     let dateField = dateFields[i],
         date = new Date(dateField.getAttribute('data-formatDate')),
         formatted = date.toLocaleTimeString()
@@ -61,7 +60,7 @@ function showUpdateTime(){
 }
 
 if (dashboardRefreshInterval){
-    setInterval(function(){
+    setInterval(()=>{
         showTimes()
     }, dashboardRefreshInterval)
 }
@@ -69,7 +68,7 @@ if (dashboardRefreshInterval){
 showTimes()
 // -------------------------------------------
 const progressBars = document.querySelectorAll('[data-nextUpdate]')
-const timespanString = function(end, start){
+const timespanString = (end, start)=>{
     if (typeof start === 'number' || typeof start === 'string')
         start = new Date(start)
 
@@ -88,6 +87,7 @@ const timespanString = function(end, start){
 
     let mins = Math.floor(diff / (1000 * 60))
     let secs = Math.floor(diff / 1000)
+
     function plural(value){
         return value > 1 ?'s':''
     }
@@ -121,7 +121,7 @@ const cbEnableReload = document.querySelector('#cbEnableReload')
     isPassing = document.querySelector('.layout.layout--failing') === null
 
 if (cbEnableReload){
-    cbEnableReload.addEventListener('change', (event) => {
+    cbEnableReload.addEventListener('change', event => {
         window.parent.postMessage(`reload status:${event.currentTarget.checked}`, '*')
     })
 }
@@ -129,6 +129,13 @@ if (cbEnableReload){
 if (dashboardMenu)
     dashboardMenu.addEventListener('change', event => {
         window.parent.postMessage(`dashboard:${dashboardMenu.value}`, '*')
+    })
+
+if (restartServer)    
+    restartServer.addEventListener('click', event => {
+        fetch('/restart')
+            .then(response => response.text())
+            .then(data => console.log(data))
     })
 
 window.parent.postMessage(`isPassing:${isPassing}`, '*')

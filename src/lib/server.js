@@ -1,4 +1,4 @@
-
+let expressServer = null
 
 module.exports = {
 
@@ -14,9 +14,12 @@ module.exports = {
             daemon = require('./daemon'),
             Express = require('express'),
             handlebarsLoader = require('madscience-handlebarsloader'),
+            Settings = require('./settings'),
             express = Express(),
-            settings = require('./settings').get(),
             startArgs = require('./startArgs').get()
+
+        Settings.reset()
+        let settings = Settings.get()
 
         // If starting with --version flag, print version from package.json then exit
         // When running live, package.json will get its version from git release tag - the build script is 
@@ -47,11 +50,24 @@ module.exports = {
         })
 
         server = http.createServer(express)
-        server.listen(settings.port)
+        expressServer = server.listen(settings.port)
 
         console.log(`Are We Down? listening on port ${settings.port}.`)
     },
 
+    async exit(){
+        if (!expressServer)
+            return
+
+        const createHttpTerminator = require('http-terminator').createHttpTerminator,
+            httpTerminator = createHttpTerminator({
+                server: expressServer,
+            })
+
+        await httpTerminator.terminate()
+        const daemon = require('./daemon')
+        daemon.stop()
+    },
 
     /**
      * 
@@ -69,7 +85,7 @@ module.exports = {
      * Execute onstart shell command - this is intended for docker builds where the user wants to 
      * install app or set state in the container, but doesn't want to bake their own container image.
      * This state is ephemeral, so this solution isn't optimal, but it at least docker novices a chance
-     * to run shell commands with advanced requirements. Options are nice.
+     * to run shell commands with advanced requirements.
      */
     async executeStartScript(){
         const settings = require('./settings').get(),

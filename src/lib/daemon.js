@@ -18,6 +18,16 @@ module.exports =  {
         }
 
         this.internalWorker = new CronJob(settings.internalWorkerTimer, this.internalWork, null, true, null, null, true /*runonitit*/)
+
+    },
+
+    async stop(){
+        this.internalWorker.stop()
+
+        for (let watcher of this.watchers)
+            watcher.stop()
+
+        this.watchers = []
     },
 
     async internalWork(){

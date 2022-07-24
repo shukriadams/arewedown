@@ -26,6 +26,13 @@ module.exports = class {
         this.calcNextRun()
     }
     
+    stop(){
+        if (!this.cron)
+            return
+
+        this.cron.stop()
+    }
+
     async tick(){
         try
         {

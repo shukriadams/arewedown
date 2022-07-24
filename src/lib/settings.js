@@ -70,6 +70,9 @@ module.exports = {
         // apply env vars from optional .env file in project root
         dotenv.config()
 
+        // force wipe for app restart
+        _settings = null
+
         // allow local dev settings to override all
         if (fs.existsSync('./config/settings.dev.yml'))
             /* istanbul ignore next */
