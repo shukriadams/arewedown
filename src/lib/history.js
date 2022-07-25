@@ -1,4 +1,10 @@
+const timebelt = require('timebelt')
+
 module.exports = {
+
+    dateToFilename(date){
+        return timebelt.toShort(date, 'd_t', 'y-m-d', 'h-m-s')
+    },
 
     /**
      * Marks a item as passing. returns true if the item status changed since the last status write
@@ -9,6 +15,7 @@ module.exports = {
         let settings = require('./settings').get(),
             fs = require('fs-extra'),
             path = require('path'),
+            
             log = require('./../lib/logger').instance(),
             downFlag = path.join(settings.logs, safeName, 'flag'),
             changed = false,
@@ -20,7 +27,7 @@ module.exports = {
         await fs.writeJson(path.join(historyLogFolder, `status.json`), {
             status : 'up',
             date 
-        })
+        }, { spaces: 4})
 
         // site is back up after fail was previous detected, clean up flag and write log
         if (await fs.exists(downFlag)){
@@ -33,20 +40,20 @@ module.exports = {
 
             await fs.remove(downFlag)
 
-            await fs.writeJson(path.join(historyLogFolder, `${date.getTime()}.json`), {
+            await fs.writeJson(path.join(historyLogFolder, `${this.dateToFilename(date)}.json`), {
                 status : 'up',
                 date
-            })
+            }, { spaces: 4})
 
             changed = true
         }
 
         // if no history exists, write start entry, status flag counts for 1, history will be 1 more
         if ((await fs.readdir(historyLogFolder)).length < 2)
-            await fs.writeJson(path.join(historyLogFolder, `${date.getTime()}.json`), {
+            await fs.writeJson(path.join(historyLogFolder, `${this.dateToFilename(date)}.json`), {
                 status : 'up',
                 date 
-            })
+            }, { spaces: 4})
 
         return { 
             changed,
@@ -92,18 +99,18 @@ module.exports = {
             await fs.ensureDir(historyLogFolder)
 
             // site is down, write fail flag and log
-            await fs.writeJson(downFlag, { date })
+            await fs.writeJson(downFlag, { date }, { spaces: 4})
 
-            await fs.writeJson(path.join(historyLogFolder, `${date.getTime()}.json`), {
+            await fs.writeJson(path.join(historyLogFolder, `${this.dateToFilename(date)}.json`), {
                 status : 'down',
                 date,
                 error
-            })
+            }, { spaces: 4})
 
             await fs.writeJson(path.join(historyLogFolder, `status.json`), {
                 status : 'down',
                 date : this.lastRun
-            })
+            }, { spaces: 4})
 
             changed = true
         }
