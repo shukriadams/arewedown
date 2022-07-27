@@ -52,7 +52,10 @@
                 Rendered <span class="now"></span>
                 <input id="cbEnableReload" checked type="checkbox" />
                 <label for="cbEnableReload">Reload</label>
-                <a class="restartServer" href="javascript:void(0)">Rstart</a>
+                <a class="restartServer" href="javascript:void(0)">Restart</a>
+                {{#if blocks}}
+                    <a class="rerunAllWatchers" href="javascript:void(0)">Rerun all</a>
+                {{/if}}
             </div>
     {{/content}}
 

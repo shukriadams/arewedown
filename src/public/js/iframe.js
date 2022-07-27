@@ -24,8 +24,12 @@
 
             update()
         }
+        
+        if (message.data === 'reload'){
+            console.log('force reloading....')
+            update()
+        }
 
-            
         document.title = `${isPassing ? `` : 'ERRORS! ' }Are We Down?` 
     })
 
@@ -50,11 +54,15 @@
             // if the frame loaded successfully, disable the failure warning
             clearTimeout(timeOut)
 
+            // warn child frames reload is imminent
+            window.parent.postMessage(`reloading`, '*')
+
             // backbuffer new page to prevent reload flickering on slow devices like raspberry pi's
             setTimeout(()=>{
                 if (!reload)
                     return
     
+
                 inactiveFrame.classList.add('iframe--show')
                 activeFrame.classList.remove('iframe--show')
                 inactiveFrame = activeFrame

@@ -2,9 +2,12 @@ let dashboardRefreshInterval = document.querySelector('body').getAttribute('data
     updateInSeconds = document.querySelector('.layout-updateTime'),
     dashboardMenu = document.querySelector('.dashboardMenu'),
     restartServer = document.querySelector('.restartServer'),
+    rerunAllWatchers = document.querySelector('.rerunAllWatchers'),
     renderTime = null, 
+    cbEnableReload = document.querySelector('#cbEnableReload')
     dateFields = document.querySelectorAll('[data-formatDate]'),
     nowHolder = document.querySelector('.now'),
+    isPassing = document.querySelector('.layout.layout--failing') === null,
     now = new Date()
 
 if (now && nowHolder)
@@ -21,6 +24,48 @@ for (let i = 0 ; i < dateFields.length ; i ++) {
     dateField.innerHTML = formatted
 }
 
+const messageReceiver = message =>{
+    if (message.data !== 'reloading')
+        return
+
+    window.removeEventListener('message', messageReceiver)
+
+    if (cbEnableReload)
+        cbEnableReload.removeEventListener('change', cbEnableReloadEventHandler)
+
+    if (dashboardMenu)
+        dashboardMenu.removeEventListener('change', dashboardMenuEventHandler)
+
+    if (restartServer)    
+        restartServer.removeEventListener('click', restartServerEventHandler)
+
+    if (rerunAllWatchers)
+        rerunAllWatchers.removeEventListener('click', rerunAllWatchersHandler)
+}   
+
+const cbEnableReloadEventHandler = event => {
+    window.parent.postMessage(`reload status:${event.currentTarget.checked}`, '*')
+}
+
+const dashboardMenuEventHandler = event => {
+    window.parent.postMessage(`dashboard:${dashboardMenu.value}`, '*')
+}
+
+const restartServerEventHandler = event => {
+    fetch('/restart')
+        .then(response => response.text())
+        .then(data => console.log(data))
+}
+
+const rerunAllWatchersHandler = event => {
+    let targetDashboard = dashboardMenu ? dashboardMenu.value : '*'
+    fetch(`/rerun/dashboard/${encodeURI(targetDashboard)}`)
+        .then(response => response.text())
+        .then(data =>{ 
+            alert(data)
+            window.parent.postMessage(`reload`, '*')
+        })
+}
 
 function showTimes(){
     let agos = document.querySelectorAll('.date-ago'),
@@ -107,9 +152,8 @@ const timespanString = (end, start)=>{
 function initProgressBar (progressBar){
     let nextRefresh = progressBar.getAttribute('data-nextUpdate')
 
-    const interval = setInterval(()=>{
-        const nextUpdate = timespanString(nextRefresh, new Date(),)
-        progressBar.innerHTML = nextUpdate
+    setInterval(()=>{
+        progressBar.innerHTML = timespanString(nextRefresh, new Date())
     }, 1000)
 }
 
@@ -117,25 +161,18 @@ for (const progressBar of progressBars)
     initProgressBar(progressBar)
 
 // -------------------------------------------
-const cbEnableReload = document.querySelector('#cbEnableReload')
-    isPassing = document.querySelector('.layout.layout--failing') === null
 
-if (cbEnableReload){
-    cbEnableReload.addEventListener('change', event => {
-        window.parent.postMessage(`reload status:${event.currentTarget.checked}`, '*')
-    })
-}
+if (cbEnableReload)
+    cbEnableReload.addEventListener('change', cbEnableReloadEventHandler)
 
 if (dashboardMenu)
-    dashboardMenu.addEventListener('change', event => {
-        window.parent.postMessage(`dashboard:${dashboardMenu.value}`, '*')
-    })
+    dashboardMenu.addEventListener('change', dashboardMenuEventHandler)
 
 if (restartServer)    
-    restartServer.addEventListener('click', event => {
-        fetch('/restart')
-            .then(response => response.text())
-            .then(data => console.log(data))
-    })
+    restartServer.addEventListener('click', restartServerEventHandler)
 
+if (rerunAllWatchers)
+    rerunAllWatchers.addEventListener('click', rerunAllWatchersHandler)
+
+window.addEventListener('message', messageReceiver)
 window.parent.postMessage(`isPassing:${isPassing}`, '*')

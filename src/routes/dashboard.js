@@ -50,18 +50,18 @@ module.exports = express => {
             }
 
             // break into blocks of 4, UI layout expects this
-            let blocks = [],
+            let columnsOnDashboard = 6,
+                blocks = [],
                 block 
                 
             for (let i = 0 ; i < watchers.length ; i ++ ){
-                if (i % 6 === 0){
+                if (i % columnsOnDashboard === 0){
                     block = []
                     blocks.push(block)
                 }
 
                 block.push(watchers[i])
             }
-        
             
             res.send(view({
                 title : `${settings.header} ${dashboard.name}`,

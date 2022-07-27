@@ -30,6 +30,10 @@ module.exports =  {
         this.watchers = []
     },
 
+
+    /**
+     * AWD?'s own daemon process, used for house keeping.
+     */
     async internalWork(){
         const settings = require('./settings').get(),
             log = require('./../lib/logger').instance(),

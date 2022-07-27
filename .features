@@ -9,3 +9,5 @@ count of changes in history (x outages in last x time)
 * history files need human readable dates
 * json space on log files
 fix mem leak 
+test with 100 tests
+dynamic column count on dashboards

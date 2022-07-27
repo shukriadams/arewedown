@@ -1,3 +1,6 @@
+/**
+ * Defines a type that performs checks at intervals.
+ */
 module.exports = class {
 
     constructor(config = {}){
@@ -13,19 +16,14 @@ module.exports = class {
         this.nextRun = new Date()
     }
 
-    calcNextRun(){
-        if (this.cron)
-            this.nextRun = new Date(this.cron.nextDates().toString())
-    }
-
     start(){
         const CronJob = require('cron').CronJob
 
         this.log.info(`Starting watcher "${this.config.name || this.config.__name}"`)
-        this.cron = new CronJob(this.config.interval, this.tick.bind(this), null, true, null, null, true /*runonitit*/)
+        this.cron = new CronJob(this.config.interval, this.tick.bind(this), null, true, null, null, true /*tick immediately on itit*/)
         this.calcNextRun()
     }
-    
+
     stop(){
         if (!this.cron)
             return
@@ -33,6 +31,14 @@ module.exports = class {
         this.cron.stop()
     }
 
+    calcNextRun(){
+        if (this.cron)
+            this.nextRun = new Date(this.cron.nextDates().toString())
+    }
+
+    /**
+     * Callback attached to this.cron. Cron calls this at the test interval
+     */
     async tick(){
         try
         {
@@ -45,6 +51,7 @@ module.exports = class {
             }
     
             this.busy = true
+
             await this.doTest()
 
         } catch (ex){
@@ -54,6 +61,11 @@ module.exports = class {
         }
     }
 
+
+    /**
+     * The "business" function of the watcher, responsible for executing and handling result of whatever we're testing for. We keep this
+     * separate from tick() for readability, and mostly to make it easier to run unit tests on doTest
+     */
     async doTest(){
         const history = require('./history'),
             exec = require('madscience-node-exec')
@@ -78,28 +90,41 @@ module.exports = class {
                     this.isPassing = false
                 }
             } else {
-                
+
+                // get test to run, if none is set, fall back to httpCheck as default
                 let testname = this.config.test ? 
                         this.config.test 
-                        : 'net.httpCheck',
+                        : 'net.httpCheck', 
                     test = require(`../tests/${testname}`)
                 
                 testRun = testname
+
+                // This is where the business of AWD? runs, this executes the test for a given watcher
                 await test.call(this, this.config)
+
                 // if reach here, no exception thrown, so test passed
                 this.isPassing = true
                 this.errorMessage = null
             }
 
         } catch(ex){
+
+            // the watcher testfailed, try to figure out how
+
             if (ex.type === 'configError'){
+                // Tests have the option of throwing explicit 'configError' errors, this lets us write test-specific config checks.
+                // If one is thrown, the test can be marked as having invalid config, which in turn can be shown the UI, aiding in
+                // visually identifying the issue.
                 this.config.__hasErrors = true
                 this.errorMessage = ex.text
                 this.log.error(this.errorMessage)  
             } else if (ex.type === 'awdtest.fail'){
+                // Tests should throw the 'awdtest.fail' error explicitly if whatever condition they test for isn't met, we can then
+                // treat those tests as failing expectedly
                 this.log.info(`Watcher "${this.config.__name}" test "${ex.test}" failed.`, ex.text)
                 this.errorMessage = ex.text 
             } else {
+                // oops, something unplanned happened.
                 this.log.error(`Unhandled exception running "${testRun}"`, ex)
                 this.errorMessage = `Unhandled exception:${ex.toString()}` 
             }
@@ -108,6 +133,8 @@ module.exports = class {
         }
 
         this.calcNextRun()
+        const timebelt = require('timebelt')
+        console.log(`${this.config.__name} ran, next run in ${timebelt.secondsDifference(this.nextRun, new Date())} seconds`)
 
         // write state of watcher to filesystem
         let status = null

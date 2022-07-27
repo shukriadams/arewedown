@@ -1,6 +1,6 @@
 ![Screenshot of AreWeDown?](https://github.com/shukriadams/arewedown/blob/master/screenshot.PNG)
 
-*Are We Down?* is a simple uptime monitoring system and dashboard. It is ideal for the home/self-hosting user who runs multiple services/networked devices on a private LAN, and who doesn't want the complexity of an enterprise-level monitoring system. It lets you turn any HTTP endpoint into a status indicator, and gather them all into a single dashboard, with minimal effort.
+*Are We Down?* is a simple uptime monitoring system and dashboard. It is ideal for the home/self-hosting user who runs multiple services/networked devices on a private LAN, and who doesn't want the complexity of an enterprise-level monitoring system. It lets you turn any HTTP endpoint into a status indicator. SSH into things and test that way. Gather all your tests into a single or multiple dashboards. And it's easy to set up.
 
 [![codecov](https://codecov.io/gh/shukriadams/arewedown/branch/develop/graph/badge.svg?token=DXO5XYWW2T)](https://codecov.io/gh/shukriadams/arewedown)
 
@@ -8,7 +8,7 @@
 
 - Simple to configure with just a few lines of text in a single YML file.
 - No databases or dependencies on other services.
-- Does HTTP status checks, ping, Docker container status and more. 
+- Does HTTP status checks, ssh, ping, Docker container status and more. 
 - Sends alerts via email (SMTP) and Slack.
 - Can be extended with your own test scripts using shell scripts, Javascript (NodeJS) or Python3 scripts.
 - Runs on x86 and ARM (Docker images available for the Raspberry Pi 3 or better).
