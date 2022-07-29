@@ -12,7 +12,7 @@
     --color-fire: #A82800;
     --color-white:#fff;
     --color-dodgerBlue: #3da6fa;
-
+    --arewedown-historyCellStdWidth: 152px;
     --bootstrip-layout-gutter: 0;
 } 
 
@@ -20,6 +20,9 @@ body {
     background-color: var(--color-mirage);
 }
 
+a {
+    color: var(--color-dodgerBlue);
+}
 h1 {
     margin: 0;
     padding:0;
@@ -27,6 +30,11 @@ h1 {
     font-size: 3em;
 }
 
+h2 {
+    text-align: center;
+    color: var(--color-dodgerBlue);
+    font-weight: bold;
+}
 
 .layout-header {
     height: 64px;
@@ -44,7 +52,7 @@ h1 {
     bottom: 0;
     left: 0;
     background-color: var(--color-ebonyClay);
-    color: var(--color-dodgerBlue);
+    color: var(--color-white);
     width: 100%;
     z-index: 1;
     text-align: center;
@@ -54,6 +62,7 @@ h1 {
 
 .layout-content {
     padding: 16px;
+    padding-bottom: 32px;
 }
 
 .layout-dashboardMenuHolder {
@@ -101,6 +110,73 @@ h1 {
 .watcher-nextUpdateWrapper {
     height: 38px;
     font-size: 12px
+}
+
+.history {
+    background-color: var(--bootstrip-color-oxfordblue);
+}
+
+.history x-list-cell {
+    min-height: 48px;
+    align-self: flex-start;
+}
+
+.history-item {
+    background-color: var(--bootstrip-color-oxfordblue);
+    border-top-color: var(--bootstrip-color-gunPowder);
+    color:var(--color-mountainMeadow);
+}
+
+.history-durationBar{
+    max-width: var(--arewedown-historyCellStdWidth);
+}
+
+.history-status {
+    max-width: var(--arewedown-historyCellStdWidth);
+}
+
+.history-duration{
+    max-width: var(--arewedown-historyCellStdWidth);
+}
+
+.history-date{
+    max-width: var(--arewedown-historyCellStdWidth);
+}
+
+.history-status{
+    max-width: var(--arewedown-historyCellStdWidth);
+    padding-left: 16px;
+}
+
+.history-item.--error {
+    color:var(--color-vermilion);
+}
+
+.history-item:first-child {
+    border-top-color: var(--bootstrip-color-oxfordblue);
+}
+
+.watcherHistory-durationBarWrapper{
+    background-color: var(--color-fiord);
+    height: 4px;
+    position: relative;
+    margin-bottom: var(--layout-universalMargin);
+    top: -8px;
+}
+
+.watcherHistory-durationBar {
+    height: 16px;
+    min-width: 1%;
+    background-color: var(--color-orange);
+}
+
+.watcherHistory-durationBar--up {
+    background-color: var(--color-mountainMeadow);
+}
+
+.dshistory-item.--error {
+    background-color: var(--color-vermilion);
+    color:var(--bootstrip-color-white);
 }
 
 .cell {

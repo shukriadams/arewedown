@@ -53,8 +53,11 @@ module.exports = express => {
                     shortestDuration = Number.MAX_VALUE
 
                 for (const event of history){
-                    event.durationString = timebelt.timespanString( event.date, deltaDate, ' day(s)', ' hour(s)', ' minute(s)', ' second(s)')
-                    event.durationMinutes = Math.log(timebelt.minutesDifference(event.date, deltaDate))
+                    event.durationString = timebelt.timespanString( deltaDate, event.date,  ' day(s)', ' hour(s)', ' minute(s)', ' second(s)')
+
+                    // +1 to ensure that log is always at least 0
+                    // use log to flatten difference, making it easier to display wide ranges side-by-side
+                    event.durationMinutes = Math.log(Math.abs(timebelt.minutesDifference(deltaDate, event.date)+1)) 
 
                     if (event.durationMinutes > longestDuration)
                         longestDuration = event.durationMinutes
@@ -68,11 +71,25 @@ module.exports = express => {
                 for (const event of history)
                     event.durationPercent = Math.floor(((event.durationMinutes - shortestDuration) * 100) / longestDuration) 
 
+                // if there is only one item, force it have all duration
+                if (history.length === 1)
+                    history[0].durationPercent = 100
             }
             
             const view = await handlebarsLoader.getPage('watcher')
+            
+            let dashboardsWithWatcher = []
+            for (let dashboardName in settings.dashboards){
+                const dashboard = settings.dashboards[dashboardName]
+                if (dashboard.watchers.split(',').includes(watcher.__safeName))
+                    dashboardsWithWatcher.push(dashboard)
+            }
+                
+
             res.send(view({
                 title : `${settings.header} - ${watcher.name} history`,
+                incidentCount : files.length,
+                dashboardsWithWatcher,
                 history
             }))
 

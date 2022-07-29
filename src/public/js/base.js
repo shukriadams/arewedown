@@ -28,8 +28,6 @@ const messageReceiver = message =>{
     if (message.data !== 'reloading')
         return
 
-    window.removeEventListener('message', messageReceiver)
-
     if (cbEnableReload)
         cbEnableReload.removeEventListener('change', cbEnableReloadEventHandler)
 
@@ -41,6 +39,8 @@ const messageReceiver = message =>{
 
     if (rerunAllWatchers)
         rerunAllWatchers.removeEventListener('click', rerunAllWatchersHandler)
+
+    window.removeEventListener('message', messageReceiver)
 }   
 
 const cbEnableReloadEventHandler = event => {

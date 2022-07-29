@@ -2,12 +2,12 @@
 * dashboard dropdown menu
 * restart instead of exit
 force rerun test from ui
-force rerun all dashboard tests ui
+* force rerun all dashboard tests ui
 history as stracking horizontal bars with bar length proportion to change length
 clicking on a bar unit shows graph for that section
 count of changes in history (x outages in last x time)
 * history files need human readable dates
 * json space on log files
-fix mem leak 
+* fix mem leak 
 test with 100 tests
 dynamic column count on dashboards

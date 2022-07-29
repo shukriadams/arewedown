@@ -1,34 +1,41 @@
 {{#extend "layout"}}
     {{#content "body"}}
-        {{#if history}}
-            {{#each history}}
-                <div class="watcherHistory">
-                    <div class="watcherHistory-durationBarWrapper">
-                        <div class="watcherHistory-durationBar watcherHistory-durationBar--{{status}}" style="width:{{durationPercent}}%"></div>
-                    </div>                        
-                    <div class="watcherHistory-items">
-                        <div class="watcherHistory-item watcherHistory-status watcherHistory-status--{{status}}">
-                            {{status}}
-                        </div>
-                        <div class="watcherHistory-item watcherHistory-duration">
-                            for {{durationString}}
-                        </div>
-                        <div class="watcherHistory-item watcherHistory-date">
-                            <div>
-                                {{ago date}}
-                            </div>
-                            <div>
-                            ({{date date}})
-                            </div>
-                        </div>
-                        {{#if error}}   
-                            <div class="watcherHistory-item watcherHistory-error">
-                                {{error}}
-                            </div>
-                        {{/if}}
-                    </div>
+        <h2>Watcher : {{title}}</h2>
+        <div>
+            Incidents: {{incidentCount}}
+        </div>
+
+        {{#if dashboardsWithWatcher}}
+            <div>Referenced by dashboards : </div>
+            {{#each dashboardsWithWatcher}}
+                <div>
+                    <a href="/?dashboard={{__safeName}}">{{name}}</a>
                 </div>
             {{/each}}
+        {{/if}}
+
+        {{#if history}}
+            <x-list class="history ">
+            {{#each history}}
+                <x-list-row class="history-item {{#eq status "down"}}--error{{/eq}}">
+                    <x-list-cell class="history-durationBar">
+                        <div class="watcherHistory-durationBar watcherHistory-durationBar--{{status}}" style="width:{{durationPercent}}%"></div>
+                    </x-list-cell>
+                    <x-list-cell class="history-status">
+                        {{status}}
+                    </x-list-cell>
+                    <x-list-cell class="history-duration">
+                        for {{durationString}}
+                    </x-list-cell>
+                    <x-list-cell class="history-date">
+                        {{ago date}} <div class="quiet">({{date date}})</div>
+                    </x-list-cell>
+                    <x-list-cell class="history-error">
+                        {{error}}
+                    </x-list-cell>
+                </x-list-row>
+            {{/each}}
+            </x-list>
         {{else}}
             <div class="dashboard-message">
                 No changes to report.
