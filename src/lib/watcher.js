@@ -32,33 +32,38 @@ module.exports = class {
     }
 
     calcNextRun(){
+        const timebelt = require('timebelt')
+
         if (this.cron)
-            this.nextRun = new Date(this.cron.nextDates().toString())
+            this.nextRun = timebelt.addMilliseconds(new Date(this.cron.nextDates().toString()), this.config.offset)
     }
 
     /**
      * Callback attached to this.cron. Cron calls this at the test interval
      */
     async tick(){
-        try
-        {
-            if (this.config.__hasErrors)
-                return
-
-            if (this.busy){
-                this.log.info(`${this.config.__name} check was busy from previous run, skipping`);
-                return
-            }
+        setTimeout(async()=>{
+            try
+            {
+                if (this.config.__hasErrors)
+                    return
     
-            this.busy = true
-
-            await this.doTest()
-
-        } catch (ex){
-            this.log.error(ex)
-        } finally {
-            this.busy = false
-        }
+                if (this.busy){
+                    this.log.info(`${this.config.__name} check was busy from previous run, skipping`);
+                    return
+                }
+        
+                this.busy = true
+    
+                await this.doTest()
+    
+            } catch (ex){
+                this.log.error(ex)
+            } finally {
+                this.busy = false
+            }
+        }, this.config.offset)
+       
     }
 
 
@@ -72,6 +77,7 @@ module.exports = class {
 
         this.lastRun = new Date()
         let testRun = ''
+        this.calcNextRun()
 
         try {
 
@@ -132,9 +138,6 @@ module.exports = class {
             this.isPassing = false
         }
 
-        this.calcNextRun()
-        const timebelt = require('timebelt')
-        console.log(`${this.config.__name} ran, next run in ${timebelt.secondsDifference(this.nextRun, new Date())} seconds`)
 
         // write state of watcher to filesystem
         let status = null

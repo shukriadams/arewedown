@@ -5,13 +5,18 @@ module.exports =  {
     internalWorker: null,
 
     async start(){
-        const Watcher = require('./watcher'),
+        let Watcher = require('./watcher'),
             settings = require('./settings').get(),
-            CronJob = require('cron').CronJob
+            CronJob = require('cron').CronJob,
+            offset = 0
 
         for (const watcherName in settings.watchers){
-            const watcherConfig = settings.watchers[watcherName],
-                watcher = new Watcher(watcherConfig)
+            const watcherConfig = settings.watchers[watcherName]
+
+            watcherConfig.offset = offset
+            offset += settings.watcherOffset
+
+            const watcher = new Watcher(watcherConfig)
                 
             this.watchers.push(watcher)
             watcher.start()

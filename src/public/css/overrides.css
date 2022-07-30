@@ -148,7 +148,7 @@ h2 {
 .history-info {
     padding:var(--layout-universalMargin);
     color: var(--color-nepal);
-    background-color: var(--color-ebonyClay);
+    background-color: var(--bootstrip-color-oxfordblue);
 }
 
 .history-info .header3 {

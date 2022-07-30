@@ -133,6 +133,13 @@ module.exports = {
 
             // in days. set to zero to disable.
             logRetention: 365, 
+
+            // 500 ms by default. 
+            // Forced delay, in milliseconds, between consecutive watchers. Under-the-hood, all watchers run on the same cron clock,
+            // so jobs that fire on the same regular intervals (every minute, every hour, etc) all fire at exactly the same time.
+            // This can cause system bottlenecks when running many watchers. This offset is inserted between consecutive watchers 
+            // when starting, forcing them to run staggered.
+            watcherOffset: 500,
             
             // root-level objects
             dashboards : {},
@@ -206,10 +213,13 @@ module.exports = {
         
                 //cronmask to time test - default is 1 minute
                 interval : '*/1 * * * *',
-        
+
+                // Slaved to global watcherOffset. Disabled by default.
+                offset: 0,
+
                 // internal test to call. must be in src/tests folder, must not have .js extension, egs `net.httpCheck`
                 test: null,
-        
+
                 // string of user names to receive alerts on watcher status change. 
                 // can be * to use all defined recipients
                 // is converted to string array
