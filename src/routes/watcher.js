@@ -26,6 +26,10 @@ module.exports = express => {
             }
     
             let historyFolder = path.join(settings.logs, watcher.__safeName, 'history'),
+                incidentCount = 0,
+                startDate = null,
+                lastIncidentDate = null,
+                totalDownTime = 0,
                 files = []
 
             if (await fs.exists(historyFolder))
@@ -44,6 +48,16 @@ module.exports = express => {
                 const file = files[i],
                     data = await fs.readJson(path.join(historyFolder, file))
 
+                if (data.status === 'down'){
+                    incidentCount ++
+
+                    if (!lastIncidentDate || data.date > lastIncidentDate)
+                        lastIncidentDate = data.date
+                }
+
+                if (!startDate || data.date < startDate)
+                    startDate = data.date
+
                 files[i] = {
                     file,
                     data
@@ -60,7 +74,10 @@ module.exports = express => {
 
                 for (const item of files){
                     const event = item.data
-                    item.durationString = timebelt.timespanString( deltaDate, event.date,  ' day(s)', ' hour(s)', ' minute(s)', ' second(s)')
+                    item.durationString = timebelt.timespanStringPlural( deltaDate, event.date)
+
+                    if (item.data.status === 'down')
+                        totalDownTime += timebelt.minutesDifference(deltaDate, event.date)
 
                     // +1 to ensure that log is always at least 0
                     // use log to flatten difference, making it easier to display wide ranges side-by-side
@@ -71,6 +88,7 @@ module.exports = express => {
 
                     if (item.durationMinutes < shortestDuration)
                         shortestDuration = item.durationMinutes
+
 
                     deltaDate = event.date
                 }
@@ -91,9 +109,12 @@ module.exports = express => {
             }
 
             res.send(view({
-                title : `${settings.header} - ${watcher.name} history`,
-                incidentCount : files.length,
+                title : watcher.name,
                 dashboardsWithWatcher,
+                incidentCount,
+                lastIncidentDate,
+                totalDownTime : timebelt.minutesToPeriodString(totalDownTime),
+                watcherRuntime : startDate ? timebelt.timespanString(new Date(), startDate, ' days', ' hours', ' minutes', ' seconds') : null,
                 page : arrayHelper.toPage(files, page, settings.pageSize),
                 baseurl : `/watcher/${watcher.__safeName}?`
             }))

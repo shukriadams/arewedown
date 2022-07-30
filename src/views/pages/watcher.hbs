@@ -1,28 +1,46 @@
 {{#extend "layout"}}
     {{#content "body"}}
-        <h2>Watcher : {{title}}</h2>
-        <div>
-            Incidents: {{incidentCount}}
-        </div>
+            <x-columns class="--two"> 
+                <x-card class="history-info">
+                    <h3 class="header3">Watcher : {{title}}</h3>
+                    {{#if watcherRuntime}}
+                        <div>
+                            Has run for <strong>{{watcherRuntime}}</strong> with <strong>{{incidentCount}}</strong> {{pluralizer incidentCount 'incident'}}.
+                        </div>
+                    {{/if}}
 
-        {{#if dashboardsWithWatcher}}
-            <div>Referenced by dashboards : </div>
-            {{#each dashboardsWithWatcher}}
-                <div>
-                    <a href="/?dashboard={{__safeName}}">{{name}}</a>
-                </div>
-            {{/each}}
-        {{/if}}
+                    {{#if totalDownTime}}
+                        <div>
+                            Total downtime : about {{totalDownTime}}.
+                        </div>
+                    {{/if}}
 
+                    {{#if lastIncidentDate}}
+                        <div>
+                            Last incident was {{ago lastIncidentDate}}.
+                        </div>
+                    {{/if}}
+
+                </x-card>
+                <x-card class="history-info">
+                    {{#if dashboardsWithWatcher}}
+                        <div class="quiet">On dashboards</div>
+                        {{#each dashboardsWithWatcher}}
+                            <a href="/?dashboard={{__safeName}}">{{name}}</a>
+                        {{/each}}
+                    {{/if}}
+                </x-card>
+
+            </x-columns>
         {{#if page.items}}
             <x-list class="history ">
             {{#each page.items}}
-                <x-list-row class="history-item {{#eq status "down"}}--error{{/eq}}">
+                <x-list-row class="history-item {{#eq data.status "down"}}--error{{/eq}}">
                     <x-list-cell class="history-durationBar">
-                        <div class="watcherHistory-durationBar watcherHistory-durationBar--{{status}}" style="width:{{durationPercent}}%"></div>
+                        <div class="watcherHistory-durationBar watcherHistory-durationBar--{{data.status}}" style="width:{{durationPercent}}%"></div>
                     </x-list-cell>
                     <x-list-cell class="history-status">
-                        {{status}}
+                        {{data.status}}
                     </x-list-cell>
                     <x-list-cell class="history-duration">
                         for {{durationString}}

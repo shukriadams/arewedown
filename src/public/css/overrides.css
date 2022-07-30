@@ -2,6 +2,8 @@
 
 :root {
     --layout-universalMargin: 8px;
+    --bootstrip-layout-gutter: 8px;
+    --color-nepal: #97A4BE;
     --color-fiord: #404B63;
     --color-ebonyClay: #262c3a;
     --color-mirage: #19222d;
@@ -13,7 +15,7 @@
     --color-white:#fff;
     --color-dodgerBlue: #3da6fa;
     --arewedown-historyCellStdWidth: 152px;
-    --bootstrip-layout-gutter: 0;
+
 } 
 
 body {
@@ -31,10 +33,12 @@ h1 {
 }
 
 h2 {
-    text-align: center;
-    color: var(--color-dodgerBlue);
+    
+    color: var(--color-white);
     font-weight: bold;
 }
+
+
 
 .pager-anchor {
     border: none;
@@ -44,6 +48,10 @@ h2 {
 
 .pager-anchor.--active {
     background-color: var(--color-fiord);
+}
+
+.layout.layout--failing {
+    background-color: var(--color-fire);
 }
 
 .layout-header {
@@ -71,7 +79,7 @@ h2 {
 }
 
 .layout-content {
-    padding: 16px;
+    padding: var(--layout-universalMargin);
     padding-bottom: 32px;
 }
 
@@ -137,6 +145,17 @@ h2 {
     color:var(--color-mountainMeadow);
 }
 
+.history-info {
+    padding:var(--layout-universalMargin);
+    color: var(--color-nepal);
+    background-color: var(--color-ebonyClay);
+}
+
+.history-info .header3 {
+    margin-top: 0;
+    font-weight: bold;
+}
+
 .history-durationBar{
     margin-top: 4px;
 
@@ -178,7 +197,7 @@ h2 {
 
 .watcherHistory-durationBar {
     height: 16px;
-    min-width: 1%;
+    min-width: 2%;
     background-color: var(--color-orange);
 }
 
