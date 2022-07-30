@@ -36,6 +36,16 @@ h2 {
     font-weight: bold;
 }
 
+.pager-anchor {
+    border: none;
+    color: var(--color-white);
+    background-color: var(--color-dodgerBlue);
+}
+
+.pager-anchor.--active {
+    background-color: var(--color-fiord);
+}
+
 .layout-header {
     height: 64px;
     text-align: center;
@@ -128,6 +138,8 @@ h2 {
 }
 
 .history-durationBar{
+    margin-top: 4px;
+
     max-width: var(--arewedown-historyCellStdWidth);
 }
 

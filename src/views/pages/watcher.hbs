@@ -14,9 +14,9 @@
             {{/each}}
         {{/if}}
 
-        {{#if history}}
+        {{#if page.items}}
             <x-list class="history ">
-            {{#each history}}
+            {{#each page.items}}
                 <x-list-row class="history-item {{#eq status "down"}}--error{{/eq}}">
                     <x-list-cell class="history-durationBar">
                         <div class="watcherHistory-durationBar watcherHistory-durationBar--{{status}}" style="width:{{durationPercent}}%"></div>
@@ -28,7 +28,7 @@
                         for {{durationString}}
                     </x-list-cell>
                     <x-list-cell class="history-date">
-                        {{ago date}} <div class="quiet">({{date date}})</div>
+                        {{ago data.date}} <div class="quiet">({{date data.date}})</div>
                     </x-list-cell>
                     <x-list-cell class="history-error">
                         {{error}}
@@ -36,6 +36,7 @@
                 </x-list-row>
             {{/each}}
             </x-list>
+            {{{pager baseurl page}}}
         {{else}}
             <div class="dashboard-message">
                 No changes to report.

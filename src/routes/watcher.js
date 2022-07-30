@@ -6,13 +6,17 @@ module.exports = express => {
 
         try {
             const settings = require('./../lib/settings').get(),
+                arrayHelper = require('./../lib/array'),
                 watcher = settings.watchers[req.params.watcher],
                 handlebarsLoader = require('madscience-handlebarsloader'),
                 path = require('path'),
                 fs = require('fs-extra'),
+                view = await handlebarsLoader.getPage('watcher'),
                 fsUtils = require('madscience-fsUtils'),
-                timebelt = require('timebelt')
-        
+                timebelt = require('timebelt'),
+                dashboardsWithWatcher = [],
+                page = parseInt(req.query.page || '1') - 1
+
             if (!watcher){
                 const view = await handlebarsLoader.getPage('invalidWatcher')
                 res.status(404)
@@ -21,76 +25,77 @@ module.exports = express => {
                 }))
             }
     
-            let index = parseInt(req.query.index) || 0,
-                pagesize = parseInt(req.query.pagesize) || 50,
-                historyFolder = path.join(settings.logs, watcher.__safeName, 'history'),
-                files = [],
-                history = []
+            let historyFolder = path.join(settings.logs, watcher.__safeName, 'history'),
+                files = []
 
             if (await fs.exists(historyFolder))
                 files = await fsUtils.readFilesUnderDirSync(historyFolder, false)
 
-            files = files.filter((file)=>{ return file != 'status.json' })
-            files = files.slice(index, pagesize)
-            files = files.sort()
+            // remove status.json as that doesn't contain historical data, then sort by filename (datetime) desc
+            files = files
+                .filter(file => file !== 'status.json' )
+                .sort((a, b)=>
+                    a > b ? -1:
+                    b > a ? 1:
+                        0)
 
-            for(const file of files){
-                let data = await fs.readJson(path.join(historyFolder, file))
-                history.push(data)
+            // files is filename strings, convert to objects containing both the filename, and the file content
+            for(let i = 0 ; i < files.length ; i++){
+                const file = files[i],
+                    data = await fs.readJson(path.join(historyFolder, file))
+
+                files[i] = {
+                    file,
+                    data
+                }
             }
-            
-            history = history.sort((a, b)=>{
-                return a.date > b.date ? -1 :
-                    b.date > a.date? 1 :
-                    0
-            })
 
-            if (history.length){
+            if (files.length){
 
-                // calculate duration of each event relative to next in timeline
+                // calculate duration of each event relative to next in timeline. We use this to generate
+                // 
                 let deltaDate = new Date(),
                     longestDuration = 0,
                     shortestDuration = Number.MAX_VALUE
 
-                for (const event of history){
-                    event.durationString = timebelt.timespanString( deltaDate, event.date,  ' day(s)', ' hour(s)', ' minute(s)', ' second(s)')
+                for (const item of files){
+                    const event = item.data
+                    item.durationString = timebelt.timespanString( deltaDate, event.date,  ' day(s)', ' hour(s)', ' minute(s)', ' second(s)')
 
                     // +1 to ensure that log is always at least 0
                     // use log to flatten difference, making it easier to display wide ranges side-by-side
-                    event.durationMinutes = Math.log(Math.abs(timebelt.minutesDifference(deltaDate, event.date)+1)) 
+                    item.durationMinutes = Math.log(Math.abs(timebelt.minutesDifference(deltaDate, event.date)+1)) 
 
-                    if (event.durationMinutes > longestDuration)
-                        longestDuration = event.durationMinutes
+                    if (item.durationMinutes > longestDuration)
+                        longestDuration = item.durationMinutes
 
-                    if (event.durationMinutes < shortestDuration)
-                        shortestDuration = event.durationMinutes
+                    if (item.durationMinutes < shortestDuration)
+                        shortestDuration = item.durationMinutes
 
                     deltaDate = event.date
                 }
 
-                for (const event of history)
-                    event.durationPercent = Math.floor(((event.durationMinutes - shortestDuration) * 100) / longestDuration) 
+                // add durationPercent to item data
+                for (const item of files)
+                    item.durationPercent = Math.floor(((item.durationMinutes - shortestDuration) * 100) / longestDuration) 
 
                 // if there is only one item, force it have all duration
-                if (history.length === 1)
-                    history[0].durationPercent = 100
+                if (files.length === 1)
+                    files[0].durationPercent = 100
             }
             
-            const view = await handlebarsLoader.getPage('watcher')
-            
-            let dashboardsWithWatcher = []
             for (let dashboardName in settings.dashboards){
                 const dashboard = settings.dashboards[dashboardName]
                 if (dashboard.watchers.split(',').includes(watcher.__safeName))
                     dashboardsWithWatcher.push(dashboard)
             }
-                
 
             res.send(view({
                 title : `${settings.header} - ${watcher.name} history`,
                 incidentCount : files.length,
                 dashboardsWithWatcher,
-                history
+                page : arrayHelper.toPage(files, page, settings.pageSize),
+                baseurl : `/watcher/${watcher.__safeName}?`
             }))
 
         } catch(ex) {

@@ -125,7 +125,12 @@ module.exports = {
         
             // internal worker timer, cleans up/self-maintains. Should run once a day only
             internalWorkerTimer : '0 0 * * *',
-        
+            
+            pagesPerGroup: 10,
+
+            // number of items to display whenever paging is used
+            pageSize: 10,
+
             // in days. set to zero to disable.
             logRetention: 365, 
             

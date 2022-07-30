@@ -173,7 +173,7 @@ module.exports = class {
                     continue
 
                 const result = await transportHandler.send(recipient[transportName], this.config.__name, this.isPassing)
-                this.log.info(`Sent alert to ${recipient[transportName]} for process ${this.config.__name}. Result: `, result)
+                this.log.info(`Sent alert to ${recipient[transportName]} via transport ${transportName} for process ${this.config.__name}. Result: `, result)
             }
         }
     }
