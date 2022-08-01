@@ -48,6 +48,12 @@ const cbEnableReloadEventHandler = event => {
 }
 
 const dashboardMenuEventHandler = event => {
+    if (!dashboardMenu.value){
+        // force set existing value
+        const dashboardNode = document.querySelector('#dashboardNode')
+        dashboardMenu.value = dashboardNode.value
+        return
+    }
     window.parent.postMessage(`dashboard:${dashboardMenu.value}`, '*')
 }
 
@@ -58,6 +64,9 @@ const restartServerEventHandler = event => {
 }
 
 const rerunAllWatchersHandler = event => {
+    if (!alert('Run all watchers on this dashboard immediately?'))
+        return
+
     let targetDashboard = dashboardMenu ? dashboardMenu.value : '*'
     fetch(`/rerun/dashboard/${encodeURI(targetDashboard)}`)
         .then(response => response.text())
