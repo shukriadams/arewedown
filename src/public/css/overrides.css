@@ -38,6 +38,47 @@ h2 {
     font-weight: bold;
 }
 
+x-columns {
+    column-gap: 2px;
+    row-gap: 2px;
+    margin-bottom: 2px;
+}
+
+@media only screen and (min-width: 510px) {
+    x-columns {
+        grid-template-columns: 1fr 1fr;
+    } 
+}
+
+@media only screen and (min-width: 720px) {
+    x-columns {
+        grid-template-columns: 1fr 1fr 1fr ;
+    } 
+}
+
+@media only screen and (min-width: 1025px) {
+    x-columns {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    } 
+}
+
+@media only screen and (min-width: 1400px) {
+    x-columns {
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    } 
+}
+
+@media only screen and (min-width: 2000px) {
+    x-columns {
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    } 
+}
+
+@media only screen and (min-width: 2500px) {
+    x-columns {
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    } 
+}
 
 
 .pager-anchor {
@@ -80,7 +121,7 @@ h2 {
 
 .layout-content {
     padding: var(--layout-universalMargin);
-    padding-bottom: 32px;
+    padding-bottom: 44px;
 }
 
 .layout-dashboardMenuHolder {
@@ -100,7 +141,6 @@ h2 {
     border-radius: 5px;
     overflow: hidden;
     position: relative;    
-    margin: 2px;
 }
 
 .watcher .cell { 

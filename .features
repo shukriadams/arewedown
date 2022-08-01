@@ -9,5 +9,4 @@ force rerun test from ui
 * history files need human readable dates
 * json space on log files
 * fix mem leak 
-test with 100 tests
-dynamic column count on dashboards
+* test with 100 tests
