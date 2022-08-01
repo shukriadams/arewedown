@@ -1,6 +1,6 @@
 {{#extend "layout"}}
     {{#content "body"}}
-
+        <input id="dashboardNode" type="hidden" value="{{dashboardNode}}">
         {{#if watchers}}
             <x-columns>
                 {{#each watchers}}

@@ -17,6 +17,7 @@
             {{#if dashboards}}
                 <div class="layout-dashboardMenuHolder"> 
                     <select class="dashboardMenu">
+                        <option value="">Dashboards :</option>
                         {{#each dashboards}}       
                             <option value="{{this.__name}}" {{#eq ../dashboardNode this.__name}}selected{{/eq}}>
                                 {{this.name}}

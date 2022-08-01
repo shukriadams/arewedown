@@ -23,15 +23,17 @@ module.exports = express => {
                 dashboardNode = req.query.dashboard
             
             // take first dashboard marked as default
-            for (let dashboardName of definedDashboardKeys)
-                if (settings.dashboards[dashboardName].default){
-                    dashboardNode = dashboardName
-                    break
-                }
+            if (!dashboardNode){
+                for (let dashboardName of definedDashboardKeys)
+                    if (settings.dashboards[dashboardName].default){
+                        dashboardNode = dashboardName
+                        break
+                    }
 
-            // if no default, take first dashboard
-            if (!dashboardNode && definedDashboardKeys.length)
-                dashboardNode = definedDashboardKeys[0]
+                // if no default, take first dashboard
+                if (!dashboardNode && definedDashboardKeys.length)
+                    dashboardNode = definedDashboardKeys[0]
+            }
                 
             const view = await handlebarsLoader.getPage('default')
             res.send(view({

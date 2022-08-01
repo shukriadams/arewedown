@@ -14,7 +14,7 @@ module.exports = express => {
                 daemon = require('./../lib/daemon'),
                 history = require('./../lib/history'),
                 timespan = require('./../lib/timespan'),
-                dashboardNode = req.params.dashboard || Object.keys(settings.dashboards)[0],
+                dashboardNode = req.params.dashboard,
                 now = new Date(),
                 hasErrors = false,
                 view = await handlebarsLoader.getPage('dashboard'),
