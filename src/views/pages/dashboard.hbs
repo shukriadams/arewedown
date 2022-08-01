@@ -46,15 +46,21 @@
 
     {{/content}}
     {{#content "footer"}}
-            <div class="layout-renderTime">
+            <div class="layout-footerItem">
                 Rendered <span class="now"></span>
-                <input id="cbEnableReload" checked type="checkbox" />
-                <label for="cbEnableReload">Reload</label>
-                <a class="restartServer" href="javascript:void(0)">Restart</a>
-                {{#if blocks}}
-                    <a class="rerunAllWatchers" href="javascript:void(0)">Rerun all</a>
-                {{/if}}
             </div>
+            <div class="layout-footerItem">
+                <input id="cbEnableReload" checked type="checkbox" />
+                <label for="cbEnableReload">Auto-refresh</label>
+            </div>
+            <div class="layout-footerItem">
+                <a class="restartServer" href="javascript:void(0)">Restart watchers</a>
+            </div>
+            {{#if blocks}}
+                <div class="layout-footerItem">
+                    <a class="rerunAllWatchers" href="javascript:void(0)">Rerun all</a>
+                </div>
+            {{/if}}
     {{/content}}
 
 {{/extend}}

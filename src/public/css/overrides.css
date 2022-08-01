@@ -115,13 +115,24 @@ x-columns {
     width: 100%;
     z-index: 1;
     text-align: center;
-    height: 42px;
+    height: 48px;
     padding-top: 8px;    
 }
 
+.layout-footerItem {
+    font-style: italic;
+    display: inline-block;
+    padding: 4px 12px;
+    text-align: center;
+    background-color: var(--color-fiord);
+    border-radius: 5px;
+    height: 32px;
+}
+
+
 .layout-content {
     padding: var(--layout-universalMargin);
-    padding-bottom: 44px;
+    padding-bottom: 52px;
 }
 
 .layout-dashboardMenuHolder {
@@ -129,10 +140,6 @@ x-columns {
     top: 50%;
     right: var(--layout-universalMargin);
     transform: translateY(-50%);
-}
-
-.dashboardMenu {
-    width: 200px;
 }
 
 .watcher {

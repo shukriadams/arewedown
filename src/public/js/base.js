@@ -64,9 +64,6 @@ const restartServerEventHandler = event => {
 }
 
 const rerunAllWatchersHandler = event => {
-    if (!alert('Run all watchers on this dashboard immediately?'))
-        return
-
     let targetDashboard = dashboardMenu ? dashboardMenu.value : '*'
     fetch(`/rerun/dashboard/${encodeURI(targetDashboard)}`)
         .then(response => response.text())
