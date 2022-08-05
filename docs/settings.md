@@ -152,7 +152,7 @@ If your have the Docker [HTTP API](https://docs.docker.com/engine/api/v1.24/) en
 
 ### System.d service running
 
-You can test if a system.d service is running - you need SSH access to the machine running the service. For the security conscious, password can be templated in via an env var ([see advanced settings](#Secrets)).
+You can test if a system.d service is running - you need SSH access to the machine running the service. Password can be templated in via an env var ([see advanced settings](#Secrets)).
 
     watchers:
         my-service-test:
@@ -161,6 +161,20 @@ You can test if a system.d service is running - you need SSH access to the machi
             user: myuser
             password: mypassword
             service: docker
+
+### Disk use 
+
+You can check if a disk is runnnig out of space (Linux only). This test requires SSH access to the target host machine. Password can be templated in via an env var ([see advanced settings](#Secrets)).
+
+    watchers:
+        my-disk-use-test:
+            test: resource.linux.diskUse
+            host: example.com
+            user: myuser
+            password: mypassword
+            path: /some/path/on/host
+            # max % use allowed
+            threshold: 50
 
 ### Ping
 
@@ -175,6 +189,8 @@ You can ping a host.
 
                 # optional
                 timeout: 10 
+
+
 
 ### Default watcher behaviour
 
