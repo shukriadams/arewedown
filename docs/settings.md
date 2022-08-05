@@ -17,16 +17,48 @@ Transports are used to send alerts when watcher states change.
 
 ### SMTP Transport 
 
-You can send email using any SMTP server. To use a Gmail account try
+You can send email using any SMTP server. To use Mailgun for example use
 
     transports:
         smtp:
-            server : smtp.gmail.com
-            port : 465
-            secure : true
-            user : your-user@gmail.com
-            pass: your-gmail-password
-            from : your-user@gmail.com
+            server : smtp.mailgun.org
+            port : 587
+            secure : false
+            user : postmaster@<your-mailgun-account>.mailgun.org
+            pass: your-mailgin-password
+            from : me@example.com
+
+With that out of the way, SMTP is in a weird state right now, as unknown 3rd party apps like
+AWD? are likely to be treated as a spam/phishing risk. If you want to use SMTP, here are some tips :
+
+- Always assume mail from AWD? will get trapped in a spam tray or filter. Corporate mail filters are particularly difficult to get through.
+- Test your SMTP connection independently outside of AWD? - Mailgun's standard test is useful
+
+        # get swaks, a useful command line smtp client
+        curl http://www.jetmore.org/john/code/swaks/files/swaks-20130209.0/swaks -o swaks
+
+        # Set the permissions for the script so you can run it
+        chmod +x swaks
+
+        # It's based on perl, so install perl
+        sudo apt-get -y install perl
+
+        # Now send!
+        ./swaks --auth \
+            --server smtp.some-service.com \
+            --au postmaster@YOUR_DOMAIN_NAME \
+            --ap your-password \
+            --to bar@example.com \
+            --h-Subject: "Hello world" \
+            --body 'Testing send you some mail'
+
+- AWD? includes an additional diagnostic test for SMTP so you send yourself a mail directly, instead of waiting for a watcher to fail. Use
+
+        http://yourAWDserver/diagnostics/transport/smtp/<recipient-node>
+
+  where `recipient-node` is the recipient node in AWD's config with an `smtp:email-address` child property on it.
+
+- Find an SMTP provider that works for you, there's no shame in using a hosted solution instead of self-hosting.
 
 ### Slack Transport
 

@@ -175,8 +175,12 @@ module.exports = class {
                 if (!recipient[transportName])
                     continue
 
-                const result = await transportHandler.send(recipient[transportName], this.config.__name, this.isPassing)
-                this.log.info(`Sent alert to ${recipient[transportName]} via transport ${transportName} for process ${this.config.__name}. Result: `, result)
+                try {
+                    const result = await transportHandler.send(recipient[transportName], this.config.__name, this.isPassing)
+                    this.log.info(`Sent alert to ${recipient[transportName]} via transport ${transportName} for process ${this.config.__name}. Result: `, result)
+                } catch (ex) {
+                    this.log.error(`Error sending alert to ${recipient[transportName]} via transport ${transportName} for process ${this.config.__name}. Result: `, ex)
+                }
             }
         }
     }

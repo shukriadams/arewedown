@@ -181,7 +181,13 @@ module.exports = {
         // apply default transport settings
         for (const transport in _settings.transports){
             _settings.transports[transport] = Object.assign({
-                enabled : true
+
+                // set this to false to immediately bypass/disable all communication over this transport
+                enabled : true,
+
+                // set to true to allow diagnostic calls from the web API.
+                diagnostics: false
+
             }, _settings.transports[transport])
         
             // remove if disabled

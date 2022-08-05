@@ -2,6 +2,9 @@
  * Required scopes : channels:read, groups:read, mpim:read, im:read
  */
 module.exports = {
+    async test(){
+        throw 'not implemented'
+    },
 
     async send(receiverTransmissionConfig, watcherName, isPassing){
         const settings = require('./settings').get(),
@@ -37,8 +40,8 @@ module.exports = {
         } catch (ex){
             if (ex.data && ex.data.error === 'not_in_channel')
                 throw `Please add your app to the target channel`
-            else
-                log.error('Slack post failed', ex)
+
+            throw ex
         }
     },
 
