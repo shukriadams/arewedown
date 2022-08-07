@@ -11,19 +11,21 @@
         <div class="layout-header">
             <a href="/">
                 <h1>
-                    Are We down?
+                    Are We Down?
                 </h1>
             </a>
             {{#if dashboards}}
                 <div class="layout-dashboardMenuHolder"> 
-                    <select class="dashboardMenu">
-                        <option value="">Dashboards :</option>
-                        {{#each dashboards}}       
-                            <option value="{{this.__name}}" {{#eq ../dashboardNode this.__name}}selected{{/eq}}>
-                                {{this.name}}
-                            </option>
-                        {{/each}}
-                    </select>
+                    <x-compactSelect>
+                        <svg class="compactSelect-trigger compactSelect-triggerIcon"  xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path stroke="white" fill="white" d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"/></svg>
+                        <select class="dashboardMenu">
+                            {{#each dashboards}}       
+                                <option value="{{this.__name}}" {{#eq ../dashboardNode this.__name}}selected{{/eq}}>
+                                    {{this.name}}
+                                </option>
+                            {{/each}}
+                        </select>
+                    </x-compactSelect>
                 </div>
             {{/if}}
         </div>    
@@ -33,6 +35,7 @@
         <div class="layout-footer">
             {{{block "footer"}}}
         </div>
+        <script src="/content/js/bootstrip.js"></script>
         <script src="/content/js/base.js"></script>
     </body>
 </html>

@@ -80,7 +80,6 @@ x-columns {
     } 
 }
 
-
 .pager-anchor {
     border: none;
     color: var(--color-white);
@@ -100,6 +99,7 @@ x-columns {
     text-align: center;
     background-color: var(--color-ebonyClay);
     position: relative;
+    z-index: 1; /* menu in headers can float over body content */
 }
 
 .layout-header a {
@@ -128,7 +128,6 @@ x-columns {
     border-radius: 5px;
     height: 32px;
 }
-
 
 .layout-content {
     padding: var(--layout-universalMargin);
@@ -175,6 +174,15 @@ x-columns {
 .watcher-nextUpdateWrapper {
     height: 38px;
     font-size: 12px
+}
+
+.dashboard-message {
+    color: var(--color-dodgerBlue);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;    
 }
 
 .history {
@@ -295,4 +303,9 @@ x-columns {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.compactSelect-triggerIcon path {
+    background-color: white;
+
 }
