@@ -61,4 +61,4 @@ See [contributing](/docs/contributing.md) if you'd like to improve this project.
 
 ## License
 
-*AreWeDown?* is available under the [MIT license](https://github.com/shukriadams/arewedown/blob/master/LICENSE).
+*AreWeDown?* is available under the [GPL3.0 license](https://github.com/shukriadams/arewedown/blob/master/LICENSE).
