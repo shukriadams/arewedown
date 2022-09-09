@@ -19,10 +19,10 @@ describe('lib/smtp', async()=>{
 
     it('lib/smtp/send::happy', async()=>{
         const ctx = createTestStructures(),
-            smtp = ctx.clone(require(_$+'lib/smtp')),
-            result = await smtp.send()
+            smtp = ctx.clone(require(_$+'lib/smtp'))
 
-        ctx.assert.equal(result.result, 'mail sent.')
+        // no result to test, coverage only
+        await smtp.send()
     })
 
     it('lib/smtp/ensureSettingsOrExit::cover', async()=>{

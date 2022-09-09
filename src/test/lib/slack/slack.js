@@ -114,8 +114,8 @@ describe('lib/slack', async()=>{
         })
         
         const slack = ctx.clone(require(_$+'lib/slack'))
-
-        await slack.send('slackid', 'mywatcher', true)
+        const ex = await ctx.assert.throws(async() => await slack.send('slackid', 'mywatcher', true))
+        ctx.assert.equal(ex, 'error')
     })
 
     it('lib/smtp/slack/send:unhappy throws not_in_channel error', async()=>{

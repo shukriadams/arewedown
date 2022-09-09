@@ -15,7 +15,9 @@
                 }
             }
             catch(ex){
-                console.log('error starting ', ex)
+                if (ex === 'forced test error')
+                    return process.exit(0)
+                console.log('error starting : ', ex)
             } 
         }, 1000)
     } catch (ex){

@@ -1,7 +1,6 @@
 describe('lib/server/start', async()=>{
 
     it('lib/server/start::happy::should return static version starting with --version, then exit', async() => {
-
         const assert = require('madscience-node-assert'),
             ctx = require(_$t+'context')
             ctx.inject.object('./startArgs', {
@@ -20,7 +19,6 @@ describe('lib/server/start', async()=>{
     })
 
     it('lib/server/start::happy::should start the server', async() => {
-        
         const ctx = require(_$t+'context')
         
         ctx.inject.object('./daemon', {

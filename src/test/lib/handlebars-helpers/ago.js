@@ -6,7 +6,7 @@ describe('lib/handlebar-helpers/ago', async()=>{
             default(){ return 'it worked' },
         }) 
 
-        const agoHelper = ctx.loadHandlebarsHelper(_$+'lib/handlebars-helpers/ago'),
+        const agoHelper = ctx.loadHandlebarsHelper(_$+'views/helpers/ago'),
             result = agoHelper('2000-01-01')
 
         ctx.assert.equal(result, 'it worked')
@@ -14,7 +14,7 @@ describe('lib/handlebar-helpers/ago', async()=>{
 
     it('lib/handlebar-helpers/ago::happy::cover no date', async()=>{
         const ctx = require(_$t+'context'),
-            agoHelper = ctx.loadHandlebarsHelper(_$+'lib/handlebars-helpers/ago'),
+            agoHelper = ctx.loadHandlebarsHelper(_$+'views/helpers/ago'),
             result = agoHelper()
 
         ctx.assert.null(result)
