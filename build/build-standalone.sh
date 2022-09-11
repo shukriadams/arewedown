@@ -1,5 +1,8 @@
 # Builds standalone executable binaries of Are We Down?
-# --target values : linux|win|armv7
+# --target values : linux|win|armv7|dev
+#
+# dev (linux, in vagrant dev, ignore pkg dynamic require errors, build will still succeed) :
+# bash ./build-standalone.sh --target dev
 #
 # linux :
 # bash ./build-standalone.sh --target linux
@@ -111,7 +114,6 @@ elif [ $target = "dev" ]; then
     # this mode is for dev, and on vagrant only
     filename=./linux64/arewedown
     name="arewedown_linux64"
-
     pkg ./../src/. --targets node12-linux-x64 --output $filename
 
     # run app and ensure exit code was 0
@@ -126,7 +128,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "App built"
+echo "App built, smoke test passed"
 
 # if --GH_TOKEN <string> or env var specified, push build to github
 if [ ! -z $GH_TOKEN ]; then

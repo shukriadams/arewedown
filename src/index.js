@@ -3,6 +3,8 @@
         started = false
 
     try {
+        // overly-elaborate forced restart loop so we can change app settings at runtime and fake an app
+        // restart
         setInterval(async ()=>{
             try {
 

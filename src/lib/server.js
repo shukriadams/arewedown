@@ -27,7 +27,7 @@ module.exports = {
         // When running in dev mode, version always returns the placeholder value of "0.0.1", which must never
         // be updated.
         if (startArgs.version)
-            return this.printVersion() // return code is test aid
+            return this.printVersion(!startArgs.testing) // return code is test aid, enable only when testing is explicitly set
 
         await this.executeStartScript()
         
@@ -72,12 +72,17 @@ module.exports = {
     /**
      * 
      */
-    async printVersion(){
+    async printVersion(forceExit = true){
         const fs = require('fs-extra'),
+            process = require('process'),
             packageJson = await fs.readJson(`${__dirname}/../package.json`)
 
         console.log(`AreWeDown? v${packageJson.version}`)
-        return packageJson.version 
+        // force exit process directly, else app loader will simply loop restart
+        if (forceExit)
+            process.exit(0)
+        else
+            return packageJson.version
     },
     
 
