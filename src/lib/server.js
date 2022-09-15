@@ -79,8 +79,10 @@ module.exports = {
 
         console.log(`AreWeDown? v${packageJson.version}`)
         // force exit process directly, else app loader will simply loop restart
-        if (forceExit)
+        if (forceExit){
+            console.log('force exiting app')
             process.exit(0)
+        }
         else
             return packageJson.version
     },
