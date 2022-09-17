@@ -22,6 +22,8 @@ build/logs
 src/.nyc_output
 src/coverage/
 build/node_modules
+build/package-lock.json
+build/yarn.json
 build/win64
 vagrant/virtio/.vagrant/
 vagrant/virtualbox/.vagrant
