@@ -7,4 +7,4 @@ cd ../
 docker run \
     -v $(pwd):/tmp/arewedown \
     -e AWD_SETTINGS_PATH=./../build/config/settings.yml \
-    $BUILDCONTAINER sh -c 'cd /tmp/arewedown/src && yarn install --no-bin-links && npm install codecov -g && npm test && npm run cover && npm run cover-upload'
+    $BUILDCONTAINER sh -c 'cd /tmp/arewedown/src && yarn install --no-bin-links && npm install codecov -g && npm test'
