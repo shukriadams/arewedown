@@ -88,9 +88,12 @@ if [ $SMOKETEST -eq 1 ]; then
     echo "starting smoketest"
     docker network create --driver bridge testingNetwork || true
 
-    # create logs dir, ensure permissions so container can write to it
-    mkdir -p logs
-    chown 1000 -R logs
+    # create logs dir, ensure permissions so container can write to it. this is needed on raspberry pi only 
+    # when building arm
+    if [ $ARCH = "arm32v7" ]; then
+        mkdir -p logs
+        chown 1000 -R logs
+    fi
 
     # test build
     docker-compose -f docker-compose-test.yml down 
