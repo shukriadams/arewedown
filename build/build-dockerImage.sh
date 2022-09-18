@@ -45,8 +45,13 @@ fi
 # minorTag is done in a nodejs script because it's much easier to use regex in JS than in bourne shell.
 MINOR_TAG=$(node ./toMinorTag --version $TAG) 
 
+# delete temp stage dir, do this in container is dir will contain many subdirs with in-container ownership.
+# this _could_ be fixed by properly setting user contain runs as, but that's not working yet
+docker run \
+    -v $(pwd):/tmp/build \
+    $BUILDCONTAINER sh -c  'cd /tmp/build && rm -rf .stage'
+
 # copy src to .stage so we can build it both locally and on Github without writing unwanted changes into src
-rm -rf .stage
 mkdir -p .stage
 rsync ./../src .stage \
     --verbose \
@@ -55,6 +60,7 @@ rsync ./../src .stage \
     --exclude=config \
     --exclude=test \
     --exclude=data \
+    --exclude=logs \
     --exclude=user-scripts \
     --exclude=settings.yml \
     --exclude=.* 
@@ -81,6 +87,10 @@ if [ $SMOKETEST -eq 1 ]; then
 
     echo "starting smoketest"
     docker network create --driver bridge testingNetwork || true
+
+    # create logs dir, ensure permissions so container can write to it
+    mkdir -p logs
+    chown 1000 -R logs
 
     # test build
     docker-compose -f docker-compose-test.yml down 

@@ -1,7 +1,7 @@
 # this config is designed to provide maximum line coverage, and is used by build smoketests
 transports:
     smtp:
-        enabled: true
+        enabled: false
         server : smtp.example.com
         port : 465
         secure : true
