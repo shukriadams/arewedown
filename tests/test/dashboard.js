@@ -5,7 +5,7 @@ describe('tests', async()=>{
             urljoin = require('urljoin'),
             httputils = require('madscience-httputils'),
             assert = require('madscience-node-assert'),
-            response = await httputils.downloadString({ url : urljoin(settings.url, 'dashboard') })
+            response = await httputils.downloadString({ url : urljoin(settings.url, 'dashboard/default') })
 
         assert.equal(response.statusCode, 200)
     })
