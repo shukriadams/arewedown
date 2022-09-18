@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     volumes:
         - ./config/:/etc/arewedown/config
-        - ./logs:/etc/arewedown/logs/:rw    
+        # do not mount logs, log writes will fail on build environments due to fs permissions
     ports:
     - "7018:3000"
 
