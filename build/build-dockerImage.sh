@@ -64,7 +64,10 @@ rsync ./../src .stage \
     --exclude=user-scripts \
     --exclude=settings.yml \
     --exclude=.* 
-    
+
+cd .stage/src
+sh ./get-assets.sh 
+cd -
 
 # write version to package.json in ./stag/src
 docker run \
