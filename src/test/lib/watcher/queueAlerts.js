@@ -1,4 +1,4 @@
-describe('lib/watcher/sendAlerts', async()=>{
+describe('lib/watcher/queueAlerts', async()=>{
     
     const createTestStructures =()=>{
         const ctx = require(_$t+'context')
@@ -25,7 +25,7 @@ describe('lib/watcher/sendAlerts', async()=>{
         return ctx
     }
 
-    it('lib/watcher/sendAlerts::happy::', async()=>{
+    it('lib/watcher/queueAlerts::happy::', async()=>{
         const ctx = createTestStructures()
         ctx.settings({ 
             transports : {
@@ -41,21 +41,21 @@ describe('lib/watcher/sendAlerts', async()=>{
                 recipients : ['testuser']
             })
 
-        watcher.sendAlerts()
+        watcher.queueAlerts()
     })
 
     
-    it('lib/watcher/sendAlerts::unhappy::no recipient with transport', async()=>{
+    it('lib/watcher/queueAlerts::unhappy::no recipient with transport', async()=>{
         createTestStructures()
         const Watcher = require(_$+'lib/watcher'),
             watcher = new Watcher({
                 recipients : ['testuser']
             })
 
-        watcher.sendAlerts()
+        watcher.queueAlerts()
     })
 
-    it('lib/watcher/sendAlerts::happy::transport disabled', async()=>{
+    it('lib/watcher/queueAlerts::happy::transport disabled', async()=>{
         const ctx = createTestStructures()
         ctx.settings({ 
             transports : { smtp : { enabled : false } }
@@ -64,10 +64,10 @@ describe('lib/watcher/sendAlerts', async()=>{
         const Watcher = require(_$+'lib/watcher'),
             watcher = new Watcher()
 
-        watcher.sendAlerts()
+        watcher.queueAlerts()
     })
 
-    it('lib/watcher/sendAlerts::happy::undefined transport handler', async()=>{
+    it('lib/watcher/queueAlerts::happy::undefined transport handler', async()=>{
         const ctx = createTestStructures()
         ctx.settings({ 
             transports : { bogusTransport : { enabled: true } }
@@ -76,17 +76,17 @@ describe('lib/watcher/sendAlerts', async()=>{
         const Watcher = require(_$+'lib/watcher'),
             watcher = new Watcher()
 
-        watcher.sendAlerts()
+        watcher.queueAlerts()
     })
 
-    it('lib/watcher/sendAlerts::happy::invalid recipient', async()=>{
+    it('lib/watcher/queueAlerts::happy::invalid recipient', async()=>{
         createTestStructures()
         const Watcher = require(_$+'lib/watcher'),
             watcher = new Watcher({
                 recipients : 'bogususer'
             })
 
-        watcher.sendAlerts()
+        watcher.queueAlerts()
     })
 
 })

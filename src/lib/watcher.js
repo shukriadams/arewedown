@@ -149,11 +149,11 @@ module.exports = class {
         // send alerts if status changed
         if (status.changed){
             this.log.info(`Status changed, "${this.config.__name}" is ${this.isPassing? 'passing': 'failing'}.`)
-            this.sendAlerts()
+            this.queueAlerts()
         }
     }
 
-    async sendAlerts(){
+    async queueAlerts(){
         const settings = require('./settings').get(),
             smtp = require('./smtp'),
             slack = require('./slack'),
