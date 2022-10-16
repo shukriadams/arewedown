@@ -1,3 +1,34 @@
+class SMTPMock {
+
+    async connect(){
+        console.log('SMPT Mock : connecting')
+    }
+
+    async greet(){
+        console.log('SMPT Mock : greeting')
+    }
+
+    async authPlain(){
+        console.log('SMPT Mock : authPlain')
+    }
+
+    async data(){
+        console.log('SMPT Mock : sending data')
+    }
+
+    async quit(){
+        console.log('SMPT Mock : quiting')
+    }
+
+    async mail(){
+        console.log('SMPT Mock : setting from email')
+    }
+
+    async rcpt(){
+        console.log('SMPT Mock : setting to email')
+    }
+}
+
 module.exports = { 
 
 
@@ -33,7 +64,7 @@ module.exports = {
         const to = receiverTransmissionConfig, // smtp receiver config is a single string containing email address
             settings = require('./settings').get(),
             smtpConfig = settings.transports.smtp,
-            SMTPClient = require('smtp-client').SMTPClient,
+            SMTPClient = this.getClient(),
             client = new SMTPClient({
                 host: smtpConfig.server,
                 secure: smtpConfig.secure,
@@ -42,9 +73,9 @@ module.exports = {
 
         let response = ''
         response += `connect:`+await client.connect()
-        response += `greet:`+await client.greet({hostname: smtpConfig.server })
-        response += `authPlain:`+await client.authPlain({username: smtpConfig.user, password: smtpConfig.pass })
-        await client.mail({from: smtpConfig.from })
+        response += `greet:`+await client.greet({ hostname: smtpConfig.server })
+        response += `authPlain:`+await client.authPlain({ username: smtpConfig.user, password: smtpConfig.pass })
+        await client.mail({ from: smtpConfig.from })
         await client.rcpt({ to })
         response += `data:`+await client.data(mailContent)
         response += `quit:`+await client.quit()
@@ -107,7 +138,7 @@ module.exports = {
         const settings = require('./settings').get(),
             log = require('./../lib/logger').instance(),
             smtpConfig = settings.transports.smtp,
-            SMTPClient = require('smtp-client').SMTPClient,
+            SMTPClient = this.getClient(),
             client = new SMTPClient({
                 host: smtpConfig.server,
                 secure: smtpConfig.secure,
@@ -118,13 +149,25 @@ module.exports = {
 
         try {
             await client.connect()
-            await client.greet({hostname: smtpConfig.server })
-            await client.authPlain({username: smtpConfig.user, password: smtpConfig.pass })
+            await client.greet({ hostname: smtpConfig.server })
+            await client.authPlain({ username: smtpConfig.user, password: smtpConfig.pass })
             await client.quit()
             
             console.log('smtp connection test succeeded.')
         } catch (ex){
             throw { text : 'smtp connection test failed. Please confirm smtp settings are valid.', ex }
         }        
+    },
+
+
+    /**
+     * Factory method to get a slack client. Under normal operation returns the "live" slack/bolt client, but for dev/testing
+     * can return a mock of this
+     */
+    getClient(){
+        const settings = require('./settings').get(),
+            smtpClient = require('smtp-client').SMTPClient
+
+        return settings.transports.smtp.mock ? SMTPMock : smtpClient
     }
 }

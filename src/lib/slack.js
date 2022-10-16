@@ -1,7 +1,37 @@
 /**
  * Required scopes : channels:read, groups:read, mpim:read, im:read
  */
+
+class SlackMock{
+    constructor(){
+        this.client = {
+            conversations : {
+                async list(){
+                    return {
+                        ok : true
+                    }
+                }
+            },
+            chat : {
+                async postMessage(args){
+                    console.log(`mock slack message post :`)
+                    console.log(args)
+
+                    return {
+                        result : 'mock slack message post',
+                        ts : 12345
+                    }
+                },
+                async delete(){
+                    console.log('mock slack message delete')
+                }
+            }
+        }
+    }
+}
+
 module.exports = {
+
     async test(){
         throw 'not implemented'
     },
@@ -10,7 +40,7 @@ module.exports = {
         const settings = require('./settings').get(),
             log = require('./../lib/logger').instance(),
             slackConfig = settings.transports.slack,
-            Slack = require('@slack/bolt').App,
+            Slack = this.getClient(),
             slack = new Slack({
                 signingSecret: slackConfig.secret,
                 token: slackConfig.token,
@@ -45,6 +75,7 @@ module.exports = {
         }
     },
 
+
     /**
      * Deletes a message based on its slack api timestamp.
      * 
@@ -52,7 +83,7 @@ module.exports = {
     async delete(target, ts){
         const settings = require('./settings').get(),
             slackConfig = settings.transports.slack,
-            Slack = require('@slack/bolt').App,
+            Slack = this.getClient(),
             slack = new Slack({
                 signingSecret: slackConfig.secret,
                 token: slackConfig.token,
@@ -69,7 +100,7 @@ module.exports = {
         const settings = require('./settings').get(),
             log = require('./../lib/logger').instance(),
             slackConfig = settings.transports.slack,
-            Slack = require('@slack/bolt').App,
+            Slack = this.getClient(),
             slack = new Slack({
                 signingSecret: slackConfig.secret,
                 token: slackConfig.token
@@ -97,5 +128,17 @@ module.exports = {
             else
                 throw { message : 'slack connection test failed. ', ex }
         }
+    },
+
+
+    /**
+     * Factory method to get a slack client. Under normal operation returns the "live" slack/bolt client, but for dev/testing
+     * can return a mock of this
+     */
+    getClient(){
+        const settings = require('./settings').get(),
+            Slack = require('@slack/bolt').App
+
+        return settings.transports.slack.mock ? SlackMock : Slack
     }
 }

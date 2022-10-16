@@ -186,7 +186,10 @@ module.exports = {
                 enabled : true,
 
                 // set to true to allow diagnostic calls from the web API.
-                diagnostics: false
+                diagnostics: false,
+
+                // set to true to fall back to mock transport provider. Requires that mocking is implemented in the given transport.
+                mock: false
 
             }, _settings.transports[transport])
         
