@@ -64,7 +64,8 @@ AWD? are likely to be treated as a spam/phishing risk. If you want to use SMTP, 
 
 Alerts can be sent to a Slack user or a Slack Channel. 
 
-- Your Slack app needs four scopes, `channels:read, groups:read, mpim:read, im:read`. 
+- Your Slack app needs four scopes, `channels:read, groups:read, mpim:read, im:read, chat:write`. To post to channels you also need to manually add your
+  app to the channel in question, via the Slack app.
 - Secret is also called "Signing Secret" is specific to your Slack app.
 - Token normally starts with `xox` and is specific to your app's integration into your workspace.
 
