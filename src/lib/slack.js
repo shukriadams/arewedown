@@ -36,7 +36,20 @@ module.exports = {
         throw 'not implemented'
     },
 
-    async send(receiverTransmissionConfig, watcherName, isPassing){
+    summarizeWatcherList(list, verb, listCondenseThresh){
+        if (!list.length)
+            return ''
+        
+        if (list.length === 1)
+            return `${list[0]} is ${verb}. `
+
+        if (list.length > listCondenseThresh)
+            return `${list.length} watchers are ${verb}. `
+        
+        return `${list.join(', ')} are ${verb}. `
+    },
+
+    async send(receiverTransmissionConfig, summary){
         const settings = require('./settings').get(),
             log = require('./../lib/logger').instance(),
             slackConfig = settings.transports.slack,
@@ -48,17 +61,18 @@ module.exports = {
 
         try {
 
-            const text = isPassing ? 
-                `"${watcherName}" is up again` :
-                `"${watcherName}" is down`,
-                postresult = await slack.client.chat.postMessage({
+            let text = this.summarizeWatcherList(summary.failing, 'failing', settings.listCondenseThresh)
+            text += this.summarizeWatcherList(summary.passing, 'up again', settings.listCondenseThresh)
+            text = text.trim()
+
+            const postresult = await slack.client.chat.postMessage({
                     token: slackConfig.token,
                     channel: receiverTransmissionConfig, // user id or channel id
-                    text : 'Are We Down? alert',
+                    text : text,
                     attachments : [
                         {
                             fallback : text,
-                            color : isPassing ? '#007a5a' : '#D92424' ,
+                            color : summary.failing.length ? '#D92424' : '#007a5a',
                             title : text
                         }
                     ]                    

@@ -155,12 +155,9 @@ module.exports = class {
 
     async queueAlerts(){
         const settings = require('./settings').get(),
-            smtp = require('./smtp'),
-            slack = require('./slack'),
-            transportHandlers = {
-                smtp,
-                slack
-            }
+            fs = require('fs-extra'),
+            path = require('path'),
+            transportHandlers = require('./transports').getTransportHandlers()
         
         for (const transportName in settings.transports){
             const transportHandler = transportHandlers[transportName]
@@ -176,10 +173,18 @@ module.exports = class {
                     continue
 
                 try {
-                    const result = await transportHandler.send(recipient[transportName], this.config.__name, this.isPassing)
-                    this.log.info(`Sent alert to ${recipient[transportName]} via transport ${transportName} for process ${this.config.__name}. Result: `, result)
+                    const receiverNameBase64 = Buffer.from(recipientName).toString('base64'),
+                        watcherNameBase64 = Buffer.from(this.config.__name).toString('base64'),
+                        dir = path.join(settings.queue, transportName, receiverNameBase64)
+
+                    await fs.ensureDir(dir)
+                    await fs.writeJson(path.join(dir, watcherNameBase64), {
+                        isPassing : this.isPassing
+                    })
+
+                    this.log.info(`queued alert to ${recipient[transportName]} via transport ${transportName} for process ${this.config.__name}. `)
                 } catch (ex) {
-                    this.log.error(`Error sending alert to ${recipient[transportName]} via transport ${transportName} for process ${this.config.__name}. Result: `, ex)
+                    this.log.error(`Error queuing alert to ${recipient[transportName]} via transport ${transportName} for process ${this.config.__name} : `, ex)
                 }
             }
         }

@@ -12,20 +12,20 @@ class SMTPMock {
         console.log('SMPT Mock : authPlain')
     }
 
-    async data(){
-        console.log('SMPT Mock : sending data')
+    async data(content){
+        console.log(`SMPT Mock : sending data\n${JSON.stringify(content)}`)
     }
 
     async quit(){
         console.log('SMPT Mock : quiting')
     }
 
-    async mail(){
-        console.log('SMPT Mock : setting from email')
+    async mail(from){
+        console.log(`SMPT Mock : setting from email\n${from}`)
     }
 
-    async rcpt(){
-        console.log('SMPT Mock : setting to email')
+    async rcpt(to){
+        console.log(`SMPT Mock : setting to email\n${JSON.stringify(to)}`)
     }
 }
 
@@ -40,11 +40,21 @@ module.exports = {
      * @param to {string} : Email address of recipient
      * @param watcherName {string} : Human-friendly name of watcher process that is passing/failing
      */
-    generateContent(isPassing, to, watcherName){
-        const settings = require('./settings').get(),
+    generateContent(to, summary){
+        let settings = require('./settings').get(),
             smtpConfig = settings.transports.smtp,
-            subject = isPassing ? `SUCCESS: ${watcherName} is up` : `WARNING: ${watcherName} is down`,
-            message = isPassing ? `${watcherName} is up` : `${watcherName} is down`
+            subject = '',
+            message = ''
+
+        if (summary.failing.length){
+            subject += `${summary.failing.length} services down. `
+            message += `${summary.failing.join(', ')} are down. `
+        }
+
+        if (summary.passing.length){
+            subject += `${summary.passing.length} services are up again.`,
+            message += `${summary.passing.join(', ')} are up again.`
+        }
 
         return `From : ${smtpConfig.from}\n` +
             `Subject : ${subject}\n` +
@@ -121,14 +131,14 @@ module.exports = {
      * 
      * @param receiverTransmissionConfig {object} : recipient config for this transmission. 
      *        For SMTP this is always a flat "to" email address.
-     * @param watcherName {string} : watcher to report status on
-     * @param isPassing {boolean} : true if watch is passing
+     * @param object {string} : watcher to report status on
      */
-    async send(receiverTransmissionConfig, watcherName, isPassing){
-        const mailContent = this.generateContent(isPassing, receiverTransmissionConfig, watcherName)
+    async send(receiverTransmissionConfig, summary){
+        const mailContent = this.generateContent(receiverTransmissionConfig, summary)
         this._send(receiverTransmissionConfig, mailContent)
     },
     
+
 
     /**
      * Basic self-test of SMTP connection settings, invoked on app start. This does not send mails, 

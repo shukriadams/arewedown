@@ -13,6 +13,7 @@ Docker images are available on [Docker hub](https://hub.docker.com/r/shukriadams
                 volumes:
                 - ./config:/etc/arewedown/config
                 - ./logs:/etc/arewedown/logs/:rw
+                - ./queue:/etc/arewedown/queue/:rw
                 # - ./scripts:/etc/arewedown/custom-tests # optional, see "custom tests" section of documentation
                 ports:
                 - "3000:3000"

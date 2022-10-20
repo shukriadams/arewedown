@@ -15,6 +15,7 @@ module.exports = {
             Express = require('express'),
             handlebarsLoader = require('madscience-handlebarsloader'),
             Settings = require('./settings'),
+            transports = require('./transports'),
             express = Express(),
             startArgs = require('./startArgs').get()
 
@@ -33,7 +34,9 @@ module.exports = {
         
         // ensure/validate all the things
         await fs.ensureDir(settings.logs)
-        await this.validateTransports()
+        await fs.ensureDir(settings.queue)
+        await transports.ensureQueue()
+        await transports.validateAll()
         
         express.set('json spaces', 4)
 
@@ -126,22 +129,6 @@ module.exports = {
                 route = require(`./../routes/${routeFileName}`)
     
             route(express)
-        }
-    },
-
-
-    /**
-     * validate active transport's settings by attempting to contact provider 
-     */
-    async validateTransports(){
-        const settings = require('./settings').get()
-
-        for (const transportName in settings.transports){
-            const transport = require(`./${transportName}`)
-            if (!transport.ensureSettingsOrExit)
-                throw `transport method "${transportName}" missing expected method "ensureSettingsOrExit"`
-
-            await transport.ensureSettingsOrExit()
         }
     }
    

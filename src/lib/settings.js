@@ -101,8 +101,11 @@ module.exports = {
             // override default title
             header: 'Are We Down?',
         
-            // path all log data is written to. This folder is in the AWD? root folder.
+            // path all log data is written to. This directory is in the AWD? root directory.
             logs : './logs',
+            
+            /// path transport queue is written too. This directory is in the AWD? root directory.
+            queue : './queue',
 
             // can be error|warn|info|debug in increasing levels of spamminess.
             logLevel: 'warn',
@@ -126,10 +129,15 @@ module.exports = {
             // internal worker timer, cleans up/self-maintains. Should run once a day only
             internalWorkerTimer : '0 0 * * *',
             
+            // 60 second interval default , interval for sending queued alerts
+            transportWorkerTime: '*/60 * * * * *',
+
             pagesPerGroup: 10,
 
             // number of items to display whenever paging is used
             pageSize: 10,
+            
+            listCondenseThresh: 10,
 
             // in days. set to zero to disable.
             logRetention: 365, 
@@ -208,6 +216,7 @@ module.exports = {
                 // this is the parent node's name repeated
                 __name : name,
 
+                // filesystem-friendly version of name
                 __safeName : sanitize(name),
                 
                 // internally set error message. normally for validation text. merged with cronprocess's, .errorMessage
