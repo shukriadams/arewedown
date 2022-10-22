@@ -18,6 +18,7 @@ jobs:
     
     docker-arm7:
         runs-on: self-hosted
+        needs: test
         steps:
         # clean before building    
         - name: cleanup
@@ -33,6 +34,7 @@ jobs:
 
     docker-amd64:
         runs-on: ubuntu-latest
+        needs: test
         steps:
         - uses: actions/checkout@v1
         - name: builds amd64 container and pushes to docker hub
@@ -45,6 +47,7 @@ jobs:
 
     manifest:
         runs-on: ubuntu-latest
+        needs: [docker-arm7, docker-amd64]
         steps:
         - uses: actions/checkout@v1
         - name: builds manifest
