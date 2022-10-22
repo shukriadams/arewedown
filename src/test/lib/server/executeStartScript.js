@@ -1,7 +1,7 @@
 describe('lib/server/executeStartScript', async()=>{
     
 
-    it('lib/server/executeStartScript::happy::should not execute start script if start script is null ', async() => {
+    it('lib/server/executeStartScript::happy::should not execute start script if start script is null', async() => {
         
         let ctx = require(_$t+'context'),
             assert = require('madscience-node-assert'),

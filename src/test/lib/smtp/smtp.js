@@ -22,7 +22,7 @@ describe('lib/smtp', async()=>{
             smtp = ctx.clone(require(_$+'lib/smtp'))
 
         // no result to test, coverage only
-        await smtp.send()
+        await smtp.send('mail@example.com', { failing : [], passing: [] })
     })
 
     it('lib/smtp/ensureSettingsOrExit::cover', async()=>{
@@ -53,6 +53,6 @@ describe('lib/smtp', async()=>{
             }
         })
 
-        await smtp.send()
+        await smtp.send('mail@example.com', { failing : [], passing: [] })
     })
 })

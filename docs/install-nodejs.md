@@ -21,7 +21,7 @@ Then clone this repo and setup with
 
     git clone https://github.com/shukriadams/arewedown.git /path/to/arewedown
 
-It is highly recommended (but optional) that you switch to a tag to install. While every effort is made to keep the master branch stable, tags are fixed and tested release points, and much more reliable. To checkout the tag `0.2.0` f.egs run 
+It is highly recommended (but optional but highly recommended) that you switch to a tag to install. While every effort is made to keep the master branch stable, tags are tested release points, and much more reliable. To checkout the tag `0.2.0` f.ex run 
 
     cd /path/to/arewedown
     git checkout 0.2.0
@@ -35,7 +35,7 @@ If you don't want to use yarn run
 
      npm install --production
 
-_Never_ run `yarn` or `npm install` with sudo, if you find yourself needing to use sudo with these, you're brute-forcing invalid permissions somewhere in you setup, and your app will likely never work properly even if it starts. Fix your permissions, then install.
+_Never_ run `yarn` or `npm install` with sudo, if you find yourself needing to use sudo with these, you're brute-forcing invalid permissions somewhere in you setup, and your app will likely not work properly even if it starts. Fix your permissions, then install.
 
 ## Start
 
