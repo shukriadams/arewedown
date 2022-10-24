@@ -113,6 +113,14 @@ module.exports = {
             // port AWD? listens on.
             port: 3000,
             
+            // optional string script that can be invoked as shell script when app starts.
+            // use this for running custom scripts, installing apt packages etc
+            onstart: null,
+
+            // onstart scripts can sometimes throw warnings that are treated as errors - 
+            // set this to true to ignore
+            onstartIgnoreError : false,
+
             // autoassigned protocol if none is given
             defaultTestProtocol : 'http',
 

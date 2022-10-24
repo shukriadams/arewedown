@@ -106,12 +106,17 @@ module.exports = {
             return
 
         log.info('onstart command executing')
-
+        let result = null
         try {
-            const result = await sh({ cmd : settings.onstart })
+            result = await sh({ cmd : settings.onstart })
             log.info(`onstart finished with result : `, result)
         } catch(ex){
-            throw { text : `onstart failed with error : `, ex }
+            if (settings.onstartIgnoreError){
+                log.info(`onstart finished with result : `, result)
+                log.info(`and ignored error : `, ex)
+            }
+            else
+                throw { text : `onstart failed with error : `, ex }
         }
     },
 
