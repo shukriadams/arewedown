@@ -26,4 +26,6 @@ COPY ./.stage/src/. /etc/arewedown
 
 USER arewedown
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 CMD cd /etc/arewedown && npm start
