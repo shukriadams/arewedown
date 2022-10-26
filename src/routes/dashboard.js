@@ -14,7 +14,7 @@ module.exports = express => {
                 daemon = require('./../lib/daemon'),
                 history = require('./../lib/history'),
                 timespan = require('./../lib/timespan'),
-                dashboardNode = req.params.dashboard,
+                dashboardNode = req.params.dashboard || Object.keys(settings.dashboards)[0],
                 now = new Date(),
                 hasErrors = false,
                 view = await handlebarsLoader.getPage('dashboard'),
@@ -42,6 +42,7 @@ module.exports = express => {
 
             for (let watcher of watchers){
                 const watcherLastEvent = await history.getLastEvent(watcher.config.__safeName) 
+                watcher.state = watcher.isPassing ? 'Up' : 'Down'
                 if (watcherLastEvent)
                     watcher.timeInState = timespan(new Date(), watcherLastEvent.date)
 
@@ -54,9 +55,9 @@ module.exports = express => {
                 dashboardNode,
                 dashboardRefreshInterval : settings.dashboardRefreshInterval,
                 hasErrors,
-                renderDate: `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`,
+                renderDate : `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`,
                 watchers,
-                dashboards :Object.keys(settings.dashboards).length > 1 ? settings.dashboards : null
+                dashboards : Object.keys(settings.dashboards).length > 1 ? settings.dashboards : null
             }))
             
         } catch (ex){

@@ -74,8 +74,14 @@ module.exports = {
         
         let history = await fsUtils.readFilesInDir(historyLogFolder)
         history = history.filter(item => !item.includes('status.json'))
-        if (!history.length)
-            return null
+        let historyPath
+
+        if (history.length){
+            historyPath = history.sort()[history.length - 1]
+        } else {
+            // no events found, so treat status as an event, this will contain data watcher first ran
+            historyPath = path.join(historyLogFolder, 'status.join')
+        }
 
         try {
             const event = await fs.readJson(history.sort()[history.length - 1])

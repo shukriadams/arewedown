@@ -117,6 +117,8 @@ module.exports = {
             // use this for running custom scripts, installing apt packages etc
             onstart: null,
 
+            allowDevRoutes : false,
+
             // onstart scripts can sometimes throw warnings that are treated as errors - 
             // set this to true to ignore
             onstartIgnoreError : false,
@@ -176,7 +178,8 @@ module.exports = {
         _settings.transports = _settings.transports || {}
         _settings.watchers = _settings.watchers || {}
 
-        // ensure that "default" dashboard is defined if no dashboards set
+        // ensure that "default" dashboard is defined if no dashboards set. There must always be at least
+        // dashboard in system
         if (!Object.keys(_settings.dashboards).length)
             _settings.dashboards['default'] = { name : '' }
         

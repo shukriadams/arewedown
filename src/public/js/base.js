@@ -1,10 +1,11 @@
 let dashboardRefreshInterval = document.querySelector('body').getAttribute('data-dashboardRefreshInterval'),
+    dashboardName = document.querySelector('#dashboardNode').value,
     updateInSeconds = document.querySelector('.layout-updateTime'),
+    progressBars = document.querySelectorAll('[data-nextUpdate]'),
     dashboardMenu = document.querySelector('.dashboardMenu'),
     restartServer = document.querySelector('.restartServer'),
     rerunAllWatchers = document.querySelector('.rerunAllWatchers'),
     renderTime = null, 
-    cbEnableReload = document.querySelector('#cbEnableReload')
     dateFields = document.querySelectorAll('[data-formatDate]'),
     nowHolder = document.querySelector('.now'),
     isPassing = document.querySelector('.layout.layout--failing') === null,
@@ -28,9 +29,6 @@ const messageReceiver = message =>{
     if (message.data !== 'reloading')
         return
 
-    if (cbEnableReload)
-        cbEnableReload.removeEventListener('change', cbEnableReloadEventHandler)
-
     if (dashboardMenu)
         dashboardMenu.removeEventListener('change', dashboardMenuEventHandler)
 
@@ -43,9 +41,6 @@ const messageReceiver = message =>{
     window.removeEventListener('message', messageReceiver)
 }   
 
-const cbEnableReloadEventHandler = event => {
-    window.parent.postMessage(`reload status:${event.currentTarget.checked}`, '*')
-}
 
 const dashboardMenuEventHandler = event => {
     if (!dashboardMenu.value){
@@ -54,7 +49,8 @@ const dashboardMenuEventHandler = event => {
         dashboardMenu.value = dashboardNode.value
         return
     }
-    window.parent.postMessage(`dashboard:${dashboardMenu.value}`, '*')
+
+    window.location = `/dashboard/${dashboardMenu.value}`
 }
 
 const restartServerEventHandler = event => {
@@ -63,14 +59,71 @@ const restartServerEventHandler = event => {
         .then(data => console.log(data))
 }
 
+setInterval(()=>{
+    fetch(`/status/dashboard/${dashboardName}`)
+        .then(response => response.json())
+        .then(data => {
+            let allWatchers = [],
+                allPassing = true
+
+            for(let watcherdata of data.watchers){
+                const watcher = document.querySelector(`[data-watcher="${watcherdata.name}"]`),
+                    card = watcher.querySelector('.watcher')
+
+                allWatchers.push({
+                    element : watcher,
+                    watcherdata
+                })
+
+                try {
+
+                    if (watcherdata.isPassing)
+                        card.classList.add('watcher--passing')
+                    else {
+                        allPassing = false
+                        card.classList.remove('watcher--passing')
+                    }
+
+                }  catch(ex) {
+                    console.log(ex)
+                }
+
+                watcher.querySelector('.watcher-state').innerHTML = watcherdata.state
+                watcher.querySelector('.watcher-timeInState').innerHTML = watcherdata.timeInState
+                watcher.querySelector('.watcher-errorMessage').innerHTML = watcherdata.errorMessage
+            }
+            
+            function compare (a, b) {
+                return a > b ? -1 :
+                    a < b ? 1 : 
+                    0
+            }
+            
+
+            allWatchers = allWatchers.sort((watcherA, watcherB)=>{
+                return compare(watcherB.watcherdata.isPassing, watcherA.watcherdata.isPassing) || compare(watcherB.watcherdata.name, watcherA.watcherdata.name)
+            })
+
+            let previousSibling = null
+            for (let i = 0; i < allWatchers.length; i ++){
+                let thisnode = allWatchers[allWatchers.length - 1 - i].element
+                thisnode.parentNode.insertBefore(thisnode, previousSibling)
+                previousSibling = thisnode
+            }
+
+            const layout = document.querySelector('.layout')
+            if (allPassing)
+                layout.classList.remove('layout--failing')
+            else
+                layout.classList.add('layout--failing')
+
+
+        })  
+}, 5000)
+
 const rerunAllWatchersHandler = event => {
     let targetDashboard = dashboardMenu ? dashboardMenu.value : '*'
     fetch(`/rerun/dashboard/${encodeURI(targetDashboard)}`)
-        .then(response => response.text())
-        .then(data =>{ 
-            alert(data)
-            window.parent.postMessage(`reload`, '*')
-        })
 }
 
 function showTimes(){
@@ -118,7 +171,6 @@ if (dashboardRefreshInterval){
 
 showTimes()
 // -------------------------------------------
-const progressBars = document.querySelectorAll('[data-nextUpdate]')
 const timespanString = (end, start)=>{
     if (typeof start === 'number' || typeof start === 'string')
         start = new Date(start)
@@ -168,9 +220,6 @@ for (const progressBar of progressBars)
 
 // -------------------------------------------
 
-if (cbEnableReload)
-    cbEnableReload.addEventListener('change', cbEnableReloadEventHandler)
-
 if (dashboardMenu)
     dashboardMenu.addEventListener('change', dashboardMenuEventHandler)
 
@@ -181,4 +230,3 @@ if (rerunAllWatchers)
     rerunAllWatchers.addEventListener('click', rerunAllWatchersHandler)
 
 window.addEventListener('message', messageReceiver)
-window.parent.postMessage(`isPassing:${isPassing}`, '*')

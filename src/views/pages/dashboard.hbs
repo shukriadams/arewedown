@@ -4,27 +4,18 @@
         {{#if watchers}}
             <x-columns>
                 {{#each watchers}}
-                    <a href="/watcher/{{config.__name}}" target="_PARENT">
+                    <a data-watcher="{{config.__name}}" href="/watcher/{{config.__name}}" target="_PARENT">
                         <x-card class="watcher {{#if config.__hasErrors}}watcher--configErrors{{/if}} {{#if isPassing}}watcher--passing{{/if}}">
-                            <div class="cell cell--header">
+                            <div class="cell cell-header">
                                 {{config.name}} 
                             </div>
 
-                            <div class="cell cell--content">
-                                {{#if isPassing}}
-                                    {{#if timeInState}}
-                                        <div class="cell-passing">
-                                            Up {{timeInState}}
-                                        </div>
-                                    {{else}}
-                                        <img class="icon-passing" src="/content/icons/passing.svg" alt="Passing" />
-                                    {{/if}}
-                                {{else}}
-                                    {{#if timeInState}}
-                                        Down {{timeInState}}.
-                                    {{/if}}
-                                    {{errorMessage}}
-                                {{/if}}
+                            <div class="cell cell-content">
+                                <span class="watcher-status">
+                                    <span class="watcher-state">{{state}}</span>
+                                    <span class="watcher-timeInState">{{timeInState}}</span>
+                                    <div class="watcher-errorMessage">{{errorMessage}}</div>
+                                </span>
                             </div>
 
                             <div class="cell watcher-nextUpdateWrapper">
@@ -46,21 +37,17 @@
 
     {{/content}}
     {{#content "footer"}}
+        <div class="layout-footerItem">
+            Rendered <span class="now"></span>
+        </div>
+        <div class="layout-footerItem">
+            <a class="restartServer" href="javascript:void(0)">Restart watchers</a>
+        </div>
+        {{#if blocks}}
             <div class="layout-footerItem">
-                Rendered <span class="now"></span>
+                <a class="rerunAllWatchers" href="javascript:void(0)">Rerun all</a>
             </div>
-            <div class="layout-footerItem">
-                <input id="cbEnableReload" checked type="checkbox" />
-                <label for="cbEnableReload">Auto-refresh</label>
-            </div>
-            <div class="layout-footerItem">
-                <a class="restartServer" href="javascript:void(0)">Restart watchers</a>
-            </div>
-            {{#if blocks}}
-                <div class="layout-footerItem">
-                    <a class="rerunAllWatchers" href="javascript:void(0)">Rerun all</a>
-                </div>
-            {{/if}}
+        {{/if}}
     {{/content}}
 
 {{/extend}}
