@@ -29,9 +29,8 @@ module.exports = express => {
                 if (isPassing != watcher.isPassing)
                     changed.push(watcher.config.name)
 
-                watcher.isPassing = isPassing
-                watcher.errorMessage = chance.sentence({ words: chance.integer({ min: 10, max: 30 }) })
-                watcher.stop()
+                watcher.forcedError = isPassing ? null : chance.sentence({ words: chance.integer({ min: 10, max: 30 }) })
+                watcher.forcePass = isPassing
             }
 
             res.end(`${changed.length} changed - ${changed.join(',')}`)

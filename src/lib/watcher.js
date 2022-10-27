@@ -11,9 +11,16 @@ module.exports = class {
         this.log = logger.instanceWatcher(config.__name)
         this.isPassing = false
         this.errorMessage = this.config.__errorMessage || 'Has not run yet'
+        
         this.busy = false
         this.lastRun = new Date()
         this.nextRun = new Date()
+
+        // if set, watcher will instantly throw this as a test exception. For dev
+        // only, used to test test error state
+        this.forcedError = null
+        this.forcePass = false
+
     }
 
     start(){
@@ -80,53 +87,71 @@ module.exports = class {
         this.calcNextRun()
 
         try {
-
-            if (this.config.cmd){
-                testRun = this.config.cmd
-
-                let thisConfigString = ''
-                let result = await exec.sh({ cmd : `${this.config.cmd} ${thisConfigString}` })
-                if (result.code === 0) {
+            
+            // if dev forcedError is set, immediately throw as a standard awdtest fail to mimic the fail
+            // the watcher's test would throw
+            if (this.forcedError || this.forcePass)
+                if (this.forcedError)
+                    throw { 
+                        type : 'awdtest.fail', 
+                        test : 'dev.forceError',
+                        text : this.forcedError
+                    }
+                else {
                     this.isPassing = true
                     this.errorMessage = null
-                } else {
-                    const errorMessage = `${result.result} (code ${result.code})`
-                    this.errorMessage = errorMessage
-                    this.log.info(errorMessage)
-                    this.isPassing = false
                 }
-            } else {
+            else {
+                // if .cmd property set, run .cmd as a shell script
+                if (this.config.cmd){
+                    testRun = this.config.cmd
 
-                // get test to run, if none is set, fall back to httpCheck as default
-                let testname = this.config.test ? 
-                        this.config.test 
-                        : 'net.httpCheck', 
-                    test = require(`../tests/${testname}`)
-                
-                testRun = testname
+                    let thisConfigString = ''
+                    let result = await exec.sh({ cmd : `${this.config.cmd} ${thisConfigString}` })
+                    
+                    if (result.code === 0) {
+                        this.isPassing = true
+                        this.errorMessage = null
+                    } else {
+                        const errorMessage = `${result.result} (code ${result.code})`
+                        this.errorMessage = errorMessage
+                        this.log.info(errorMessage)
+                        this.isPassing = false
+                    }
 
-                // This is where the business of AWD? runs, this executes the test for a given watcher
-                await test.call(this, this.config)
+                } else {
 
-                // if reach here, no exception thrown, so test passed
-                this.isPassing = true
-                this.errorMessage = null
+                    // get test to run, if none is set, fall back to httpCheck as default
+                    let testname = this.config.test ? 
+                            this.config.test 
+                            : 'net.httpCheck', 
+                        test = require(`../tests/${testname}`)
+                    
+                    testRun = testname
+
+                    // This is where the business of AWD? runs, this executes the test for a given watcher
+                    await test.call(this, this.config)
+
+                    // if reach here, no exception thrown, so test passed
+                    this.isPassing = true
+                    this.errorMessage = null
+                }
             }
 
         } catch(ex){
 
-            // the watcher testfailed, try to figure out how
+            // the watcher test failed, try to figure out how
 
             if (ex.type === 'configError'){
-                // Tests have the option of throwing explicit 'configError' errors, this lets us write test-specific config checks.
-                // If one is thrown, the test can be marked as having invalid config, which in turn can be shown the UI, aiding in
-                // visually identifying the issue.
+                // Tests can throw an explicit 'configError' error, if their configuraiton conditions are not met.
+                // If thrown, the test is marked as having invalid config, which in turn can be shown on the UI, aiding in
+                // visually identifying an issue.
                 this.config.__hasErrors = true
                 this.errorMessage = ex.text
                 this.log.error(this.errorMessage)  
             } else if (ex.type === 'awdtest.fail'){
-                // Tests should throw the 'awdtest.fail' error explicitly if whatever condition they test for isn't met, we can then
-                // treat those tests as failing expectedly
+                // Tests are expected to throw the 'awdtest.fail' error explicitly if whatever condition they test for isn't met, so we can 
+                // treat this as an "expected" fail
                 this.log.info(`Watcher "${this.config.__name}" test "${ex.test}" failed.`, ex.text)
                 this.errorMessage = ex.text 
             } else {

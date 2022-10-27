@@ -8,11 +8,7 @@ let dashboardRefreshInterval = document.querySelector('body').getAttribute('data
     renderTime = null, 
     dateFields = document.querySelectorAll('[data-formatDate]'),
     nowHolder = document.querySelector('.now'),
-    isPassing = document.querySelector('.layout.layout--failing') === null,
-    now = new Date()
-
-if (now && nowHolder)
-    nowHolder.innerHTML = now.toLocaleTimeString()
+    isPassing = document.querySelector('.layout.layout--failing') === null
 
 if (dashboardRefreshInterval)
     dashboardRefreshInterval = parseInt(dashboardRefreshInterval)
@@ -23,6 +19,10 @@ for (let i = 0 ; i < dateFields.length ; i ++) {
         formatted = date.toLocaleTimeString()
 
     dateField.innerHTML = formatted
+}
+
+function updateRenderTime(){
+    nowHolder.innerHTML = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
 
 const messageReceiver = message =>{
@@ -84,25 +84,15 @@ setInterval(()=>{
                         card.classList.remove('watcher--passing')
                     }
 
-                }  catch(ex) {
+                } catch(ex) {
                     console.log(ex)
                 }
 
                 watcher.querySelector('.watcher-state').innerHTML = watcherdata.state
-                watcher.querySelector('.watcher-timeInState').innerHTML = watcherdata.timeInState
+                watcher.querySelector('.watcher-timeInState').innerHTML = watcherdata.timeInState || ''
+                watcher.querySelector('.watcher-nextUpdate').setAttribute('data-nextUpdate', watcherdata.nextRun || '') 
                 watcher.querySelector('.watcher-errorMessage').innerHTML = watcherdata.errorMessage
             }
-            
-            function compare (a, b) {
-                return a > b ? -1 :
-                    a < b ? 1 : 
-                    0
-            }
-            
-
-            allWatchers = allWatchers.sort((watcherA, watcherB)=>{
-                return compare(watcherB.watcherdata.isPassing, watcherA.watcherdata.isPassing) || compare(watcherB.watcherdata.name, watcherA.watcherdata.name)
-            })
 
             let previousSibling = null
             for (let i = 0; i < allWatchers.length; i ++){
@@ -117,7 +107,7 @@ setInterval(()=>{
             else
                 layout.classList.add('layout--failing')
 
-
+            updateRenderTime()
         })  
 }, 5000)
 
@@ -170,6 +160,7 @@ if (dashboardRefreshInterval){
 }
 
 showTimes()
+updateRenderTime()
 // -------------------------------------------
 const timespanString = (end, start)=>{
     if (typeof start === 'number' || typeof start === 'string')
@@ -207,16 +198,12 @@ const timespanString = (end, start)=>{
     return `${secs} second${plural(secs)}`
 }
 
-function initProgressBar (progressBar){
-    let nextRefresh = progressBar.getAttribute('data-nextUpdate')
-
-    setInterval(()=>{
-        progressBar.innerHTML = timespanString(nextRefresh, new Date())
-    }, 1000)
-}
-
-for (const progressBar of progressBars)
-    initProgressBar(progressBar)
+setInterval(()=>{
+    for(let countDown of document.querySelectorAll('.watcher-nextUpdate')){
+        let nextRefresh = countDown.getAttribute('data-nextUpdate')
+        countDown.innerHTML = nextRefresh ? timespanString(nextRefresh, new Date()) : ''
+    }
+}, 1000)
 
 // -------------------------------------------
 

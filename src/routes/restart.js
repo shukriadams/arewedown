@@ -9,7 +9,6 @@ module.exports = express => {
 
         try {
             const settings = require('./../lib/settings').get()
-                
 
             if (!settings.allowHttpExit){
                 res.status(403)

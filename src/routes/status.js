@@ -64,19 +64,18 @@ module.exports = express => {
                 if (watcherLastEvent)
                     watcher.timeInState = timespan(new Date(), watcherLastEvent.date)
 
-                if (watcher.nextRun)
-                    watcher.next = timespan(watcher.nextRun, new Date())
-
                 out.push({
                     name: watcher.config.__name,
                     isPassing: watcher.isPassing,
                     state : watcher.isPassing ? 'Up' : 'Down',
                     errors : watcher.config.__hasErrors,
-                    timeInState : watcher.timeInState,
+                    timeInState : watcherLastEvent ? timespan(new Date(), watcherLastEvent.date) : null,
                     errorMessage : watcher.errorMessage,
-                    nextRun : watcher.nextRun
+                    nextRun : watcher.nextRun || null
                 })
             }            
+
+            out.sort((a,b)=> a.isPassing - b.isPassing || a.name.localeCompare(b.name))
 
             res.json({
                 watchers : out,

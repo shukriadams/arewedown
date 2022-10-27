@@ -68,7 +68,6 @@ module.exports = {
             const postresult = await slack.client.chat.postMessage({
                     token: slackConfig.token,
                     channel: receiverTransmissionConfig, // user id or channel id
-                    text : text,
                     attachments : [
                         {
                             fallback : text,

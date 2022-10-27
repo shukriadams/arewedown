@@ -36,9 +36,7 @@ module.exports = express => {
 
             hasErrors = watchers.filter(watcher => !watcher.isPassing).length > 0
 
-            watchers.sort((a,b)=>{
-                return a.isPassing - b.isPassing || a.config.name.localeCompare(b.config.name)
-            })
+            watchers.sort((a,b)=> a.isPassing - b.isPassing || a.config.name.localeCompare(b.config.name))
 
             for (let watcher of watchers){
                 const watcherLastEvent = await history.getLastEvent(watcher.config.__safeName) 
@@ -55,7 +53,7 @@ module.exports = express => {
                 dashboardNode,
                 dashboardRefreshInterval : settings.dashboardRefreshInterval,
                 hasErrors,
-                renderDate : `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`,
+                renderDate : `${now.toLocaleDateString()} ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
                 watchers,
                 dashboards : Object.keys(settings.dashboards).length > 1 ? settings.dashboards : null
             }))
