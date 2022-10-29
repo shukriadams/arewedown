@@ -11,6 +11,7 @@ const clonedeep = require('lodash.clonedeep'),
                 download(){},
                 end(){},
                 json(){},
+                redirect(){},
                 status(){ },
                 send(){}
             },
