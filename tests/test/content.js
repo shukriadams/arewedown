@@ -6,15 +6,13 @@ describe('tests/content', async()=>{
             urljoin = require('urljoin'),
             assert = require('madscience-node-assert'),
             files  = [
-                '/css/iframe.css',
                 '/css/style.css',
-                '/js/base.js',
-                '/js/iframe.js'
+                '/js/base.js'
             ]
 
             for (const file of files){
-                status = await httputils.getStatus(urljoin(settings.url, 'content', file))
-                assert.equal(status, 200)
+                let status = await httputils.getStatus(urljoin(settings.url, 'content', file))
+                assert.equal(status, 200, `Failed to load ${file}`)
             }
 
     })
