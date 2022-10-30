@@ -5,9 +5,16 @@ describe('tests', async()=>{
             urljoin = require('urljoin'),
             httputils = require('madscience-httputils'),
             assert = require('madscience-node-assert'),
-            response = await httputils.downloadString({ url : urljoin(settings.url, 'dashboard/default') })
+            dashboardsQuery = await httputils.downloadJSON({ url : urljoin(settings.url, 'api/dashboards') })
 
-        assert.equal(response.statusCode, 200)
+        // dashboard should never be empty
+        assert.gt(dashboardsQuery.dashboards.length, 0)
+
+        // very each dashboard can be reached
+        for (let dashboard of dashboardsQuery.dashboards){
+            const response = await httputils.downloadString({ url : urljoin(settings.url, `dashboard/${dashboard}`) })
+            assert.equal(response.statusCode, 200)
+        }
     })
 
     it('tests/dashboard/', async() => {

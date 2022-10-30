@@ -1,5 +1,7 @@
 module.exports = express => {
 
+
+
     /**
      * Renders a dashboard. Does not autoreload, autoreload must be called via the default url /
      * The autoreload frame will in turn call and autorefresh this dashboard view.
