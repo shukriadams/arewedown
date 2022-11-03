@@ -32,46 +32,14 @@ class SMTPMock {
 module.exports = { 
 
 
-    /**
-     * Generates an email string specifc to what the "smtp-client" plugin expects. This email is used to alert
-     * that a given watcher process is either passing or failing.
-     * 
-     * @param isPassing {boolean} : True if test is passing. Content is always specific to pass/fail scenarios
-     * @param to {string} : Email address of recipient
-     * @param watcherName {string} : Human-friendly name of watcher process that is passing/failing
-     */
-    generateContent(to, summary){
-        let settings = require('./settings').get(),
-            smtpConfig = settings.transports.smtp,
-            subject = '',
-            message = ''
-
-        if (summary.failing.length){
-            subject += `${summary.failing.length} services down. `
-            message += `${summary.failing.join(', ')} are down. `
-        }
-
-        if (summary.passing.length){
-            subject += `${summary.passing.length} services are up again.`,
-            message += `${summary.passing.join(', ')} are up again.`
-        }
-
-        return `From : ${smtpConfig.from}\n` +
-            `Subject : ${subject}\n` +
-            `To: ${to}\n` +
-            `\n` +
-            `${message}`
-    },
-
-
     /*
     * @param receiverTransmissionConfig {object} : recipient config for this transmission.
     *        For SMTP this is always a flat "to" email address.
     * @param watcherName {string} : watcher to report status on
     * @param isPassing {boolean} : true if watch is passing
     */
-    async  _send(receiverTransmissionConfig, mailContent){
-        const to = receiverTransmissionConfig, // smtp receiver config is a single string containing email address
+    async  _send(receiverTransmissionConfig, delta, text){
+        let to = receiverTransmissionConfig, // smtp receiver config is a single string containing email address
             settings = require('./settings').get(),
             smtpConfig = settings.transports.smtp,
             SMTPClient = this.getClient(),
@@ -79,9 +47,15 @@ module.exports = {
                 host: smtpConfig.server,
                 secure: smtpConfig.secure,
                 port: smtpConfig.port
-            })
+            }),
+            subject = delta.actualFailingCount ? `WARNING : ${delta.actualFailingCount} watchers are failing` : 'SUCCESS : All watchers are passing',
+            mailContent = `From : ${smtpConfig.from}\n` +
+                `Subject : ${subject}\n` +
+                `To: ${to}\n` +
+                `\n` +
+                `${text}`,
+            response = ''
 
-        let response = ''
         response += `connect:`+await client.connect()
         response += `greet:`+await client.greet({ hostname: smtpConfig.server })
         response += `authPlain:`+await client.authPlain({ username: smtpConfig.user, password: smtpConfig.pass })
@@ -114,6 +88,7 @@ module.exports = {
                 `Testing your SMTP connection from AREWEDOWN`
 
         const result = await this._send(receiverTransmissionConfig, content)
+        
         return `Email sent to ${receiverTransmissionConfig}\n` + 
             `\n\n` +   
             `Email content : \n` +  
@@ -133,11 +108,9 @@ module.exports = {
      *        For SMTP this is always a flat "to" email address.
      * @param object {string} : watcher to report status on
      */
-    async send(receiverTransmissionConfig, summary){
-        const mailContent = this.generateContent(receiverTransmissionConfig, summary)
-        this._send(receiverTransmissionConfig, mailContent)
+    async send(receiverTransmissionConfig, delta, text){
+        this._send(receiverTransmissionConfig, delta, text)
     },
-    
 
 
     /**

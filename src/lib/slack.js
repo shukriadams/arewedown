@@ -32,10 +32,18 @@ class SlackMock{
 
 module.exports = {
 
+
+    /**
+     * 
+     */
     async test(){
         throw 'not implemented'
     },
 
+
+    /**
+     * 
+     */
     summarizeWatcherList(list, verb, listCondenseThresh){
         if (!list.length)
             return ''
@@ -49,7 +57,11 @@ module.exports = {
         return `${list.join(', ')} are ${verb}. `
     },
 
-    async send(receiverTransmissionConfig, summary){
+
+    /**
+     * 
+     */
+    async send(receiverTransmissionConfig, delta, message){
         const settings = require('./settings').get(),
             log = require('./../lib/logger').instance(),
             slackConfig = settings.transports.slack,
@@ -60,19 +72,14 @@ module.exports = {
             })
 
         try {
-
-            let text = this.summarizeWatcherList(summary.failing, 'failing', settings.listCondenseThresh)
-            text += this.summarizeWatcherList(summary.passing, 'up again', settings.listCondenseThresh)
-            text = text.trim()
-
             const postresult = await slack.client.chat.postMessage({
                     token: slackConfig.token,
                     channel: receiverTransmissionConfig, // user id or channel id
                     attachments : [
                         {
-                            fallback : text,
-                            color : summary.failing.length ? '#D92424' : '#007a5a',
-                            title : text
+                            fallback : message,
+                            color : delta.failing.length ? '#D92424' : '#007a5a',
+                            title : message
                         }
                     ]                    
                 })
@@ -109,6 +116,10 @@ module.exports = {
         })
     },
 
+
+    /**
+     * 
+     */
     async ensureSettingsOrExit(){
         const settings = require('./settings').get(),
             log = require('./../lib/logger').instance(),

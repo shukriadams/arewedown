@@ -2,8 +2,10 @@ let _settings = null
 
 module.exports = {
 
+
     /**
-     * Explicitly crash app if a value is null or not defined - zero and empty strings must be allowed
+     * Explicitly crash app if a value is null or not defined - zero and empty strings must be allowed so don't use
+     * falsy.
      */
     failIfNotSet(value, message){
         if (value === null || value === undefined)
@@ -22,13 +24,14 @@ module.exports = {
             match = value.match(/{{env.(.*)}}/i)
     
         if (match){
+
             const value = match.pop()
     
             if (process.env[value])
                 return process.env[value]
-            else {
+            else 
                 throw `ERROR : config expects environment variable "${value}", but this was not found.`
-            }
+            
         }
     
         return value
@@ -64,22 +67,23 @@ module.exports = {
             dotenv = require('dotenv'),
             sanitize = require('sanitize-filename'),
             allWatcherNames = [],
-            disabledRecipients = [],
-            settingsPath = process.env.AWD_SETTINGS_PATH || './config/settings.yml' // allow settings path to be passed in
+            disabledRecipients = []
 
         // apply env vars from optional .env file in project root
         dotenv.config()
+
+        let settingsPath = process.env.AWD_SETTINGS_PATH || './config/settings.yml' // allow settings path to be passed in
 
         // force wipe for app restart
         _settings = null
 
         // allow local dev settings to override all
-        if (fs.existsSync('./config/settings.dev.yml'))
+        //if (fs.existsSync('./config/settings.dev.yml'))
             /* istanbul ignore next */
             /* this line is extremely difficult to cover when building from github, and so edge-case, that it's best ignored */
-            settingsPath = './config/settings.dev.yml'
+        //    settingsPath = './config/settings.dev.yml'
         
-        if (fs.existsSync(settingsPath))
+        if (fs.existsSync(settingsPath)){
             try {
                 let settingsYML = fs.readFileSync(settingsPath, 'utf8')
                 _settings = yaml.safeLoad(settingsYML)
@@ -87,7 +91,7 @@ module.exports = {
                 console.log('Error reading settings.yml', e)
                 throw e
             }
-        else {
+        } else {
             console.warn(`!! Warning: settings.yml not found - please create it at "<AreWeDown? root folder>/config/settings.yml".`) 
             console.warn(`!! If you are running in docker, confirm your volume mounts.`)
         }
@@ -117,6 +121,7 @@ module.exports = {
             // use this for running custom scripts, installing apt packages etc
             onstart: null,
 
+            //
             allowDevRoutes : false,
 
             // onstart scripts can sometimes throw warnings that are treated as errors - 

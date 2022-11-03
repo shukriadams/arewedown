@@ -1,0 +1,94 @@
+# watches and dashboard for dev, use with the /dev/cycle command to cycle through stages of passing and failing
+# To use, create file
+#     /srv/.env file 
+# add items
+#     AWD_SETTINGS_PATH=/vagrant/src/settings.stagedchange.yml
+#
+# Then cycle through various states with 
+#   curl localhost:3000/dev/cycle
+
+allowHttpExit: true
+logLevel: error
+cacheViews: false
+watcherOffset: 500
+allowDevRoutes: true
+transportWorkerTime: "*/10 * * * * *"
+
+transports:
+    smtp:
+        server: test.mail
+        diagnostics : true
+        port: 587
+        secure: false
+        user: smtp@example.com
+        pass: mypass
+        from: user@example.com
+        mock: true
+
+    slack:
+        token: mytoken
+        secret: mysecret
+        mock: true
+
+recipients:
+    myuser:
+        slack: myuserid_1
+        smtp: 1@example.com
+
+dashboards:
+
+    all:
+        name: All of them
+        watchers : "*"
+    
+    always_passing:
+        name: Some of them
+        watchers: dev_test1, dev_test2
+        default : true
+
+watchers:
+
+    dev_test0:
+        test: internal.fileExists
+        path : /vagrant/src/dummyfiles/dummyfile0
+        interval : '*/10 * * * * *'
+
+    dev_test1:
+        test: internal.fileExists
+        path : /vagrant/src/dummyfiles/dummyfile1
+        interval : '*/12 * * * * *'
+
+    dev_test2:
+        test: internal.fileExists
+        path : /vagrant/src/dummyfiles/dummyfile2
+        interval : '*/14 * * * * *'
+
+    dev_test3:
+        test: internal.fileExists
+        path : /vagrant/src/dummyfiles/dummyfile3
+        interval : '*/16 * * * * *'
+
+    dev_test4:
+        test: internal.fileExists
+        path : /vagrant/src/dummyfiles/dummyfile4
+        interval : '*/18 * * * * *'
+
+    dev_test5:
+        test: internal.fileExists
+        path : /vagrant/src/dummyfiles/dummyfile5
+        interval : '*/20 * * * * *'
+
+    dev_test6:
+        test: internal.fileExists
+        path : /vagrant/src/dummyfiles/dummyfile6
+        interval : '*/22 * * * * *'
+
+    dev_test7:
+        test: internal.fileExists
+        path : /vagrant/src/dummyfiles/dummyfile7
+        interval : '*/24 * * * * *'
+
+    dev_test8:
+        test: internal.fileExists
+        path : /vagrant/src/dummyfiles/dummyfile8
+        interval : '*/10 * * * * *'

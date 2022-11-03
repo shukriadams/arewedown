@@ -24,8 +24,8 @@ module.exports =  {
             watcher.start()
         }
 
-        this.internalWorker = new CronJob(settings.internalWorkerTimer, this.internalWork, null, true, null, null, true /*runonitit*/)
-        this.transportWorker = new CronJob(settings.transportWorkerTime, this.sendQueuedAlerts, null, true, null, null, true /*runonitit*/)
+        this.internalWorker = new CronJob(settings.internalWorkerTimer, this.internalWork.bind(this), null, true, null, null, true /*runonitit*/)
+        this.transportWorker = new CronJob(settings.transportWorkerTime, this.sendQueuedAlerts.bind(this), null, true, null, null, true /*runonitit*/)
     },
 
     async stop(){
@@ -37,13 +37,20 @@ module.exports =  {
         this.watchers = []
     },
 
+
+    /**
+     * 
+     */
     async sendQueuedAlerts(){
         const settings = require('./settings').get(),
             log = require('./logger').instance(),
             path = require('path'),
+            crypto = require('crypto'),
             fs = require('fs-extra'),
             fsUtils = require('madscience-fsUtils'),
-            transportHandlers = require('./transports').getTransportHandlers()
+            transportHandlers = require('./transports').getTransportHandlers(),
+            actualPassingCount = this.watchers.filter(w => w.isPassing).length,
+            actualFailingCount = this.watchers.length - actualPassingCount
 
         for (const transportName in settings.transports){
             const transportHandler = transportHandlers[transportName],
@@ -52,39 +59,92 @@ module.exports =  {
 
             for(let receiverDir of receiversDirs){
                 try {
-                    const alertPaths = await fsUtils.readFilesInDir(receiverDir),
+                    let alertPaths = await fsUtils.readFilesInDir(receiverDir),
                         receiverName = Buffer.from(path.basename(receiverDir), 'base64').toString('ascii'),
-                        summary = {
+                        delta = {
                             passing : [],
-                            failing : []
+                            failing : [],
+                            actualPassingCount,
+                            actualFailingCount
                         }
+                        
+                    // ignore lastMessageHash.txt 
+                    alertPaths = alertPaths.filter(a => !a.endsWith('.txt'))
+
+                    if (!alertPaths.length)
+                        continue
 
                     for (let alertPath of alertPaths){
                         try {
+                                
                             const alert = await fs.readJson(alertPath),
                                 watcherName = Buffer.from(path.basename(alertPath), 'base64').toString('ascii')
 
                             if (alert.isPassing)
-                                summary.passing.push(watcherName)
+                                delta.passing.push(watcherName)
                             else
-                                summary.failing.push(watcherName)
+                                delta.failing.push(watcherName)
                             
-                        await fs.remove(alertPath)
+                            await fs.remove(alertPath)
 
                         } catch(ex){
                             log.error(`Unexpected error trying to read queued message ${alertPath} : `, ex)
                         }
                     }
 
-                    const transportConfig = settings.recipients[receiverName][transportName]
-                    if (summary.passing.length || summary.failing.length)
-                        transportHandler.send(transportConfig, summary)
+                    const transportConfig = settings.recipients[receiverName] ? settings.recipients[receiverName][transportName] : null,
+                        text = this.generateContent(delta),
+                        textHash = crypto.createHash('md5').update(text).digest('hex'),
+                        receiverLastMessageLog = path.join(receiverDir, 'lastMessageHash.txt')
+            
+                    // if user already received this message, skip 
+                    if (await fs.exists(receiverLastMessageLog) ){
+                        const lookup =  await fs.readFile(receiverLastMessageLog, 'utf-8')
+                        if (lookup === textHash)
+                            continue
+                        
+                    }           
+
+                    await fs.outputFile(receiverLastMessageLog, textHash)
+
+                    if (transportConfig)
+                        transportHandler.send(transportConfig, delta, text)
 
                 } catch (ex){
                     log.error(`Unexpected error reading trying to read queued alerts for ${receiverDir} : `, ex)
                 }
             }
         }
+    },
+
+
+    generateContent(delta){
+        let message = ''
+
+        if (!delta.actualPassingCount && !delta.actualFailingCount)
+            return 'No watchers running - nothing to report'
+
+        if (!delta.actualFailingCount)
+            message += `SUCCESS : All watchers are up. `
+
+        if (delta.actualFailingCount)
+            message += `WARNING : ${delta.actualFailingCount} watcher${this.plural(delta.actualFailingCount,'','s')} ${this.plural(delta.actualFailingCount)} down. `
+
+        if (delta.failing.length)    
+            message += `Latest fail${this.plural(delta.failing,'','s')} ${this.plural(delta.failing)} ${delta.failing.join(', ')}. `
+
+        if (delta.passing.length)
+            message += `${delta.passing.join(', ')} ${this.plural(delta.passing)} up again. `
+
+        return message
+    },
+
+    plural(count, single = 'is', plural='are'){
+        let cnt = count
+        if (Array.isArray(count))
+            cnt = count.length
+
+        return cnt === 1 ? single : plural
     },
 
     /**

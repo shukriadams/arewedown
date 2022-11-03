@@ -84,7 +84,10 @@ module.exports = {
         }
 
         try {
-            const event = await fs.readJson(history.sort()[history.length - 1])
+            if (!await fs.exists(historyPath))
+                return null
+                
+            const event = await fs.readJson(historyPath)
             return event
         } catch (ex){
             log.error(`Failed to load history for "${safeName}":`, ex)

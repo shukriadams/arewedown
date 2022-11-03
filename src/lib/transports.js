@@ -1,10 +1,15 @@
 let transportHandlers = null
 
 module.exports = {
-    ensureHandlers(){
+
+
+    /**
+     * Private use only.
+     */
+    _ensureHandlers(){
         if (transportHandlers == null){
             const smtp = require('./smtp'),
-            slack = require('./slack')
+                slack = require('./slack')
     
             transportHandlers = {
                 smtp,
@@ -13,14 +18,22 @@ module.exports = {
         }
     },
 
+
+    /**
+     * Simple getter for transportHandlers
+     */
     getTransportHandlers(){
-        this.ensureHandlers()
+        this._ensureHandlers()
 
         return transportHandlers
     },
 
+
+    /**
+     * 
+     */
     async ensureQueue(){
-        this.ensureHandlers()
+        this._ensureHandlers()
         const fs = require('fs-extra'),
             path = require('path'),
             settings = require('./settings').get()
@@ -28,6 +41,7 @@ module.exports = {
         for (let transportName in transportHandlers)
             await fs.ensureDir(path.join(settings.queue, transportName))
     },
+
 
     /**
      * validate active transport's settings by attempting to contact provider. throws unhandled exception on fail, this should

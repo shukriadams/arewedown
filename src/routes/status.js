@@ -63,7 +63,7 @@ module.exports = express => {
                 const watcherLastEvent = await history.getLastEvent(watcher.config.__safeName)
                 watcher.timeInState = ''
                 
-                if (watcherLastEvent)
+                if (watcherLastEvent && watcherLastEvent.date)
                     watcher.timeInState = timespan(new Date(), watcherLastEvent.date)
 
                 out.push({
@@ -71,7 +71,7 @@ module.exports = express => {
                     isPassing: watcher.isPassing,
                     state : watcher.isPassing ? 'Up' : 'Down',
                     errors : watcher.config.__hasErrors,
-                    timeInState : watcherLastEvent ? timespan(new Date(), watcherLastEvent.date) : null,
+                    timeInState : watcherLastEvent && watcherLastEvent.date ? timespan(new Date(), watcherLastEvent.date) : null,
                     errorMessage : watcher.errorMessage,
                     nextRun : watcher.nextRun || null
                 })
