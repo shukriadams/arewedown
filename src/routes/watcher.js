@@ -74,7 +74,7 @@ module.exports = express => {
 
                 for (const item of files){
                     const event = item.data
-                    item.durationString = timebelt.timespanStringPlural( deltaDate, event.date)
+                    item.durationString = timebelt.timespanStringPlural(deltaDate, event.date)
 
                     if (item.data.status === 'down')
                         totalDownTime += timebelt.minutesDifference(deltaDate, event.date)

@@ -1,3 +1,8 @@
+window.awd = window.awd  || {
+    renderUpdates : true,
+    fetchUpdates : true
+}
+
 let dashboardRefreshInterval = document.querySelector('body').getAttribute('data-dashboardRefreshInterval'),
     dashboardName = document.querySelector('#dashboardNode').value,
     updateInSeconds = document.querySelector('.layout-updateTime'),
@@ -7,8 +12,7 @@ let dashboardRefreshInterval = document.querySelector('body').getAttribute('data
     rerunAllWatchers = document.querySelector('.rerunAllWatchers'),
     renderTime = null, 
     dateFields = document.querySelectorAll('[data-formatDate]'),
-    nowHolder = document.querySelector('.now'),
-    isPassing = document.querySelector('.layout.layout--failing') === null
+    nowHolder = document.querySelector('.now')
 
 if (dashboardRefreshInterval)
     dashboardRefreshInterval = parseInt(dashboardRefreshInterval)
@@ -60,11 +64,16 @@ const restartServerEventHandler = event => {
 }
 
 setInterval(()=>{
+    if (window.awd.fetchUpdates === false)
+        return
+
     fetch(`/status/dashboard/${dashboardName}`)
         .then(response => response.json())
         .then(data => {
-            let allWatchers = [],
-                allPassing = true
+            if (window.awd.renderUpdates === false)
+                return
+    
+            let allWatchers = []
 
             for(let watcherdata of data.watchers){
                 const watcher = document.querySelector(`[data-watcher="${watcherdata.name}"]`),
@@ -77,18 +86,25 @@ setInterval(()=>{
 
                 try {
 
-                    if (watcherdata.isPassing)
+
+                    if (watcherdata.status === 'up'){
                         card.classList.add('watcher--passing')
-                    else {
-                        allPassing = false
+                        card.classList.remove('watcher--failing')
+                    }
+                    else if (watcherdata.status === 'down'){
+                        card.classList.add('watcher--failing')
                         card.classList.remove('watcher--passing')
+                    }
+                    else {
+                        card.classList.remove('watcher--passing')
+                        card.classList.remove('watcher--failing')
                     }
 
                 } catch(ex) {
                     console.log(ex)
                 }
 
-                watcher.querySelector('.watcher-state').innerHTML = watcherdata.state
+                watcher.querySelector('.watcher-state').innerHTML = watcherdata.status
                 watcher.querySelector('.watcher-timeInState').innerHTML = watcherdata.timeInState || ''
                 watcher.querySelector('.watcher-nextUpdate').setAttribute('data-nextUpdate', watcherdata.nextRun || '') 
                 watcher.querySelector('.watcher-errorMessage').innerHTML = watcherdata.errorMessage
@@ -102,10 +118,10 @@ setInterval(()=>{
             }
 
             const layout = document.querySelector('.layout')
-            if (allPassing)
-                layout.classList.remove('layout--failing')
-            else
+            if (data.hasFailing)
                 layout.classList.add('layout--failing')
+            else
+                layout.classList.remove('layout--failing')
 
             updateRenderTime()
         })  

@@ -21,7 +21,7 @@ module.exports =  {
             const watcher = new Watcher(watcherConfig)
                 
             this.watchers.push(watcher)
-            watcher.start()
+            await watcher.start()
         }
 
         this.internalWorker = new CronJob(settings.internalWorkerTimer, this.internalWork.bind(this), null, true, null, null, true /*runonitit*/)
@@ -49,8 +49,8 @@ module.exports =  {
             fs = require('fs-extra'),
             fsUtils = require('madscience-fsUtils'),
             transportHandlers = require('./transports').getTransportHandlers(),
-            actualPassingCount = this.watchers.filter(w => w.isPassing).length,
-            actualFailingCount = this.watchers.length - actualPassingCount
+            actualPassingCount = this.watchers.filter(w => w.status === 'up').length,
+            actualFailingCount = this.watchers.filter(w => w.status === 'down').length
 
         for (const transportName in settings.transports){
             const transportHandler = transportHandlers[transportName],
@@ -62,7 +62,9 @@ module.exports =  {
                     let alertPaths = await fsUtils.readFilesInDir(receiverDir),
                         receiverName = Buffer.from(path.basename(receiverDir), 'base64').toString('ascii'),
                         delta = {
+                            // names of passing alerts based on queued alerts, this can be out of sync with actual passing
                             passing : [],
+                            // names of failing alerts based on queued alerts, this can be out of sync with actual failing
                             failing : [],
                             actualPassingCount,
                             actualFailingCount
@@ -80,9 +82,9 @@ module.exports =  {
                             const alert = await fs.readJson(alertPath),
                                 watcherName = Buffer.from(path.basename(alertPath), 'base64').toString('ascii')
 
-                            if (alert.isPassing)
+                            if (alert.status === 'up')
                                 delta.passing.push(watcherName)
-                            else
+                            else if (alert.status === 'down')
                                 delta.failing.push(watcherName)
                             
                             await fs.remove(alertPath)
@@ -102,9 +104,9 @@ module.exports =  {
                         const lookup =  await fs.readFile(receiverLastMessageLog, 'utf-8')
                         if (lookup === textHash)
                             continue
-                        
                     }           
 
+                    // write hash of text message as last sent message, we use this to prevent oversending
                     await fs.outputFile(receiverLastMessageLog, textHash)
 
                     if (transportConfig)
@@ -147,6 +149,7 @@ module.exports =  {
         return cnt === 1 ? single : plural
     },
 
+    
     /**
      * AWD?'s own daemon process, used for house keeping.
      */

@@ -4,7 +4,7 @@ describe('routes/status/get', async()=>{
         const ctx =  require(_$t+'context')
         
         ctx.inject.overwriteObject('./../lib/daemon', {
-            watchers : [ { isPassing : true, config : { __hasErrors : false} }]
+            watchers : [ { status : 'up', config : { __hasErrors : false} }]
         })
         
         const route = ctx.express.getRoute(_$+'routes/status')

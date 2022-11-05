@@ -5,14 +5,14 @@
             <x-columns>
                 {{#each watchers}}
                     <a data-watcher="{{config.__name}}" href="/watcher/{{config.__name}}" target="_PARENT">
-                        <x-card class="watcher {{#if config.__hasErrors}}watcher--configErrors{{/if}} {{#if isPassing}}watcher--passing{{/if}}">
+                        <x-card class="watcher {{#if config.__hasErrors}}watcher--configErrors{{/if}} {{#eq status 'up'}}watcher--passing{{/eq}}">
                             <div class="cell cell-header">
                                 {{config.name}} 
                             </div>
 
                             <div class="cell cell-content">
                                 <span class="watcher-status">
-                                    <span class="watcher-state">{{state}}</span>
+                                    <span class="watcher-state">{{status}}</span>
                                     <span class="watcher-timeInState">{{timeInState}}</span>
                                     <div class="watcher-errorMessage">{{errorMessage}}</div>
                                 </span>

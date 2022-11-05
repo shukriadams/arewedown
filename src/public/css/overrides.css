@@ -15,7 +15,6 @@
     --color-white:#fff;
     --color-dodgerBlue: #3da6fa;
     --arewedown-historyCellStdWidth: 152px;
-
 } 
 
 body {
@@ -25,6 +24,7 @@ body {
 a {
     color: var(--color-dodgerBlue);
 }
+
 h1 {
     margin: 0;
     padding:0;
@@ -33,10 +33,11 @@ h1 {
 }
 
 h2 {
-    
     color: var(--color-white);
     font-weight: bold;
 }
+
+/*************************************************************************************************/
 
 x-columns {
     column-gap: 6px;
@@ -79,6 +80,8 @@ x-columns {
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     } 
 }
+
+/*************************************************************************************************/
 
 .pager-anchor {
     border: none;
@@ -154,44 +157,6 @@ x-columns {
     }
 }
 
-.watcher {
-    background-color: inherit;
-    text-align: center;
-    border-radius: 5px;
-    overflow: hidden;
-    position: relative;    
-}
-
-.watcher .cell { 
-    background-color: var(--color-orange);
-    color: var(--color-white);
-}
-
-.watcher.watcher--passing .cell {
-    background-color: var(--color-mountainMeadow);
-    color: var(--color-mirage);
-}
-
-.watcher.watcher--passing .cell-header {
-    background-color: var(--color-salem);
-}
-
-.watcher.watcher--configErrors .cell {
-    background-color: darkgrey;
-}
-
-.watcher.watcher--configErrors .cell-header {
-    background-color: grey;
-}
-
-.watcher-nextUpdateWrapper {
-    height: 38px;
-    font-size: 12px
-}
-
-.watcher.watcher--passing .watcher-errorMessage {
-    display: none;
-}
 
 .dashboard-message {
     color: var(--color-dodgerBlue);
@@ -202,6 +167,7 @@ x-columns {
     font-weight: bold;    
 }
 
+/*************************************************************************************************/
 .history {
     background-color: var(--bootstrip-color-oxfordblue);
 }
@@ -258,6 +224,7 @@ x-columns {
 .history-item:first-child {
     border-top-color: var(--bootstrip-color-oxfordblue);
 }
+/*************************************************************************************************/
 
 .watcherHistory-durationBarWrapper{
     background-color: var(--color-fiord);
@@ -280,8 +247,9 @@ x-columns {
 .dshistory-item.--error {
     background-color: var(--color-vermilion);
     color:var(--bootstrip-color-white);
-}
 
+}
+/*************************************************************************************************/
 .cell {
     padding: var(--layout-universalMargin);
     word-wrap: break-word;
@@ -294,6 +262,63 @@ x-columns {
     overflow: hidden;
 }
 
+.cell.cell-header {
+    font-weight: bold;
+    font-size: 20px;
+    background-color: var(--color-vermilion);
+    max-height: 65px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+/*************************************************************************************************/
+.watcher {
+    background-color: inherit;
+    text-align: center;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;    
+}
+
+.watcher .cell { 
+    background-color: var(--color-fiord);
+}
+
+.watcher .cell-header {
+    background-color: var(--color-ebonyClay);
+}
+
+
+.watcher.watcher--failing .cell { 
+    background-color: var(--color-orange);
+    color: var(--color-white);
+}
+
+.watcher.watcher--passing .cell {
+    background-color: var(--color-mountainMeadow);
+    color: var(--color-mirage);
+}
+
+.watcher.watcher--passing .cell-header {
+    background-color: var(--color-salem);
+}
+
+.watcher.watcher--configErrors .cell {
+    background-color: darkgrey;
+}
+
+.watcher.watcher--configErrors .cell-header {
+    background-color: grey;
+}
+
+.watcher-nextUpdateWrapper {
+    height: 38px;
+    font-size: 12px
+}
+
+.watcher.watcher--passing .watcher-errorMessage {
+    display: none;
+}
+
 .watcher.watcher--passing .watcher-status {
     font-size: 28px;
     font-weight: bold;
@@ -304,14 +329,8 @@ x-columns {
     white-space: nowrap; 
 }
 
-.cell.cell-header {
-    font-weight: bold;
-    font-size: 20px;
-    background-color: var(--color-vermilion);
-    max-height: 65px;
-    overflow: hidden;
-    white-space: nowrap;    
-}
+/*************************************************************************************************/
+
 
 .icon-passing {
     height: 80px;

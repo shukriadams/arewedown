@@ -12,13 +12,42 @@ module.exports = class {
         this.isPassing = false
         this.errorMessage = this.config.__errorMessage || 'Has not run yet'
         
+        // true when this watcher is running a test. Prevents concurrent tests if a test takes longer than
+        // the watcher test interval
         this.busy = false
-        this.lastRun = new Date()
-        this.nextRun = new Date()
+
+        // Datetime this watcher last did its test
+        this.lastRun = null
+
+        // Datetime this watcher will next run a test
+        this.nextRun = null
+
+        // time watcher entered its current pass/fail state.
+        // Restored from status.json on app start
+        this.enteredStateTime = new Date()
+
+        // human-friendly timespan representation of Now - this.enteredStateTime. Used to show user how long
+        // watcher has been in current state. Generated on-demand in this.calculateDisplayTimes
+        this.timeInState = '' 
+        
+        // human-friendly datetime representation when this watcher will test again. Generated on-demand by 
+        // this.calculateDisplayTimes
+        this.next = ''
+
+        // can be up|down|pending. Pending means it hasn't run yet, and has no history
+        this.status = 'pending' 
     }
 
-    start(){
-        const CronJob = require('cron').CronJob
+    async start(){
+        const CronJob = require('cron').CronJob,
+            history = require('./history'),
+            thisExistingStatus = await history.getStatus(this.config.__safeName)
+
+        if (thisExistingStatus && thisExistingStatus.date)
+            this.enteredStateTime = thisExistingStatus.date
+
+        if (thisExistingStatus && thisExistingStatus.status)
+            this.status = thisExistingStatus.status
 
         this.log.info(`Starting watcher "${this.config.name || this.config.__name}"`)
         this.cron = new CronJob(this.config.interval, this.tick.bind(this), null, true, null, null, true /*tick immediately on itit*/)
@@ -32,12 +61,23 @@ module.exports = class {
         this.cron.stop()
     }
 
+    calculateDisplayTimes(){
+        const timespan = require('./timespan')
+
+        this.timeInState = timespan(new Date(), this.enteredStateTime)
+
+        if (this.nextRun)
+            this.next = timespan(this.nextRun, new Date())
+    }
+
+
     calcNextRun(){
         const timebelt = require('timebelt')
 
         if (this.cron)
             this.nextRun = timebelt.addMilliseconds(new Date(this.cron.nextDates().toString()), this.config.offset)
     }
+
 
     /**
      * Callback attached to this.cron. Cron calls this at the test interval
@@ -91,12 +131,14 @@ module.exports = class {
                 
                 if (result.code === 0) {
                     this.isPassing = true
+                    this.status = 'up'
                     this.errorMessage = null
                 } else {
                     const errorMessage = `${result.result} (code ${result.code})`
                     this.errorMessage = errorMessage
                     this.log.info(errorMessage)
                     this.isPassing = false
+                    this.status = 'down'
                 }
 
             } else {
@@ -145,17 +187,20 @@ module.exports = class {
 
         // write state of watcher to filesystem
         let status = null
-        if (this.isPassing)
+        if (this.status === 'up'){
             status = await history.writePassing(this.config.__safeName, this.lastRun)
-        else 
+        } else if (this.status === 'down') {
             status = await history.writeFailing(this.config.__safeName, this.lastRun, this.errorMessage)
+        }
 
         // send alerts if status changed
         if (status.changed){
+            this.enteredStateTime = this.lastRun
             this.log.info(`Status changed, "${this.config.__name}" is ${this.isPassing? 'passing': 'failing'}.`)
             this.queueAlerts()
         }
     }
+
 
     async queueAlerts(){
         const settings = require('./settings').get(),
@@ -165,6 +210,7 @@ module.exports = class {
         
         for (const transportName in settings.transports){
             const transportHandler = transportHandlers[transportName]
+            
             if (!transportHandler){
                 this.log.error(`ERROR : no handler defined for transport ${transportName}`)
                 continue

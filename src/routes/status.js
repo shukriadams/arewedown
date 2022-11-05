@@ -10,7 +10,7 @@ module.exports = express => {
            
             const daemon = require('./../lib/daemon'),
                 failing = daemon.watchers.filter(watcher => 
-                    watcher.isPassing 
+                    watcher.status === 'down'
                     && !watcher.config.__hasErrors ? null : watcher)
 
             res.json({
@@ -38,8 +38,6 @@ module.exports = express => {
             let settings = require('./../lib/settings').get(),
                 arrayHelper = require('./../lib/array'),
                 daemon = require('./../lib/daemon'),
-                history = require('./../lib/history'),
-                timespan = require('./../lib/timespan'),
                 dashboardNode = req.params.dashboard,
                 dashboard = settings.dashboards[dashboardNode]
 
@@ -57,30 +55,29 @@ module.exports = express => {
                 // get cronprocesses that are running and used on the current dashboard
                 watchers = daemon.watchers.filter(watcher => dashboardWatchers.includes(watcher.config.__name) )
 
-            hasErrors = watchers.filter(watcher => !watcher.isPassing).length > 0
+            hasFailing = watchers.filter(watcher => !watcher.status === 'down').length > 0
+
+            // force update display times on watcher
+            watchers.map(w => w.calculateDisplayTimes())
+
+
             let out = []
             for (let watcher of watchers){
-                const watcherLastEvent = await history.getLastEvent(watcher.config.__safeName)
-                watcher.timeInState = ''
-                
-                if (watcherLastEvent && watcherLastEvent.date)
-                    watcher.timeInState = timespan(new Date(), watcherLastEvent.date)
-
                 out.push({
                     name: watcher.config.__name,
-                    isPassing: watcher.isPassing,
-                    state : watcher.isPassing ? 'Up' : 'Down',
+                    status : watcher.status,
                     errors : watcher.config.__hasErrors,
-                    timeInState : watcherLastEvent && watcherLastEvent.date ? timespan(new Date(), watcherLastEvent.date) : null,
+                    timeInState : watcher.timeInState,
                     errorMessage : watcher.errorMessage,
-                    nextRun : watcher.nextRun || null
+                    nextRun : watcher.nextRun 
                 })
             }            
 
-            out.sort((a,b)=> a.isPassing - b.isPassing || a.name.localeCompare(b.name))
+            out.sort((a,b)=> a.status === 'up' - b.status === 'down' || a.name.localeCompare(b.name))
 
             res.json({
                 watchers : out,
+                hasFailing,
                 dashboard : dashboardNode
             })
         } catch(ex){

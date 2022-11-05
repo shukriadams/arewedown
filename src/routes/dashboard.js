@@ -14,8 +14,6 @@ module.exports = express => {
                 handlebarsLoader = require('madscience-handlebarsloader'),
                 arrayHelper = require('./../lib/array'),
                 daemon = require('./../lib/daemon'),
-                history = require('./../lib/history'),
-                timespan = require('./../lib/timespan'),
                 dashboardNode = req.params.dashboard || Object.keys(settings.dashboards)[0],
                 now = new Date(),
                 hasErrors = false,
@@ -36,25 +34,18 @@ module.exports = express => {
                 // get cronprocesses that are running and used on the current dashboard
                 watchers = daemon.watchers.filter(watcher => dashboardWatchers.includes(watcher.config.__name) )
 
-            hasErrors = watchers.filter(watcher => !watcher.isPassing).length > 0
+            hasFailing = watchers.filter(watcher => !watcher.status === 'down').length > 0
 
-            watchers.sort((a,b)=> a.isPassing - b.isPassing || a.config.name.localeCompare(b.config.name))
+            watchers.sort((a,b)=> a.status === 'up' - b.status === 'down' || a.config.name.localeCompare(b.config.name))
 
-            for (let watcher of watchers){
-                const watcherLastEvent = await history.getLastEvent(watcher.config.__safeName) 
-                watcher.state = watcher.isPassing ? 'Up' : 'Down'
-                if (watcherLastEvent)
-                    watcher.timeInState = timespan(new Date(), watcherLastEvent.date)
-
-                if (watcher.nextRun)
-                    watcher.next = timespan(watcher.nextRun, new Date())
-            }
+            // force update display times on watcher
+            watchers.map(w => w.calculateDisplayTimes())
             
             res.send(view({
                 title : `${settings.header} ${dashboard.name}`,
                 dashboardNode,
                 dashboardRefreshInterval : settings.dashboardRefreshInterval,
-                hasErrors,
+                hasFailing,
                 renderDate : `${now.toLocaleDateString()} ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
                 watchers,
                 dashboards : Object.keys(settings.dashboards).length > 1 ? settings.dashboards : null

@@ -40,17 +40,18 @@
         for (const file of existingEvents)
             await fs.remove(file)
 
-        let isPassing = true,
+        let status = 'up',
             startDate = new Date()
             
         for (let i = 0 ; i < maxEventsPerWatcher; i ++){
             startDate = timebelt.addSeconds(startDate, -1 * chance.integer({min : minEventDuration, max : maxEventDuration})) 
-            isPassing = !isPassing
+            // flip status
+            status = status === 'up' ? 'down' : 'up'
             
-            let error = isPassing ? undefined : chance.sentence({ words: chance.integer({ min: 10, max: 300 })})
+            let error = status === 'up' ? undefined : chance.sentence({ words: chance.integer({ min: 10, max: 300 })})
 
             await fs.writeJson(path.join(watcherHistoryDir, `${startDate.getTime()}.json`),{
-                status : isPassing ? 'up' : 'down',
+                status,
                 date : startDate,
                 error
             })
@@ -61,11 +62,11 @@
             if (i === 0){
                 await fs.writeJson(path.join(watcherHistoryDir, `status.json`),{
                     date : startDate,
-                    status : isPassing? 'up' : 'down',
+                    status,
                     error
                 })
 
-                if (!isPassing)
+                if (status === 'down')
                     await fs.writeJson(path.join(watcher, `flag`),{
                         date : startDate
                     })

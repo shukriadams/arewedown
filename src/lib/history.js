@@ -61,6 +61,28 @@ module.exports = {
         }
     },
     
+
+    /**
+     * Gets content of status.json for a given watcher by its safename. Returns null if status does not exist 
+     * or fails to load.
+     */
+    async getStatus(safeName){
+        const fs = require('fs-extra'),
+            path = require('path'),
+            settings = require('./settings').get(),
+            statusPath = path.join(settings.logs, safeName, 'history', 'status.json')
+
+        if (!await fs.exists(statusPath))
+            return null
+        
+        try {
+            return await fs.readJson(statusPath)
+        } catch(ex){
+            log.error(`Error. Likely JSON file corruption. Could not read "${statusPath}" : `, ex)
+            return null
+        }
+    },
+
     async getLastEvent(safeName){
         let settings = require('./settings').get(),
             log = require('./../lib/logger').instance(),
@@ -118,7 +140,7 @@ module.exports = {
 
             await fs.writeJson(path.join(historyLogFolder, `status.json`), {
                 status : 'down',
-                date : this.lastRun
+                date : date
             }, { spaces: 4})
 
             changed = true
