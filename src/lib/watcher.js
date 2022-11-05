@@ -15,12 +15,6 @@ module.exports = class {
         this.busy = false
         this.lastRun = new Date()
         this.nextRun = new Date()
-
-        // if set, watcher will instantly throw this as a test exception. For dev
-        // only, used to test test error state
-        this.forcedError = null
-        this.forcePass = false
-
     }
 
     start(){
@@ -88,54 +82,39 @@ module.exports = class {
 
         try {
             
-            // if dev forcedError is set, immediately throw as a standard awdtest fail to mimic the fail
-            // the watcher's test would throw
-            if (this.forcedError || this.forcePass)
-                if (this.forcedError)
-                    throw { 
-                        type : 'awdtest.fail', 
-                        test : 'dev.forceError',
-                        text : this.forcedError
-                    }
-                else {
+            // if .cmd property set, run .cmd as a shell script
+            if (this.config.cmd){
+                testRun = this.config.cmd
+
+                let thisConfigString = ''
+                let result = await exec.sh({ cmd : `${this.config.cmd} ${thisConfigString}` })
+                
+                if (result.code === 0) {
                     this.isPassing = true
                     this.errorMessage = null
-                }
-            else {
-                // if .cmd property set, run .cmd as a shell script
-                if (this.config.cmd){
-                    testRun = this.config.cmd
-
-                    let thisConfigString = ''
-                    let result = await exec.sh({ cmd : `${this.config.cmd} ${thisConfigString}` })
-                    
-                    if (result.code === 0) {
-                        this.isPassing = true
-                        this.errorMessage = null
-                    } else {
-                        const errorMessage = `${result.result} (code ${result.code})`
-                        this.errorMessage = errorMessage
-                        this.log.info(errorMessage)
-                        this.isPassing = false
-                    }
-
                 } else {
-
-                    // get test to run, if none is set, fall back to httpCheck as default
-                    let testname = this.config.test ? 
-                            this.config.test 
-                            : 'net.httpCheck', 
-                        test = require(`../tests/${testname}`)
-                    
-                    testRun = testname
-
-                    // This is where the business of AWD? runs, this executes the test for a given watcher
-                    await test.call(this, this.config)
-
-                    // if reach here, no exception thrown, so test passed
-                    this.isPassing = true
-                    this.errorMessage = null
+                    const errorMessage = `${result.result} (code ${result.code})`
+                    this.errorMessage = errorMessage
+                    this.log.info(errorMessage)
+                    this.isPassing = false
                 }
+
+            } else {
+
+                // get test to run, if none is set, fall back to httpCheck as default
+                let testname = this.config.test ? 
+                        this.config.test 
+                        : 'net.httpCheck', 
+                    test = require(`../tests/${testname}`)
+                
+                testRun = testname
+
+                // This is where the business of AWD? runs, this executes the test for a given watcher
+                await test.call(this, this.config)
+
+                // if reach here, no exception thrown, so test passed
+                this.isPassing = true
+                this.errorMessage = null
             }
 
         } catch(ex){
