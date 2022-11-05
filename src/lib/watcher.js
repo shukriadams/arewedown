@@ -9,7 +9,6 @@ module.exports = class {
 
         this.config = config
         this.log = logger.instanceWatcher(config.__name)
-        this.isPassing = false
         this.errorMessage = this.config.__errorMessage || 'Has not run yet'
         
         // true when this watcher is running a test. Prevents concurrent tests if a test takes longer than
@@ -130,14 +129,12 @@ module.exports = class {
                 let result = await exec.sh({ cmd : `${this.config.cmd} ${thisConfigString}` })
                 
                 if (result.code === 0) {
-                    this.isPassing = true
                     this.status = 'up'
                     this.errorMessage = null
                 } else {
                     const errorMessage = `${result.result} (code ${result.code})`
                     this.errorMessage = errorMessage
                     this.log.info(errorMessage)
-                    this.isPassing = false
                     this.status = 'down'
                 }
 
@@ -155,8 +152,8 @@ module.exports = class {
                 await test.call(this, this.config)
 
                 // if reach here, no exception thrown, so test passed
-                this.isPassing = true
                 this.errorMessage = null
+                this.status = 'up'
             }
 
         } catch(ex){
@@ -181,7 +178,7 @@ module.exports = class {
                 this.errorMessage = `Unhandled exception:${ex.toString()}` 
             }
 
-            this.isPassing = false
+            this.status = 'down'
         }
 
 

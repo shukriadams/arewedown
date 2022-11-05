@@ -35,8 +35,14 @@ module.exports = {
     /*
     * @param receiverTransmissionConfig {object} : recipient config for this transmission.
     *        For SMTP this is always a flat "to" email address.
-    * @param watcherName {string} : watcher to report status on
-    * @param isPassing {boolean} : true if watch is passing
+    * @param delta {object} : summary of change : 
+    *     {
+    *         failing: [string] : names of failed watchers since last message transmission,
+    *         passing: [string] : names of passing watchers since last message transmission,
+    *         actualPassingCount : actual count of watchers currently passing
+    *         actualFailingCount : actual count of watchers currently failing
+    *     }
+    * @param text {string} : message to send to user summarizing the contents of delta object
     */
     async  _send(receiverTransmissionConfig, delta, text){
         let to = receiverTransmissionConfig, // smtp receiver config is a single string containing email address
