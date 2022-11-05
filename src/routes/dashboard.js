@@ -14,9 +14,9 @@ module.exports = express => {
                 handlebarsLoader = require('madscience-handlebarsloader'),
                 arrayHelper = require('./../lib/array'),
                 daemon = require('./../lib/daemon'),
-                dashboardNode = req.params.dashboard || Object.keys(settings.dashboards)[0],
+                firstAvailableDashboard = Object.keys(settings.dashboards)[0],
+                dashboardNode = req.params.dashboard || firstAvailableDashboard,
                 now = new Date(),
-                hasErrors = false,
                 view = await handlebarsLoader.getPage('dashboard'),
                 dashboard = settings.dashboards[dashboardNode]
 
@@ -25,8 +25,8 @@ module.exports = express => {
                 res.status(404)
 
                 return res.send(view({
+                    dashboard: settings.dashboards[firstAvailableDashboard],
                     title : dashboardNode,
-                    hasErrors : true
                 }))
             }
 

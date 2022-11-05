@@ -45,8 +45,15 @@ module.exports = express => {
 
             // files is filename strings, convert to objects containing both the filename, and the file content
             for(let i = 0 ; i < files.length ; i++){
-                const file = files[i],
+                let file = files[i],
+                    data 
+
+                try {
                     data = await fs.readJson(path.join(historyFolder, file))
+                } catch(ex){
+                    log.error(`json file read error, likely corruption : ${ex}`)
+                }
+                
 
                 if (data.status === 'down'){
                     incidentCount ++

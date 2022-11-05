@@ -23,9 +23,9 @@ module.exports = class {
 
         // time watcher entered its current pass/fail state.
         // Restored from status.json on app start
-        this.enteredStateTime = new Date()
+        this.enteredStatusTime = new Date()
 
-        // human-friendly timespan representation of Now - this.enteredStateTime. Used to show user how long
+        // human-friendly timespan representation of Now - this.enteredStatusTime. Used to show user how long
         // watcher has been in current state. Generated on-demand in this.calculateDisplayTimes
         this.timeInState = '' 
         
@@ -43,14 +43,14 @@ module.exports = class {
             thisExistingStatus = await history.getStatus(this.config.__safeName)
 
         if (thisExistingStatus && thisExistingStatus.date)
-            this.enteredStateTime = thisExistingStatus.date
+            this.enteredStatusTime = thisExistingStatus.date
 
         if (thisExistingStatus && thisExistingStatus.status)
             this.status = thisExistingStatus.status
 
         this.log.info(`Starting watcher "${this.config.name || this.config.__name}"`)
         this.cron = new CronJob(this.config.interval, this.tick.bind(this), null, true, null, null, true /*tick immediately on itit*/)
-        this.calcNextRun()
+        this.calculateNextRun()
     }
 
     stop(){
@@ -63,14 +63,14 @@ module.exports = class {
     calculateDisplayTimes(){
         const timespan = require('./timespan')
 
-        this.timeInState = timespan(new Date(), this.enteredStateTime)
+        this.timeInState = timespan(new Date(), this.enteredStatusTime)
 
         if (this.nextRun)
             this.next = timespan(this.nextRun, new Date())
     }
 
 
-    calcNextRun(){
+    calculateNextRun(){
         const timebelt = require('timebelt')
 
         if (this.cron)
@@ -103,7 +103,6 @@ module.exports = class {
                 this.busy = false
             }
         }, this.config.offset)
-       
     }
 
 
@@ -112,12 +111,12 @@ module.exports = class {
      * separate from tick() for readability, and mostly to make it easier to run unit tests on doTest
      */
     async doTest(){
-        const history = require('./history'),
+        let history = require('./history'),
+            testRun = '',
             exec = require('madscience-node-exec')
 
         this.lastRun = new Date()
-        let testRun = ''
-        this.calcNextRun()
+        this.calculateNextRun()
 
         try {
             
@@ -125,8 +124,8 @@ module.exports = class {
             if (this.config.cmd){
                 testRun = this.config.cmd
 
-                let thisConfigString = ''
-                let result = await exec.sh({ cmd : `${this.config.cmd} ${thisConfigString}` })
+                let thisConfigString = '',
+                    result = await exec.sh({ cmd : `${this.config.cmd} ${thisConfigString}` })
                 
                 if (result.code === 0) {
                     this.status = 'up'
@@ -181,24 +180,26 @@ module.exports = class {
             this.status = 'down'
         }
 
-
         // write state of watcher to filesystem
         let status = null
-        if (this.status === 'up'){
+        if (this.status === 'up')
             status = await history.writePassing(this.config.__safeName, this.lastRun)
-        } else if (this.status === 'down') {
+        else if (this.status === 'down') 
             status = await history.writeFailing(this.config.__safeName, this.lastRun, this.errorMessage)
-        }
 
         // send alerts if status changed
         if (status.changed){
-            this.enteredStateTime = this.lastRun
+            this.enteredStatusTime = this.lastRun
             this.log.info(`Status changed, "${this.config.__name}" is ${this.isPassing? 'passing': 'failing'}.`)
             this.queueAlerts()
         }
     }
 
 
+    /**
+     * Writes alert information down to /queue directory. Alerts are periodically picked up by a daemon, collated into
+     * a single message, and transmitted. 
+     */
     async queueAlerts(){
         const settings = require('./settings').get(),
             fs = require('fs-extra'),

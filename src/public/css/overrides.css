@@ -19,6 +19,7 @@
 
 body {
     background-color: var(--color-mirage);
+    color: var(--color-nepal);
 }
 
 a {
@@ -159,7 +160,6 @@ x-columns {
 
 
 .dashboard-message {
-    color: var(--color-dodgerBlue);
     position: absolute;
     top: 50%;
     left: 50%;
