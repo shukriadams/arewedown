@@ -102,7 +102,7 @@ Watchers let you test something at regular intervals. The following built-in tes
 
 ### HTTP 200
 
-The simplest (and default) watcher is the HTTP check. It queries a URL and fails if it doesn't get a HTTP code of 200. You can specify another HTTP code if you expect something other than 200, such as a `403` if the url prompts you to login.
+The simplest (and default) watcher is the HTTP check. It queries a host and fails if it doesn't get an HTTP code 200 back. You can specify another HTTP code if you expect something other than 200 (such as a `403` if the host prompts you to login).
 
     watchers:
         mytest:
@@ -113,7 +113,7 @@ The simplest (and default) watcher is the HTTP check. It queries a URL and fails
 
 ### Port open
 
-Test if a port at the given address is open. Works on TCP only.
+Test if a port at the given host is open. Works on TCP only.
 
     watchers:
         port:
@@ -127,7 +127,7 @@ Test if a jenkins job is passing. Requires a Jenkins server URL and job name.
 
 - Host can be any URL that gives access to the server, this is often with built-in credentials. 
 - Job name can be the human-friendly version, we'll make it URL-safe, so copy this directly from your Jenkins UI if you want.
-- By default, a test passes on success only, all other outcomes will be read as failure. You can override this with `status` value, which can be a comma-separated string consisting of `success`, `aborted` and/or `failure` (These strings are taken directly from the Jenkins API).
+- By default, a test passes on success only, all other outcomes will be read as failure. You can override this with `status` value, which can be a comma-separated string consisting of `success`, `aborted` and/or `failure` (these strings are taken directly from the Jenkins API).
 
         watchers:
             my_jenkins_job:
@@ -153,7 +153,7 @@ If your have the Docker [HTTP API](https://docs.docker.com/engine/api/v1.24/) en
 
 ### System.d service running
 
-You can test if a system.d service is running - you need SSH access to the machine running the service. Password can be templated in via an env var ([see advanced settings](#Secrets)).
+You can test if a system.d service is running. You will need SSH access to the machine running the service. Password can be templated in via an env var ([see advanced settings](#Secrets)).
 
     watchers:
         my-service-test:
@@ -161,11 +161,13 @@ You can test if a system.d service is running - you need SSH access to the machi
             host: example.com
             user: myuser
             password: mypassword
+
+            # name of the system.d service to query
             service: docker
 
 ### Disk use 
 
-You can check if a disk is runnnig out of space (Linux only). This test requires SSH access to the target host machine. Password can be templated in via an env var ([see advanced settings](#Secrets)).
+You can check if a disk is runnnig out of space (Linux only). You will need SSH access to the machine running the service. Password can be templated in via an env var ([see advanced settings](#Secrets)).
 
     watchers:
         my-disk-use-test:
@@ -174,6 +176,7 @@ You can check if a disk is runnnig out of space (Linux only). This test requires
             user: myuser
             password: mypassword
             path: /some/path/on/host
+
             # max % use allowed
             threshold: 50
 
@@ -191,7 +194,40 @@ You can ping a host.
                 # optional
                 timeout: 10 
 
+### ZFS Pool Status
 
+You can query the status of a ZFS pool on a host. This test ensures that the pool's `state` is `online`. You will need SSH access to the machine running the service. Password can be templated in via an env var ([see advanced settings](#Secrets)).
+
+    watchers:
+        is-my-data-gone:
+            test: filesystem.zfs.zpoolStatus
+            host: example.com
+            user: myuser
+            password: mypassword
+
+            # name of zfs pool to check
+            pool: mypoolname
+                
+### Date In File
+
+You can rig up a simple "dead man's switch" by writing a date to a file at the end of some process. As long as the date in the file is current, the test will pass. The date written must be in Javascript-parsable ISO format. You can generate a file in a Linux terminal with the command
+
+    echo $(date --iso-8601=seconds) >> /path/to/datefile
+
+You will need SSH access to the machine running the service. Password can be templated in via an env var ([see advanced settings](#Secrets)).
+
+    watchers:
+        is-my-process-alive:
+            test: general.dateInFile
+            host: example.com
+            user: myuser
+            password: mypassword
+
+            # path on remote machine date is written to
+            path: /path/to/datefile
+
+            # Maximum allowed age of date in file. Can be any digit followed by S, M, H or D (seconds, minutes, hours or days, case not important)
+            range: 24H
 
 ### Default watcher behaviour
 

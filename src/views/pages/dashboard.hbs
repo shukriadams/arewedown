@@ -1,11 +1,13 @@
 {{#extend "layout"}}
     {{#content "body"}}
         <input id="dashboardNode" type="hidden" value="{{dashboardNode}}">
+        <input id="dashboardRefreshInterval" type="hidden" value="{{dashboardRefreshInterval}}">
+        
         {{#if watchers}}
             <x-columns>
                 {{#each watchers}}
                     <a data-watcher="{{config.__name}}" href="/watcher/{{config.__name}}" target="_PARENT">
-                        <x-card class="watcher {{#if config.__hasErrors}}watcher--configErrors{{/if}} {{#eq status 'up'}}watcher--passing{{/eq}}">
+                        <x-card class="watcher watcher--{{status}} {{#if config.__hasErrors}}watcher--configErrors{{/if}}">
                             <div class="cell cell-header">
                                 {{config.name}} 
                             </div>

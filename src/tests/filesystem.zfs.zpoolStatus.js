@@ -48,7 +48,14 @@
                         test : 'filesystem.zfs.zpoolStatus',
                         text:  `Pool "${config.pool}" status is ${stdout}.`
                     })
-                }
+                },
+                err: stderr => {
+                    return reject({
+                        type: 'awdtest.fail',
+                        test : 'filesystem.zfs.zpoolStatus',
+                        text: stderr
+                    })   
+                }                
             }).start()
         }catch(ex){
             reject(ex)

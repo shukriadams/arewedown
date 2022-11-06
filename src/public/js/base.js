@@ -3,8 +3,8 @@ window.awd = window.awd  || {
     fetchUpdates : true
 }
 
-let dashboardRefreshInterval = document.querySelector('body').getAttribute('data-dashboardRefreshInterval'),
-    dashboardName = document.querySelector('#dashboardNode').value,
+let dashboardRefreshInterval = document.querySelector('#dashboardRefreshInterval') ? document.querySelector('#dashboardRefreshInterval').value : null,
+    dashboardName = document.querySelector('#dashboardNode') ? document.querySelector('#dashboardNode').value : null,
     updateInSeconds = document.querySelector('.layout-updateTime'),
     progressBars = document.querySelectorAll('[data-nextUpdate]'),
     dashboardMenu = document.querySelector('.dashboardMenu'),
@@ -63,69 +63,75 @@ const restartServerEventHandler = event => {
         .then(data => console.log(data))
 }
 
-setInterval(()=>{
-    if (window.awd.fetchUpdates === false)
-        return
+if (dashboardRefreshInterval && dashboardName)
+    setInterval(()=>{
 
-    fetch(`/status/dashboard/${dashboardName}`)
-        .then(response => response.json())
-        .then(data => {
-            if (window.awd.renderUpdates === false)
-                return
-    
-            let allWatchers = []
+        // dev only
+        if (window.awd.fetchUpdates === false)
+            return
 
-            for(let watcherdata of data.watchers){
-                const watcher = document.querySelector(`[data-watcher="${watcherdata.name}"]`),
-                    card = watcher.querySelector('.watcher')
+        fetch(`/status/dashboard/${dashboardName}`)
+            .then(response => response.json())
+            .then(data => {
 
-                allWatchers.push({
-                    element : watcher,
-                    watcherdata
-                })
+                // dev only
+                if (window.awd.renderUpdates === false)
+                    return
+        
+                let allWatchers = []
 
-                try {
+                for(let watcherdata of data.watchers){
+                    const watcher = document.querySelector(`[data-watcher="${watcherdata.name}"]`),
+                        card = watcher.querySelector('.watcher')
 
+                    allWatchers.push({
+                        element : watcher,
+                        watcherdata
+                    })
 
-                    if (watcherdata.status === 'up'){
-                        card.classList.add('watcher--passing')
-                        card.classList.remove('watcher--failing')
+                    try {
+
+                        if (watcherdata.status === 'up'){
+                            card.classList.add('watcher--up')
+                            card.classList.remove('watcher--down')
+                        }
+                        else if (watcherdata.status === 'down'){
+                            card.classList.add('watcher--down')
+                            card.classList.remove('watcher--up')
+                        }
+                        else {
+                            card.classList.remove('watcher--up')
+                            card.classList.remove('watcher--down')
+                        }
+
+                    } catch(ex) {
+                        console.log(ex)
                     }
-                    else if (watcherdata.status === 'down'){
-                        card.classList.add('watcher--failing')
-                        card.classList.remove('watcher--passing')
-                    }
-                    else {
-                        card.classList.remove('watcher--passing')
-                        card.classList.remove('watcher--failing')
-                    }
 
-                } catch(ex) {
-                    console.log(ex)
+                    watcher.querySelector('.watcher-state').innerHTML = watcherdata.status
+                    watcher.querySelector('.watcher-timeInState').innerHTML = watcherdata.timeInState || ''
+                    const nextUpdateHolder = watcher.querySelector('.watcher-nextUpdate')
+                    if (nextUpdateHolder)
+                        nextUpdateHolder.setAttribute('data-nextUpdate', watcherdata.nextRun || '') 
+                    watcher.querySelector('.watcher-errorMessage').innerHTML = watcherdata.errorMessage
                 }
 
-                watcher.querySelector('.watcher-state').innerHTML = watcherdata.status
-                watcher.querySelector('.watcher-timeInState').innerHTML = watcherdata.timeInState || ''
-                watcher.querySelector('.watcher-nextUpdate').setAttribute('data-nextUpdate', watcherdata.nextRun || '') 
-                watcher.querySelector('.watcher-errorMessage').innerHTML = watcherdata.errorMessage
-            }
+                let previousSibling = null
+                for (let i = 0; i < allWatchers.length; i ++){
+                    let thisnode = allWatchers[allWatchers.length - 1 - i].element
+                    thisnode.parentNode.insertBefore(thisnode, previousSibling)
+                    previousSibling = thisnode
+                }
 
-            let previousSibling = null
-            for (let i = 0; i < allWatchers.length; i ++){
-                let thisnode = allWatchers[allWatchers.length - 1 - i].element
-                thisnode.parentNode.insertBefore(thisnode, previousSibling)
-                previousSibling = thisnode
-            }
+                const layout = document.querySelector('.layout')
+                if (data.hasFailing)
+                    layout.classList.add('layout--failing')
+                else
+                    layout.classList.remove('layout--failing')
 
-            const layout = document.querySelector('.layout')
-            if (data.hasFailing)
-                layout.classList.add('layout--failing')
-            else
-                layout.classList.remove('layout--failing')
-
-            updateRenderTime()
-        })  
-}, 5000)
+                updateRenderTime()
+            })  
+    }, dashboardRefreshInterval)
 
 const rerunAllWatchersHandler = event => {
     let targetDashboard = dashboardMenu ? dashboardMenu.value : '*'

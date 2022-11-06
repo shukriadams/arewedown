@@ -48,7 +48,16 @@ module.exports = async function(config){
                         test : 'systemd.servicerunning',
                         text:  `Service "${config.service}" not running.`
                     })
-                }
+                },
+
+                err: stderr => {
+                    return reject({
+                        type: 'awdtest.fail',
+                        test : 'systemd.servicerunning',
+                        text: stderr
+                    })   
+                }                
+
             }).start()
         }catch(ex){
             reject(ex)

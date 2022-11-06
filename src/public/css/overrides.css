@@ -94,7 +94,7 @@ x-columns {
     background-color: var(--color-fiord);
 }
 
-.layout.layout--failing {
+.layout.layout--down {
     background-color: var(--color-fire);
 }
 
@@ -288,17 +288,17 @@ x-columns {
 }
 
 
-.watcher.watcher--failing .cell { 
+.watcher.watcher--down .cell { 
     background-color: var(--color-orange);
     color: var(--color-white);
 }
 
-.watcher.watcher--passing .cell {
+.watcher.watcher--up .cell {
     background-color: var(--color-mountainMeadow);
     color: var(--color-mirage);
 }
 
-.watcher.watcher--passing .cell-header {
+.watcher.watcher--up .cell-header {
     background-color: var(--color-salem);
 }
 
@@ -315,11 +315,11 @@ x-columns {
     font-size: 12px
 }
 
-.watcher.watcher--passing .watcher-errorMessage {
+.watcher.watcher--up .watcher-errorMessage {
     display: none;
 }
 
-.watcher.watcher--passing .watcher-status {
+.watcher.watcher--up .watcher-status {
     font-size: 28px;
     font-weight: bold;
     position: absolute;

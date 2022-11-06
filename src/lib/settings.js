@@ -76,14 +76,9 @@ module.exports = {
 
         // force wipe for app restart
         _settings = null
-
-        // allow local dev settings to override all
-        //if (fs.existsSync('./config/settings.dev.yml'))
-            /* istanbul ignore next */
-            /* this line is extremely difficult to cover when building from github, and so edge-case, that it's best ignored */
-        //    settingsPath = './config/settings.dev.yml'
         
         if (fs.existsSync(settingsPath)){
+            console.log(`Loading settings from ${settingsPath}`)
             try {
                 let settingsYML = fs.readFileSync(settingsPath, 'utf8')
                 _settings = yaml.safeLoad(settingsYML)

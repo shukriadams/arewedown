@@ -36,7 +36,7 @@
         "urljoin": "0.1.5",
         "winston-daily-rotate-file": "1.7.2",
         "smtp-client": "0.4.0",
-        "simple-ssh": "1.0.0",
+        "simple-ssh": "1.1.0",
         "dotenv": "9.0.2",
         "ping": "0.4.1",
         "@slack/bolt": "3.4.0",

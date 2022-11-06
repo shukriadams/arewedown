@@ -9,7 +9,7 @@ module.exports = class {
 
         this.config = config
         this.log = logger.instanceWatcher(config.__name)
-        this.errorMessage = this.config.__errorMessage || 'Has not run yet'
+        this.errorMessage = this.config.__errorMessage || ''
         
         // true when this watcher is running a test. Prevents concurrent tests if a test takes longer than
         // the watcher test interval
