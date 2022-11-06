@@ -46,6 +46,7 @@ module.exports = express => {
                 dashboardNode,
                 dashboardRefreshInterval : settings.dashboardRefreshInterval,
                 hasFailing,
+                UIRestart: settings.UIRestart,
                 renderDate : `${now.toLocaleDateString()} ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
                 watchers,
                 dashboards : Object.keys(settings.dashboards).length > 1 ? settings.dashboards : null

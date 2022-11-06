@@ -134,7 +134,7 @@ module.exports = {
         
             // allows AWD to exit (and cleanly restart when daemonized) via HTTP call. Enable only if you trust people
             // on your network not to abuse
-            allowHttpExit: false,
+            UIRestart: false,
         
             // internal worker timer, cleans up/self-maintains. Should run once a day only
             internalWorkerTimer : '0 0 * * *',
@@ -142,11 +142,13 @@ module.exports = {
             // 60 second interval default , interval for sending queued alerts
             transportWorkerTime: '*/60 * * * * *',
 
+            //
             pagesPerGroup: 10,
 
             // number of items to display whenever paging is used
             pageSize: 10,
             
+            // 
             listCondenseThresh: 10,
 
             // in days. set to zero to disable.

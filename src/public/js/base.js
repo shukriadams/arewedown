@@ -57,11 +57,69 @@ const dashboardMenuEventHandler = event => {
     window.location = `/dashboard/${dashboardMenu.value}`
 }
 
-const restartServerEventHandler = event => {
-    fetch('/restart')
-        .then(response => response.text())
-        .then(data => console.log(data))
+const fetchText=(url, options={})=>{
+/*
+    let controller = null
+    if (options.timeout){
+        controller = new AbortController()
+        options.signal = controller.signal
+        signal.addEventListener('abort', () => controller.abort())
+    }
+    */
+    return new Promise((resolve, reject)=>{
+        try {
+            fetch(url, options)
+                .then(response => response.text())
+                .then(data =>{
+                    //clearTimeout(timeoutId)
+                    resolve(data)
+                })
+                .catch(error => {
+                    if (error.name === "AbortError") {
+                        resolve('timeout')
+                    } else {
+                        reject(error)
+                    }
+                })
+        } catch (ex) {
+            reject(ex)
+        }
+    })
 }
+
+const restartServerEventHandler = async event => {
+    if (!confirm('Are you sure you want to restart server?'))
+        return
+
+    const response = await fetchText('/restart')
+    console.log('restart response: ' + response)
+    if (response !== 'restarting'){
+        console.log(response)
+        return
+    }
+
+    let busy = false
+    let timer = setInterval(async ()=>{
+        if (busy)
+            return
+
+        busy = true
+
+        try {
+            // keep polling /status until we don't get an error,
+            // then force reload current page
+            await fetchText('/status')
+
+            clearInterval(timer)
+            window.location = window.location
+        } catch (ex){
+            console.log(ex)
+        } finally {
+            busy = false
+        }
+    }, 1000)
+}
+
 
 if (dashboardRefreshInterval && dashboardName)
     setInterval(()=>{
@@ -130,6 +188,9 @@ if (dashboardRefreshInterval && dashboardName)
                     layout.classList.remove('layout--failing')
 
                 updateRenderTime()
+            })
+            .catch(error => {
+                console.log(error)
             })  
     }, dashboardRefreshInterval)
 

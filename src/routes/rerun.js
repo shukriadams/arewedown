@@ -11,9 +11,9 @@ module.exports = express => {
             const settings = require('./../lib/settings').get(),
                 daemon = require('./../lib/daemon')
 
-            if (!settings.allowHttpExit){
+            if (!settings.UIRestart){
                 res.status(403)
-                res.end('Not allowed. set "allowHttpExit:true" to enable restart')
+                res.end('Not allowed. set "UIRestart:true" to enable restart')
                 return
             }
 

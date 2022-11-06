@@ -8,18 +8,18 @@ module.exports = express => {
         const log = require('./../lib/logger').instance()
 
         try {
-            const settings = require('./../lib/settings').get()
+            const settings = require('./../lib/settings').get(),
+                process = require('process')
 
-            if (!settings.allowHttpExit){
+            if (!settings.UIRestart){
                 res.status(403)
-                res.end('Not allowed. set "allowHttpExit:true" to enable restart')
+                res.end('Not allowed. set "UIRestart:true" to enable restart')
                 return
             }
 
-            const message = 'Application shutting down from /exit request'
-            console.log(message)
-            res.end(message)
-            global.__restartServer = true
+            console.log('Application shutting down from /exit request')
+            res.end('restarting')
+            process.exit(0)
 
         } catch (ex){
             log.error(ex)

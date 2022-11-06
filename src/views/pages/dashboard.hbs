@@ -38,18 +38,25 @@
         {{/if}}
 
     {{/content}}
+
     {{#content "footer"}}
+
         <div class="layout-footerItem">
             Rendered <span class="now"></span>
         </div>
-        <div class="layout-footerItem">
-            <a class="restartServer" href="javascript:void(0)">Restart watchers</a>
-        </div>
+
+        {{#if UIRestart}}
+            <div class="layout-footerItem">
+                <a class="restartServer" href="javascript:void(0)">Restart</a>
+            </div>
+        {{/if}}
+
         {{#if blocks}}
             <div class="layout-footerItem">
                 <a class="rerunAllWatchers" href="javascript:void(0)">Rerun all</a>
             </div>
         {{/if}}
+
     {{/content}}
 
 {{/extend}}
