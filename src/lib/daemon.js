@@ -80,12 +80,12 @@ module.exports =  {
                         try {
                                 
                             const alert = await fs.readJson(alertPath),
-                                watcherName = Buffer.from(path.basename(alertPath), 'base64').toString('ascii')
+                                watcherSafeName = path.basename(alertPath)
 
                             if (alert.status === 'up')
-                                delta.passing.push(watcherName)
+                                delta.passing.push(watcherSafeName)
                             else if (alert.status === 'down')
-                                delta.failing.push(watcherName)
+                                delta.failing.push(watcherSafeName)
                             
                             await fs.remove(alertPath)
 

@@ -222,11 +222,10 @@ module.exports = class {
 
                 try {
                     const receiverNameBase64 = Buffer.from(recipientName).toString('base64'),
-                        watcherNameBase64 = Buffer.from(this.config.__name).toString('base64'),
                         dir = path.join(settings.queue, transportName, receiverNameBase64)
 
                     await fs.ensureDir(dir)
-                    await fs.writeJson(path.join(dir, watcherNameBase64), {
+                    await fs.writeJson(path.join(dir, this.config.__safeName), {
                         isPassing : this.isPassing
                     })
 
