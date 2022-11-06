@@ -265,11 +265,11 @@ x-columns {
 .cell.cell-header {
     font-weight: bold;
     font-size: 20px;
-    background-color: var(--color-vermilion);
     max-height: 65px;
     overflow: hidden;
     white-space: nowrap;
 }
+
 /*************************************************************************************************/
 .watcher {
     background-color: inherit;
@@ -291,6 +291,10 @@ x-columns {
 .watcher.watcher--down .cell { 
     background-color: var(--color-orange);
     color: var(--color-white);
+}
+
+.watcher.watcher--down .cell-header { 
+    background-color: var(--color-vermilion);
 }
 
 .watcher.watcher--up .cell {

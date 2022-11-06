@@ -100,7 +100,7 @@
                             return reject({
                                 type: 'awdtest.fail',
                                 test : 'general.dataInFile',
-                                text: `Expected date "${parsedDate}" is too old` 
+                                text: `Retrieved date "${timebelt.toShort(parsedDate)}" is too old.` 
                             })                    
 
                         return resolve()
