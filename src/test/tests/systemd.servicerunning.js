@@ -8,28 +8,28 @@ describe('tests/systemd.servicerunning', async()=>{
         const ctx =  require(_$t+'context'),
             test = require(_$+'tests/systemd.servicerunning')
             
-        await ctx.assert.throws(async() => await test({ }) )
+        await ctx.assert.throws(async() => await test.validateConfig({ }) )
     })
 
     it('tests/systemd.servicerunning::unhappy no user', async() => {
         const ctx =  require(_$t+'context'),
             test = require(_$+'tests/systemd.servicerunning')
             
-        await ctx.assert.throws(async() => await test({ host }) )
+        await ctx.assert.throws(async() => await test.validateConfig({ host }) )
     })
 
     it('tests/systemd.servicerunning::unhappy no password', async() => {
         const ctx =  require(_$t+'context'),
             test = require(_$+'tests/systemd.servicerunning')
             
-        await ctx.assert.throws(async() => await test({ host, user }) )
+        await ctx.assert.throws(async() => await test.validateConfig({ host, user }) )
     })
 
     it('tests/systemd.servicerunning::unhappy no service', async() => {
         const ctx =  require(_$t+'context'),
             test = require(_$+'tests/systemd.servicerunning')
             
-        await ctx.assert.throws(async() => await test({ host, user, password }) )
+        await ctx.assert.throws(async() => await test.validateConfig({ host, user, password }) )
     })
 
     it('tests/systemd.servicerunning::happy service running', async() => {
@@ -44,7 +44,7 @@ describe('tests/systemd.servicerunning', async()=>{
         })
 
         const test = require(_$+'tests/systemd.servicerunning')
-        await test({ host, user, password, service }) 
+        await test.run({ host, user, password, service }) 
     })
 
     it('tests/systemd.servicerunning::unhappy service not running', async() => {
@@ -59,7 +59,7 @@ describe('tests/systemd.servicerunning', async()=>{
         })
 
         const test = require(_$+'tests/systemd.servicerunning'),
-            exception = await ctx.assert.throws(async() => await test({ host, user, password, service }) )
+            exception = await ctx.assert.throws(async() => await test.run({ host, user, password, service }) )
 
         ctx.assert.includes(exception.text, 'not running')
     })
@@ -71,6 +71,6 @@ describe('tests/systemd.servicerunning', async()=>{
         })
 
         const test = require(_$+'tests/systemd.servicerunning')
-        await ctx.assert.throws(async() => await test({ host, user, password, service }) )
+        await ctx.assert.throws(async() => await test.run({ host, user, password, service }) )
     })
 })

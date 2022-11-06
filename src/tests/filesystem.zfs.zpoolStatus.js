@@ -1,64 +1,70 @@
 /**
  * SSHs onto a remote host to determine if a system.d process is running.
  */
- module.exports = async function(config){
-    const SSH = require('simple-ssh')
-    
-    // validate settings
-    if (!config.host)
-        throw {
-            type : 'configError',
-            text : '.host required'
-        }
+ module.exports = {
 
-    if (!config.user)
-        throw {
-            type : 'configError',
-            text : '.user required'
-        }
+    validateConfig(config){
+        if (!config.host)
+            throw {
+                type : 'configError',
+                text : '.host required'
+            }
 
-    if (!config.password)
-        throw {
-            type : 'configError',
-            text : '.password required'
-        }
+        if (!config.user)
+            throw {
+                type : 'configError',
+                text : '.user required'
+            }
 
-    if (!config.pool)
-        throw {
-            type : 'configError',
-            text : '.pool required'
-        }
+        if (!config.password)
+            throw {
+                type : 'configError',
+                text : '.password required'
+            }
 
-    const ssh = new SSH({
-        host: config.host,
-        user: config.user,
-        pass: config.password
-    })
+        if (!config.pool)
+            throw {
+                type : 'configError',
+                text : '.pool required'
+            }
+    },
 
-    return new Promise((resolve, reject)=>{
-        try {
-            ssh.exec(`zpool status ${config.pool}`, {
-                out: stdout => {
-                    stdout = stdout.trim()
-                    if (stdout.includes('state: ONLINE'))
-                        return resolve()
+    async run(config){
+        const SSH = require('simple-ssh'),
+            ssh = new SSH({
+                host: config.host,
+                user: config.user,
+                pass: config.password
+            })
 
-                    reject({
-                        type: 'awdtest.fail',
-                        test : 'filesystem.zfs.zpoolStatus',
-                        text:  `Pool "${config.pool}" status is ${stdout}.`
-                    })
-                },
-                err: stderr => {
-                    return reject({
-                        type: 'awdtest.fail',
-                        test : 'filesystem.zfs.zpoolStatus',
-                        text: stderr
-                    })   
-                }                
-            }).start()
-        }catch(ex){
-            reject(ex)
-        }
-    })
-}
+        return new Promise((resolve, reject)=>{
+            try {
+                ssh.exec(`zpool status ${config.pool}`, {
+
+                    out: stdout => {
+                        stdout = stdout.trim()
+                        if (stdout.includes('state: ONLINE'))
+                            return resolve()
+
+                        reject({
+                            type: 'awdtest.fail',
+                            test : 'filesystem.zfs.zpoolStatus',
+                            text:  `Pool "${config.pool}" status is ${stdout}.`
+                        })
+                    },
+
+                    err: stderr => {
+                        return reject({
+                            type: 'awdtest.fail',
+                            test : 'filesystem.zfs.zpoolStatus',
+                            text: stderr
+                        })   
+                    }                
+
+                }).start()
+            }catch(ex){
+                reject(ex)
+            }
+        })
+    }
+ }

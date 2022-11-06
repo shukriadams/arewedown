@@ -5,14 +5,15 @@ describe('tests/docker.containerIsUp', async()=>{
         ctx.inject.object('madscience-httputils', {
             downloadString(){ return { statusCode: 200, body : JSON.stringify([ {Names : '/mycontainer', State : 'running'} ]) }}
         })
+
         const test = require(_$+'tests/docker.containerIsUp')
-        await test({ host : 'test', container : 'mycontainer' })
+        await test.run({ host : 'test', container : 'mycontainer' })
     })
 
     it('tests/docker.containerIsUp::unhappy host not defined', async() => {
         const test = require(_$+'tests/docker.containerIsUp'),
             ctx = require(_$t+'context'),
-            exception = await ctx.assert.throws(async() => await test({  }))
+            exception = await ctx.assert.throws(async() => await test.validateConfig({  }))
 
         ctx.assert.equal(exception.text, '.host required')
     })
@@ -20,7 +21,8 @@ describe('tests/docker.containerIsUp', async()=>{
     it('tests/docker.containerIsUp::unhappy container name not defined', async() => {
         const test = require(_$+'tests/docker.containerIsUp'),
             ctx = require(_$t+'context')
-        await ctx.assert.throws(async() => await test({ host: 'test' }))
+
+        await ctx.assert.throws(async() => await test.validateConfig({ host: 'test' }))
     })
 
     it('tests/docker.containerIsUp::unhappy download fail', async() => {
@@ -31,7 +33,7 @@ describe('tests/docker.containerIsUp', async()=>{
             downloadString(){ throw 'error' }
         })
 
-        await ctx.assert.throws(async() => await test({ host: 'test', container : 'mycontainer' }))
+        await ctx.assert.throws(async() => await test.run({ host: 'test', container : 'mycontainer' }))
     })
 
     it('tests/docker.containerIsUp::unhappy invalid status code', async() => {
@@ -41,7 +43,7 @@ describe('tests/docker.containerIsUp', async()=>{
         })
 
         const test = require(_$+'tests/docker.containerIsUp')
-        await ctx.assert.throws(async() => await test({ host : 'test', container : 'mycontainer' }))
+        await ctx.assert.throws(async() => await test.run({ host : 'test', container : 'mycontainer' }))
     })
 
     it('tests/docker.containerIsUp::unhappy container not running', async() => {
@@ -51,7 +53,7 @@ describe('tests/docker.containerIsUp', async()=>{
         })
 
         const test = require(_$+'tests/docker.containerIsUp'),
-            exception = await ctx.assert.throws(async() => await test({ host : 'test', container : 'mycontainer' }))
+            exception = await ctx.assert.throws(async() => await test.run({ host : 'test', container : 'mycontainer' }))
 
         ctx.assert.includes(exception.text, 'container state is')
     })
@@ -61,7 +63,8 @@ describe('tests/docker.containerIsUp', async()=>{
         ctx.inject.object('madscience-httputils', {
             downloadString(){ return { statusCode: 200, body : JSON.stringify([ {Names : '/someothercontainer', State : 'running'} ]) }}
         })
+        
         const test = require(_$+'tests/docker.containerIsUp')
-        await ctx.assert.throws(async() => await test({ host : 'test', container : 'mycontainer' }))
+        await ctx.assert.throws(async() => await test.run({ host : 'test', container : 'mycontainer' }))
     })
 })

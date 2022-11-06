@@ -4,14 +4,14 @@ describe('tests/net.portOpen', async()=>{
         const test = require(_$+'tests/net.portOpen'),
             ctx =  require(_$t+'context')
             
-        await ctx.assert.throws(async() => await test({ }) )
+        await ctx.assert.throws(async() => await test.validateConfig({ }) )
     })
 
     it('tests/net.portOpen::unhappy no port', async() => {
         const test = require(_$+'tests/net.portOpen'),
             ctx =  require(_$t+'context')
             
-        await ctx.assert.throws(async() => await test({ host: '127.0.0.1' }) )
+        await ctx.assert.throws(async() => await test.validateConfig({ host: '127.0.0.1' }) )
     })
 
     it('tests/net.portOpen::happy port open', async() => {
@@ -21,7 +21,7 @@ describe('tests/net.portOpen', async()=>{
         })
 
         const test = require(_$+'tests/net.portOpen')
-        await ctx.assert.throws(async() => await test({ host: '127.0.0.1', port: 1234 }) )
+        await ctx.assert.throws(async() => await test.run({ host: '127.0.0.1', port: 1234 }) )
     })
 
     it('tests/net.portOpen::unhappy port closed', async() => {
@@ -31,7 +31,7 @@ describe('tests/net.portOpen', async()=>{
         })
 
         const test = require(_$+'tests/net.portOpen'),
-            exception = await ctx.assert.throws(async() => await test({ host: '127.0.0.1', port: 1234 }) )
+            exception = await ctx.assert.throws(async() => await test.run({ host: '127.0.0.1', port: 1234 }) )
         ctx.assert.includes(exception.text, 'closed')
     })
 
@@ -42,6 +42,6 @@ describe('tests/net.portOpen', async()=>{
         })
         
         const test = require(_$+'tests/net.portOpen')
-        await ctx.assert.throws(async() => await test({ host: '127.0.0.1', port: 1234 }) )
+        await ctx.assert.throws(async() => await test.run({ host: '127.0.0.1', port: 1234 }) )
     })
 })

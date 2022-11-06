@@ -4,7 +4,7 @@ describe('tests/net.httpCheck', async()=>{
         const test = require(_$+'tests/net.httpCheck'),
             ctx =  require(_$t+'context')
 
-        await ctx.assert.throws(async() => await test({ }) )
+        await ctx.assert.throws(async() => await test.validateConfig({ }) )
     })
 
     it('tests/net.httpCheck::unhappy site not found', async() => {
@@ -15,7 +15,7 @@ describe('tests/net.httpCheck', async()=>{
         })
         const test = require(_$+'tests/net.httpCheck')
         
-        await ctx.assert.throws(async() => await test({ host : 'http://example.com' }) )
+        await ctx.assert.throws(async() => await test.run({ host : 'http://example.com' }) )
     })
 
     it('tests/net.httpCheck::unhappy unknown lookup error', async() => {
@@ -26,7 +26,7 @@ describe('tests/net.httpCheck', async()=>{
         })
         const test = require(_$+'tests/net.httpCheck')
         
-        const exception = await ctx.assert.throws(async() => await test({ host : 'http://example.com' }) )
+        const exception = await ctx.assert.throws(async() => await test.run({ host : 'http://example.com' }) )
         ctx.assert.includes(exception.text, 'Expected HTTP code')
     })
 
@@ -37,6 +37,6 @@ describe('tests/net.httpCheck', async()=>{
         })
 
         const test = require(_$+'tests/net.httpCheck')
-        await ctx.assert.throws(async() => await test({ host : 'http://example.com' }) )
+        await ctx.assert.throws(async() => await test.run({ host : 'http://example.com' }) )
     })
 })

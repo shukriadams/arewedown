@@ -42,11 +42,31 @@ module.exports = class {
             history = require('./history'),
             thisExistingStatus = await history.getStatus(this.config.__safeName)
 
+            if (!this.config.cmd){
+                // get test to run, if none is set, fall back to httpCheck as default
+                let testname = this.config.test ? 
+                        this.config.test 
+                        : 'net.httpCheck', 
+                    test = require(`../tests/${testname}`)
+
+                try {
+                    test.validateConfig.call(this, this.config)
+                } catch(ex){
+                    // Tests can throw an explicit 'configError' error, if their configuraiton conditions are not met.
+                    // If thrown, the test is marked as having invalid config, which in turn can be shown on the UI, aiding in
+                    // visually identifying an issue.
+                    this.config.__hasErrors = true
+                    this.errorMessage = ex.text || ex
+                }
+            }
+
+
         if (thisExistingStatus && thisExistingStatus.date)
             this.enteredStatusTime = thisExistingStatus.date
 
         if (thisExistingStatus && thisExistingStatus.status)
             this.status = thisExistingStatus.status
+
 
         this.log.info(`Starting watcher "${this.config.name || this.config.__name}"`)
         this.cron = new CronJob(this.config.interval, this.tick.bind(this), null, true, null, null, true /*tick immediately on itit*/)
@@ -148,7 +168,7 @@ module.exports = class {
                 testRun = testname
 
                 // This is where the business of AWD? runs, this executes the test for a given watcher
-                await test.call(this, this.config)
+                await test.run.call(this, this.config)
 
                 // if reach here, no exception thrown, so test passed
                 this.errorMessage = null
@@ -158,15 +178,7 @@ module.exports = class {
         } catch(ex){
 
             // the watcher test failed, try to figure out how
-
-            if (ex.type === 'configError'){
-                // Tests can throw an explicit 'configError' error, if their configuraiton conditions are not met.
-                // If thrown, the test is marked as having invalid config, which in turn can be shown on the UI, aiding in
-                // visually identifying an issue.
-                this.config.__hasErrors = true
-                this.errorMessage = ex.text
-                this.log.error(this.errorMessage)  
-            } else if (ex.type === 'awdtest.fail'){
+            if (ex.type === 'awdtest.fail'){
                 // Tests are expected to throw the 'awdtest.fail' error explicitly if whatever condition they test for isn't met, so we can 
                 // treat this as an "expected" fail
                 this.log.info(`Watcher "${this.config.__name}" test "${ex.test}" failed.`, ex.text)

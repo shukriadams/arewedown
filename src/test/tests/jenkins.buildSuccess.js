@@ -3,13 +3,15 @@ describe('tests/jenkins.buildSuccess', async()=>{
     it('tests/jenkins.buildSuccess::unhappy no host', async() => {
         const test = require(_$+'tests/jenkins.buildSuccess'),
             ctx =  require(_$t+'context')
-        await ctx.assert.throws(async() => await test({ }) )
+
+        await ctx.assert.throws(async() => await test.validateConfig({ }) )
     })
 
     it('tests/jenkins.buildSuccess::unhappy no job', async() => {
         const test = require(_$+'tests/jenkins.buildSuccess'),
             ctx =  require(_$t+'context')
-        await ctx.assert.throws(async() => await test({ url : 'test' }) )
+
+        await ctx.assert.throws(async() => await test.validateConfig({ url : 'test' }) )
     })
     
     it('tests/jenkins.buildSuccess::unhappy server verify error', async() => {
@@ -20,7 +22,7 @@ describe('tests/jenkins.buildSuccess', async()=>{
             downloadString(){ throw 'error' }
         })
 
-        await ctx.assert.throws(async() => await test({ host : 'test', job : 'myjob' }))
+        await ctx.assert.throws(async() => await test.run({ host : 'test', job : 'myjob' }))
     })
 
     it('tests/jenkins.buildSuccess::unhappy invalid status code on server verify', async() => {
@@ -31,7 +33,7 @@ describe('tests/jenkins.buildSuccess', async()=>{
             downloadString(){ return { statusCode : 500 } }
         })
 
-        await ctx.assert.throws(async() => await test({ host : 'test', job : 'myjob' }))
+        await ctx.assert.throws(async() => await test.run({ host : 'test', job : 'myjob' }))
     })
 
     it('tests/jenkins.buildSuccess::unhappy download error on job lookup', async() => {
@@ -43,7 +45,7 @@ describe('tests/jenkins.buildSuccess', async()=>{
             downloadString(){ if (calls == 0) { calls ++; return { statusCode: 200} } throw 'error'  }
         })
 
-        await ctx.assert.throws(async() => await test({ host : 'test', job : 'myjob' }))
+        await ctx.assert.throws(async() => await test.run({ host : 'test', job : 'myjob' }))
     })
     
     it('tests/jenkins.buildSuccess::unhappy job not found', async() => {
@@ -55,7 +57,7 @@ describe('tests/jenkins.buildSuccess', async()=>{
             downloadString(){ if (calls == 0) { calls ++; return { statusCode: 200} } return { statusCode: 404}  }
         })
 
-        await ctx.assert.throws(async() => await test({ host : 'test', job : 'myjob' }))
+        await ctx.assert.throws(async() => await test.run({ host : 'test', job : 'myjob' }))
     })
 
     it('tests/jenkins.buildSuccess::unhappy job returned invalid json', async() => {
@@ -67,7 +69,7 @@ describe('tests/jenkins.buildSuccess', async()=>{
             downloadString(){ if (calls == 0) { calls ++; return { statusCode: 200} } return { statusCode: 200, body : 'not-valid-json' }  }
         })
 
-        await ctx.assert.throws(async() => await test({ host : 'test', job : 'myjob' }))
+        await ctx.assert.throws(async() => await test.run({ host : 'test', job : 'myjob' }))
     })
 
     it('tests/jenkins.buildSuccess::unhappy job not passing', async() => {
@@ -79,7 +81,7 @@ describe('tests/jenkins.buildSuccess', async()=>{
             downloadString(){ if (calls == 0) { calls ++; return { statusCode: 200} } return { statusCode: 200, body : '{ "result" : "aborted" }' }  }
         })
 
-        const exception = await ctx.assert.throws(async() => await test({ host : 'test', job : 'myjob' }))
+        const exception = await ctx.assert.throws(async() => await test.run({ host : 'test', job : 'myjob' }))
         ctx.assert.includes(exception.text, 'Jenkins job has unwanted status')
     })
 
@@ -92,6 +94,6 @@ describe('tests/jenkins.buildSuccess', async()=>{
             downloadString(){ if (calls == 0) { calls ++; return { statusCode: 200} } return { statusCode: 200, body : '{ "result" : "Success" }' }  }
         })
 
-        await test({ host : 'test', job : 'myjob' })
+        await test.run({ host : 'test', job : 'myjob' })
     })
 })
