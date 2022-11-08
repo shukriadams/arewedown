@@ -4,6 +4,8 @@
 
 [![codecov](https://codecov.io/gh/shukriadams/arewedown/branch/develop/graph/badge.svg?token=DXO5XYWW2T)](https://codecov.io/gh/shukriadams/arewedown)
 
+*This is a modified version that allow custom rootpath* 
+
 ## Features 
 
 - Simple to configure with just a few lines of text in a single YML file.
