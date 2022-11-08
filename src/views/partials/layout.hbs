@@ -2,7 +2,7 @@
     <head>
         {{{block "basehead"}}}
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="/content/css/style.css" type="text/css">
+        <link rel="stylesheet" href="{{rootpath}}content/css/style.css" type="text/css">
         <title>{{title}}</title>
     </head>
     <body class="layout {{#if hasErrors}}layout--failing{{/if}}">
@@ -11,7 +11,7 @@
             <header>
                 <div class="grid">
                     <div class="layout-titleScaffold">
-                        <a href="/">
+                        <a href="{{rootpath}}">
                             <h1 class="layout-title">
                                 {{title}}
                             </h1>
@@ -28,6 +28,6 @@
                 {{{block "footer"}}}
             </footer>
         </div>
-        <script src="/content/js/base.js"></script>
+        <script src="{{rootpath}}content/js/base.js"></script>
     </body>
 </html>

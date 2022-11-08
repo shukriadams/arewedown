@@ -1,9 +1,9 @@
 module.exports = express => {
-
+    let settings = require('./../lib/settings').get()
     /**
      * Tests slack integration by sending a message to the target user / channel, then deleting it. 
      */
-    express.get('/slack/test/:target', async (req, res)=>{
+    express.get(`${settings.rootpath}slack/test/:target`, async (req, res)=>{
         const slack = require('./../lib/slack')
 
         try {

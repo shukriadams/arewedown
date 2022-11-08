@@ -1,10 +1,10 @@
 module.exports = express => {
-
+    let settings = require('./../lib/settings').get()
     /**
      * Serves static files (CSS, JS etc) from public folder. This is used instead of Express' built in static file middleware 
      * so we can serve files from inside pkg builds (express static file handler doesn't work with that)
      */
-    express.get('/content/:path*', async (req, res)=>{
+    express.get(`${settings.rootpath}content/:path*`, async (req, res)=>{
         const log = require('./../lib/logger').instance()
 
         try {

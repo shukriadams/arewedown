@@ -1,6 +1,6 @@
 module.exports = express => {
-
-    express.get('/watcher/:watcher', async (req, res) =>{
+    let settings = require('./../lib/settings').get()
+    express.get(`${settings.rootpath}watcher/:watcher`, async (req, res) =>{
 
         const log = require('./../lib/logger').instance()
 

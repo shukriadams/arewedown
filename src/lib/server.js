@@ -49,7 +49,7 @@ module.exports = {
         server = http.createServer(express)
         server.listen(settings.port)
 
-        console.log(`Are We Down? listening on port ${settings.port}.`)
+        console.log(`Are We Down? listening on port ${settings.port} and rootpath: ${settings.rootpath}.`)
     },
 
 
