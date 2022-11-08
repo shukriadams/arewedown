@@ -4,6 +4,7 @@
         dashboardRefreshInterval = body.getAttribute('data-dashboardRefreshInterval'),
         dashboardLoadTimeout = body.getAttribute('data-dashboardLoadTimeout'),
         dashboard = body.getAttribute('data-dashboard'),
+        rootpath = body.getAttribute('rootpath'),
         activeFrame = document.querySelector('.contentFrame1'),
         inactiveFrame = document.querySelector('.contentFrame2'),
         reload = true
@@ -21,13 +22,11 @@
         document.title = `${isPassing ? `` : 'ERRORS! ' }Are We Down?` 
     })
 
-    let settings = require('./../lib/settings').get()
-
     function update(){
         if (!reload)
             return
 
-        inactiveFrame.contentWindow.location = `${settings.rootpath}/dashboard/${dashboard}`
+        inactiveFrame.contentWindow.location = `${rootpath}/dashboard/${dashboard}`
         
         // handles iframe load failure - if the frame fails to load, all active frames are 
         // hidden and the underlying fail state shows through
