@@ -1,9 +1,8 @@
 module.exports = express => {
-    let settings = require('./../lib/settings').get()
     /**
      * Returns a json string with the status of jobs
      */
-    express.get(`${settings.rootpath}status`, async (req, res)=>{
+    express.get('/status', async (req, res)=>{
         const log = require('./../lib/logger').instance()
 
         try {

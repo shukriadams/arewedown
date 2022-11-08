@@ -1,10 +1,9 @@
 module.exports = express => {
-    let settings = require('./../lib/settings').get()
     /**
      * Shuts the application down. This is the cleanest way to apply new settings without having to restart the service or docker container,
      * as a properly daemonized app will instantly restart.
      */
-    express.get(`${settings.rootpath}exit`, async (req, res)=>{
+    express.get('/exit', async (req, res)=>{
         const log = require('./../lib/logger').instance()
 
         try {

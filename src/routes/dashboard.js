@@ -1,11 +1,10 @@
 module.exports = express => {
-    let settings = require('./../lib/settings').get()
 
     /**
      * Renders a dashboard. Does not autoreload, autoreload must be called via the default url /
      * The autoreload frame will in turn call and autorefresh this dashboard view.
      */
-    express.get(`${settings.rootpath}dashboard/:dashboard?`, async (req, res)=>{
+    express.get('/dashboard/:dashboard?', async (req, res)=>{
         const log = require('./../lib/logger').instance()
 
         try {

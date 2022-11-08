@@ -1,5 +1,6 @@
 module.exports = express => {
     let settings = require('./../lib/settings').get()
+    console.log(settings.rootpath)
     /**
      * This is the default view of this site. To load use
      * 
@@ -13,7 +14,7 @@ module.exports = express => {
      * If no (:dashboard) parameter is supplied, the first dashboard is automatically targetted.
      * 
      */
-    express.get(`${settings.rootpath}`, async (req, res)=>{
+    express.get('/', async (req, res)=>{
         const log = require('./../lib/logger').instance()
 
         try {
