@@ -55,7 +55,7 @@ module.exports = express => {
                 // get cronprocesses that are running and used on the current dashboard
                 watchers = daemon.watchers.filter(watcher => dashboardWatchers.includes(watcher.config.__name) )
 
-            hasFailing = watchers.filter(watcher => !watcher.status === 'down').length > 0
+            hasFailing = watchers.filter(watcher => watcher.status === 'down').length > 0
 
             // force update display times on watcher
             watchers.map(w => w.calculateDisplayTimes())
@@ -73,7 +73,18 @@ module.exports = express => {
                 })
             }            
 
-            out.sort((a,b)=> a.status === 'up' - b.status === 'down' || a.name.localeCompare(b.name))
+            // sort by status
+            out.sort((a,b)=> a.status === 'down' && b.status !== 'down' ? -1 :
+                b.status === 'down' && a.status !== 'down' ? 1
+                : 0
+            ) 
+            // then by name
+            out.sort((a,b)=>{ 
+                if (a.status === 'down' && b.status !== 'down')
+                    return a.name.localeCompare(b.name) ? 1 : -1
+                else
+                    return b.name.localeCompare(a.name) ? 1 : -1
+            })
 
             res.json({
                 watchers : out,

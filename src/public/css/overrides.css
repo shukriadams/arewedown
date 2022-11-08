@@ -94,7 +94,7 @@ x-columns {
     background-color: var(--color-fiord);
 }
 
-.layout.layout--down {
+.layout.layout--failing {
     background-color: var(--color-fire);
 }
 

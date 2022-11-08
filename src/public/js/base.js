@@ -170,7 +170,8 @@ if (dashboardRefreshInterval && dashboardName)
                     watcher.querySelector('.watcher-timeInState').innerHTML = watcherdata.timeInState || ''
                     const nextUpdateHolder = watcher.querySelector('.watcher-nextUpdate')
                     if (nextUpdateHolder)
-                        nextUpdateHolder.setAttribute('data-nextUpdate', watcherdata.nextRun || '') 
+                        nextUpdateHolder.setAttribute('data-nextUpdate', watcherdata.nextRun || '')
+                        
                     watcher.querySelector('.watcher-errorMessage').innerHTML = watcherdata.errorMessage
                 }
 
