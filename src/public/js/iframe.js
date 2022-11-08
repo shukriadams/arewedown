@@ -21,11 +21,13 @@
         document.title = `${isPassing ? `` : 'ERRORS! ' }Are We Down?` 
     })
 
+    let settings = require('./../lib/settings').get()
+
     function update(){
         if (!reload)
             return
 
-        inactiveFrame.contentWindow.location = `/dashboard/${dashboard}`
+        inactiveFrame.contentWindow.location = `${settings.rootpath}/dashboard/${dashboard}`
         
         // handles iframe load failure - if the frame fails to load, all active frames are 
         // hidden and the underlying fail state shows through

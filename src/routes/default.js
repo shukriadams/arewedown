@@ -1,6 +1,4 @@
 module.exports = express => {
-    let settings = require('./../lib/settings').get()
-    console.log(settings.rootpath)
     /**
      * This is the default view of this site. To load use
      * 
