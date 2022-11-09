@@ -17,7 +17,7 @@ RUN  mkdir -p /etc/arewedown \
     && chmod 700 -R /etc/arewedown \
     && chown -R arewedown /etc/arewedown    
     
-COPY src/* /etc/arewedown
+COPY ./.stage/src/. /etc/arewedown
 
 USER arewedown
 
