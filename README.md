@@ -4,7 +4,7 @@
 
 [![codecov](https://codecov.io/gh/shukriadams/arewedown/branch/develop/graph/badge.svg?token=DXO5XYWW2T)](https://codecov.io/gh/shukriadams/arewedown)
 
-*This is a modified version that allow custom rootpath* 
+*This is a modified version that allow custom rootpath (See [PR#22](https://github.com/shukriadams/arewedown/pull/22))* 
 
 ## Features 
 
