@@ -53,7 +53,7 @@ module.exports = express => {
             watchers.map(w => w.calculateDisplayTimes())
             
             res.send(view({
-                title : `${settings.header} ${dashboard.name}`,
+                title : `${settings.header} - ${dashboard.name}`,
                 dashboardNode,
                 dashboardRefreshInterval : settings.dashboardRefreshInterval,
                 hasFailing,

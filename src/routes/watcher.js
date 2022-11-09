@@ -116,7 +116,7 @@ module.exports = express => {
             }
 
             res.send(view({
-                title : watcher.name,
+                title : `${settings.header} - ${watcher.name}`,
                 dashboardsWithWatcher,
                 incidentCount,
                 lastIncidentDate,

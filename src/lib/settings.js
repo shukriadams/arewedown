@@ -138,7 +138,7 @@ module.exports = {
         
             // internal worker timer, cleans up/self-maintains. Should run once a day only
             internalWorkerTimer : '0 0 * * *',
-            
+
             // 60 second interval default , interval for sending queued alerts
             transportWorkerTime: '*/60 * * * * *',
 
@@ -147,7 +147,7 @@ module.exports = {
 
             // number of items to display whenever paging is used
             pageSize: 10,
-            
+
             // 
             listCondenseThresh: 10,
 
