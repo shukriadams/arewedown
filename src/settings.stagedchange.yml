@@ -8,7 +8,7 @@
 #   curl localhost:3000/dev/cycle
 
 allowHttpExit: true
-logLevel: error
+logLevel: info
 cacheViews: false
 watcherOffset: 500
 allowDevRoutes: true

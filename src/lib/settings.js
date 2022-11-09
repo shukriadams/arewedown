@@ -131,15 +131,15 @@ module.exports = {
         
             // milliseconds for dashboard to timeout and show self-error
             dashboardLoadTimeout: 5000,
-        
+
             // allows AWD to exit (and cleanly restart when daemonized) via HTTP call. Enable only if you trust people
             // on your network not to abuse
             UIRestart: false,
-        
+
             // internal worker timer, cleans up/self-maintains. Should run once a day only
             internalWorkerTimer : '0 0 * * *',
 
-            // 60 second interval default , interval for sending queued alerts
+            // 60 seconds default, interval for sending queued alerts. Pending alerts are grouped into a single message.
             transportWorkerTime: '*/60 * * * * *',
 
             //

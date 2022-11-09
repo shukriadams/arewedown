@@ -202,7 +202,7 @@ module.exports = class {
         // send alerts if status changed
         if (status.changed){
             this.enteredStatusTime = this.lastRun
-            this.log.info(`Status changed, "${this.config.__name}" is ${this.isPassing? 'passing': 'failing'}.`)
+            this.log.info(`Status changed, "${this.config.__name}" is ${this.status}.`)
             this.queueAlerts()
         }
     }
@@ -238,7 +238,7 @@ module.exports = class {
 
                     await fs.ensureDir(dir)
                     await fs.writeJson(path.join(dir, this.config.__safeName), {
-                        isPassing : this.isPassing
+                        status : this.status
                     })
 
                     this.log.info(`queued alert to ${recipient[transportName]} via transport ${transportName} for process ${this.config.__name}. `)

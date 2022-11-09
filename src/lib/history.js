@@ -15,7 +15,6 @@ module.exports = {
         let settings = require('./settings').get(),
             fs = require('fs-extra'),
             path = require('path'),
-            
             log = require('./../lib/logger').instance(),
             downFlag = path.join(settings.logs, safeName, 'flag'),
             changed = false,
@@ -68,6 +67,7 @@ module.exports = {
      */
     async getStatus(safeName){
         const fs = require('fs-extra'),
+            log = require('./../lib/logger').instance(),
             path = require('path'),
             settings = require('./settings').get(),
             statusPath = path.join(settings.logs, safeName, 'history', 'status.json')

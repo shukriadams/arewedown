@@ -91,6 +91,13 @@ module.exports =  {
 
                         } catch(ex){
                             log.error(`Unexpected error trying to read queued message ${alertPath} : `, ex)
+                            // queued message is likely corrupt, force delete it
+                            try {
+                                await fs.remove(alertPath)
+                                log.warn(`deleted suspected corrupt queue file ${alertPath}`)
+                            } catch (ex){
+                                log.error(`failed to delete suspected corrupt queue file ${alertPath} : ${ex}`)
+                            }
                         }
                     }
 
