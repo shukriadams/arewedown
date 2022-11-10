@@ -17,12 +17,31 @@ describe('lib/history/getLastEvent', async()=>{
         ctx.assert.equal(event.name, 'myevent')
     })
 
-    it('lib/history/getLastEvent::unhappy history doesnt exist', async()=>{
+
+
+    it('lib/history/getLastEvent::unhappy history log dir doesnt exist', async()=>{
         const ctx = require(_$t+'context'),
             history = ctx.clone(require(_$+'lib/history'))
 
         ctx.inject.object('fs-extra', { 
             exists: ()=> false
+        }) 
+       
+        const event = await history.getLastEvent('test')
+        ctx.assert.null(event)
+    })
+
+    it('lib/history/getLastEvent::unhappy history file oesnt exist', async()=>{
+        let ctx = require(_$t+'context'),
+            history = ctx.clone(require(_$+'lib/history')),
+            exists = false
+
+        ctx.inject.object('fs-extra', { 
+            exists: ()=>{
+                // flip so returns true, then false
+                exists = !exists
+                return exists
+            }
         }) 
        
         const event = await history.getLastEvent('test')

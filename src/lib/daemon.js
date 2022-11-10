@@ -28,13 +28,77 @@ module.exports =  {
         this.transportWorker = new CronJob(settings.transportWorkerTime, this.sendQueuedAlerts.bind(this), null, true, null, null, true /*runonitit*/)
     },
 
-    async stop(){
-        this.internalWorker.stop()
+    /**
+     * Removes alert message, supresses errors to logs
+     */
+    async removeAlert(alertPath){
+        const fs = require('fs-extra'),
+            log = require('./logger').instance()
 
-        for (let watcher of this.watchers)
-            watcher.stop()
+        // queued message is likely corrupt, force delete it
+        try {
+            await fs.remove(alertPath)
+            log.warn(`deleted suspected corrupt queue file ${alertPath}`)
+        } catch (ex){
+            log.error(`failed to delete suspected corrupt queue file ${alertPath} : ${ex}`)
+        } 
+    },
 
-        this.watchers = []
+
+    /**
+     * Gets delta (summary) of changes queued up for a recipient under a given transport. The process of loading delta
+     * also removes alerts from disk
+     */
+    async getAndClearDeltaForRecipient(recipientDir){
+        let fsUtils = require('madscience-fsUtils'),
+            path = require('path'),
+            fs = require('fs-extra'),
+            actualPassingCount = this.watchers.filter(w => w.status === 'up').length,
+            actualFailingCount = this.watchers.filter(w => w.status === 'down').length,
+            alertPaths = await fsUtils.readFilesInDir(recipientDir),
+            log = require('./logger').instance(),
+            receiverName = Buffer.from(path.basename(recipientDir), 'base64').toString('ascii'),
+            delta = {
+                
+                receiverName,
+
+                // names of passing alerts based on queued alerts, this can be out of sync with actual passing
+                passing : [],
+                
+                // names of failing alerts based on queued alerts, this can be out of sync with actual failing
+                failing : [],
+
+                actualPassingCount,
+
+                actualFailingCount
+            }
+            
+        // ignore lastMessageHash.txt, alerts always end .json
+        alertPaths = alertPaths.filter(a => !a.endsWith('.txt'))
+
+        // no alerts found for recipient
+        if (!alertPaths.length)
+            return null
+
+        for (let alertPath of alertPaths){
+            try {
+                const alert = await fs.readJson(alertPath),
+                    watcherSafeName = path.basename(alertPath)
+
+                if (alert.status === 'up')
+                    delta.passing.push(watcherSafeName)
+                else if (alert.status === 'down')
+                    delta.failing.push(watcherSafeName)
+
+            } catch(ex){
+                log.error(`Unexpected error trying to read queued message ${alertPath} : `, ex)
+            } finally {
+                // remove alert if it was read, or if there was an error reading it
+                this.removeAlert(alertPath)
+            }
+        }
+
+        return delta
     },
 
 
@@ -48,63 +112,20 @@ module.exports =  {
             crypto = require('crypto'),
             fs = require('fs-extra'),
             fsUtils = require('madscience-fsUtils'),
-            transportHandlers = require('./transports').getTransportHandlers(),
-            actualPassingCount = this.watchers.filter(w => w.status === 'up').length,
-            actualFailingCount = this.watchers.filter(w => w.status === 'down').length
+            transportHandlers = require('./transports').getTransportHandlers()
 
         for (const transportName in settings.transports){
             const transportHandler = transportHandlers[transportName],
                 transportQueuePath = path.join(settings.queue, transportName),
                 receiversDirs = await fsUtils.getChildDirs(transportQueuePath)
 
-            for(let receiverDir of receiversDirs){
+            for(let recipientDir of receiversDirs){
                 try {
-                    let alertPaths = await fsUtils.readFilesInDir(receiverDir),
-                        receiverName = Buffer.from(path.basename(receiverDir), 'base64').toString('ascii'),
-                        delta = {
-                            // names of passing alerts based on queued alerts, this can be out of sync with actual passing
-                            passing : [],
-                            // names of failing alerts based on queued alerts, this can be out of sync with actual failing
-                            failing : [],
-                            actualPassingCount,
-                            actualFailingCount
-                        }
-                        
-                    // ignore lastMessageHash.txt 
-                    alertPaths = alertPaths.filter(a => !a.endsWith('.txt'))
-
-                    if (!alertPaths.length)
-                        continue
-
-                    for (let alertPath of alertPaths){
-                        try {
-                                
-                            const alert = await fs.readJson(alertPath),
-                                watcherSafeName = path.basename(alertPath)
-
-                            if (alert.status === 'up')
-                                delta.passing.push(watcherSafeName)
-                            else if (alert.status === 'down')
-                                delta.failing.push(watcherSafeName)
-                            
-                            await fs.remove(alertPath)
-
-                        } catch(ex){
-                            log.error(`Unexpected error trying to read queued message ${alertPath} : `, ex)
-                            // queued message is likely corrupt, force delete it
-                            try {
-                                await fs.remove(alertPath)
-                                log.warn(`deleted suspected corrupt queue file ${alertPath}`)
-                            } catch (ex){
-                                log.error(`failed to delete suspected corrupt queue file ${alertPath} : ${ex}`)
-                            }
-                        }
-                    }
-
-                    const transportConfig = settings.recipients[receiverName] ? settings.recipients[receiverName][transportName] : null,
+                    const delta = await this.getAndClearDeltaForRecipient(recipientDir),
+                        transportConfig = settings.recipients[delta.receiverName] ? settings.recipients[delta.receiverName][transportName] : null,
                         text = this.generateContent(delta),
                         textHash = crypto.createHash('md5').update(text).digest('hex'),
-                        receiverLastMessageLog = path.join(receiverDir, 'lastMessageHash.txt')
+                        receiverLastMessageLog = path.join(recipientDir, 'lastMessageHash.txt')
             
                     // if user already received this message, skip 
                     if (await fs.exists(receiverLastMessageLog) ){
@@ -120,13 +141,16 @@ module.exports =  {
                         transportHandler.send(transportConfig, delta, text)
 
                 } catch (ex){
-                    log.error(`Unexpected error reading trying to read queued alerts for ${receiverDir} : `, ex)
+                    log.error(`Unexpected error reading trying to read queued alerts for ${recipientDir} : `, ex)
                 }
             }
         }
     },
 
-
+    
+    /**
+     * 
+     */
     generateContent(delta){
         let message = ''
 
@@ -139,15 +163,19 @@ module.exports =  {
         if (delta.actualFailingCount)
             message += `WARNING : ${delta.actualFailingCount} watcher${this.plural(delta.actualFailingCount,'','s')} ${this.plural(delta.actualFailingCount)} down. `
 
-        if (delta.failing.length)    
+        if (delta.failing && delta.failing.length)    
             message += `Latest fail${this.plural(delta.failing,'','s')} ${this.plural(delta.failing)} ${delta.failing.join(', ')}. `
 
-        if (delta.passing.length)
+        if (delta.passing && delta.passing.length)
             message += `${delta.passing.join(', ')} ${this.plural(delta.passing)} up again. `
 
         return message
     },
 
+
+    /**
+     * 
+    */
     plural(count, single = 'is', plural='are'){
         let cnt = count
         if (Array.isArray(count))

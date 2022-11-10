@@ -233,6 +233,7 @@ module.exports = class {
                     continue
 
                 try {
+                    // receiver name does not have filesystem "safe" version, so write to disk as base64 string
                     const receiverNameBase64 = Buffer.from(recipientName).toString('base64'),
                         dir = path.join(settings.queue, transportName, receiverNameBase64)
 

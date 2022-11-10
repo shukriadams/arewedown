@@ -1,4 +1,4 @@
 (async ()=>{
-    let server = require('./lib/server')
+    const server = require('./lib/server')
     await server.start()
 })()
