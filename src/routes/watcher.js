@@ -17,7 +17,8 @@ module.exports = express => {
                 const view = await handlebarsLoader.getPage('invalidWatcher')
                 res.status(404)
                 return res.send(view({
-                    title : req.params.watcher
+                    title : req.params.watcher,
+                    rootpath: settings.rootpath
                 }))
             }
     
@@ -73,7 +74,8 @@ module.exports = express => {
             const view = await handlebarsLoader.getPage('watcher')
             res.send(view({
                 title : `${settings.header} - ${watcher.name} history`,
-                history
+                history,
+                rootpath: settings.rootpath
             }))
 
         } catch(ex) {
