@@ -26,7 +26,7 @@
         if (!reload)
             return
 
-        inactiveFrame.contentWindow.location = `${rootpath}/dashboard/${dashboard}`
+        inactiveFrame.contentWindow.location = `${rootpath}dashboard/${dashboard}`
         
         // handles iframe load failure - if the frame fails to load, all active frames are 
         // hidden and the underlying fail state shows through
