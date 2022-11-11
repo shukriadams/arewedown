@@ -20,8 +20,7 @@ describe('lib/transports/validateAll', async()=>{
 
 
     it('lib/transports/validateAll::unhappy::should not throw exception if transport does not have ensureSettingsOrExit method', async() => {
-        const assert = require('madscience-node-assert'),
-            ctx = require(_$t+'context')
+        const ctx = require(_$t+'context')
 
         ctx.settings({
             transports: {
@@ -38,13 +37,12 @@ describe('lib/transports/validateAll', async()=>{
         const transports = require(_$+'lib/transports'),
             exception = await ctx.assert.throws(async() => await transports.validateAll() )
             
-        assert.includes(exception, 'missing expected method "ensureSettingsOrExit"')
+        ctx.assert.includes(exception, 'missing expected method "ensureSettingsOrExit"')
     })
 
     
     it('lib/transports/validateAll::happy::validates transport', async() => {
-        let assert = require('madscience-node-assert'),
-            ctx = require(_$t+'context'),
+        let ctx = require(_$t+'context'),
             validated = false
 
         ctx.settings({
@@ -63,7 +61,7 @@ describe('lib/transports/validateAll', async()=>{
 
         const transports = require(_$+'lib/transports')
         await transports.validateAll()
-        assert.true(validated)
+        ctx.assert.true(validated)
     })
 
 })

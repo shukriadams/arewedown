@@ -22,6 +22,7 @@ class SlackMock{
                         ts : 12345
                     }
                 },
+                
                 async delete(){
                     console.log('mock slack message delete')
                 }

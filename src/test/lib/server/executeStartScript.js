@@ -3,8 +3,7 @@ describe('lib/server/executeStartScript', async()=>{
 
     it('lib/server/executeStartScript::happy::should not execute start script if start script is null', async() => {
         
-        let ctx = require(_$t+'context'),
-            assert = require('madscience-node-assert'),
+        let ctx = require(_$t+'context')
             logged = null
 
         ctx.inject.object('./logger', {
@@ -22,14 +21,13 @@ describe('lib/server/executeStartScript', async()=>{
 
         const server = require(_$+'lib/server')
         await server.executeStartScript()
-        assert.null(logged)
+        ctx.assert.null(logged)
     })
 
     
     it('lib/server/executeStartScript::happy::executes start script', async() => {
         
         let ctx = require(_$t+'context'),
-            assert = require('madscience-node-assert'),
             logged = null
 
         ctx.inject.object('./logger', {
@@ -51,14 +49,41 @@ describe('lib/server/executeStartScript', async()=>{
 
         const server = require(_$+'lib/server')
         await server.executeStartScript()
-        assert.includes(logged, 'onstart finished with result')
+        ctx.assert.includes(logged, 'onstart finished with result')
     })
+    
 
+    it('lib/server/executeStartScript::cover::trap and rethrow exception on script error', async() => {
         
-    it('lib/server/executeStartScript::unhappy::trap exception on script error', async() => {
+        let ctx = require(_$t+'context')
+
+        ctx.inject.object('./logger', {
+            instance(){
+                return {
+                    info(content){
+                        // should not be called for this test
+                        logged = content
+                    }
+                }
+            }
+        })
+
+        // suppress
+        ctx.inject.object('madscience-node-exec', {
+            sh(){ 
+                throw 'expected error'
+            }
+        })
+
+        ctx.settings({ onstart : 'some script', onstartIgnoreError : true })
+
+        const server = require(_$+'lib/server')
+        await server.executeStartScript()   
+    })
+    
+    it('lib/server/executeStartScript::unhappy::trap and rethrow exception on script error', async() => {
         
-        let ctx = require(_$t+'context'),
-            assert = require('madscience-node-assert')
+        let ctx = require(_$t+'context')
 
         ctx.inject.object('./logger', {
             instance(){
@@ -82,6 +107,6 @@ describe('lib/server/executeStartScript', async()=>{
 
         const server = require(_$+'lib/server')
         const exception = await ctx.assert.throws(async() => await server.executeStartScript() )    
-        assert.equal(exception.ex, 'expected error')
+        ctx.assert.equal(exception.ex, 'expected error')
     })
 })

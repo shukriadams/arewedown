@@ -28,7 +28,7 @@ module.exports = {
         // When running in dev mode, version always returns the placeholder value of "0.0.1", which must never
         // be updated.
         if (startArgs.version)
-            return this.printVersion(!startArgs.testing) // return code is test aid, enable only when testing is explicitly set
+            return this.printVersion()
 
         await this.executeStartScript()
         
@@ -58,37 +58,15 @@ module.exports = {
         console.log(`Are We Down? listening on port ${settings.port}.`)
     },
 
-    async exit(){
-        if (!expressServer)
-            return
-
-        const createHttpTerminator = require('http-terminator').createHttpTerminator,
-            httpTerminator = createHttpTerminator({
-                server: expressServer,
-            })
-
-        await httpTerminator.terminate()
-        const daemon = require('./daemon')
-        daemon.stop()
-    },
-
     
     /**
      * 
      */
-    async printVersion(forceExit = true){
+    async printVersion(){
         const fs = require('fs-extra'),
-            process = require('process'),
             packageJson = await fs.readJson(`${__dirname}/../package.json`)
 
         console.log(`AreWeDown? v${packageJson.version}`)
-        // force exit process directly, else app loader will simply loop restart
-        if (forceExit){
-            console.log('force exiting app')
-            process.exit(0)
-        }
-        else
-            return packageJson.version
     },
     
 

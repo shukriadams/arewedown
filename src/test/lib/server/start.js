@@ -1,8 +1,7 @@
 describe('lib/server/start', async()=>{
 
-    it('lib/server/start::happy::return static version starting with --version, then exit', async() => {
-        const assert = require('madscience-node-assert'),
-            ctx = require(_$t+'context')
+    it('lib/server/start::cover::prints version', async() => {
+        const ctx = require(_$t+'context')
 
         ctx.inject.object('./startArgs', {
             get(){
@@ -13,10 +12,8 @@ describe('lib/server/start', async()=>{
             }
         })
 
-        const server = require(_$+'lib/server'),
-            result =  await server.start()
-
-        assert.equal(result, '0.0.1')
+        const server = require(_$+'lib/server')
+        await server.start()
     })
 
     it('lib/server/start::happy::start the server', async() => {
