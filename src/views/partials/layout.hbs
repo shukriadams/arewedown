@@ -2,14 +2,14 @@
     <head>
         {{{block "basehead"}}}
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="/content/css/bootstrip.css" type="text/css">
-        <link rel="stylesheet" href="/content/css/bootstrip-theme-default.css" type="text/css">
-        <link rel="stylesheet" href="/content/css/overrides.css" type="text/css">
+        <link rel="stylesheet" href="{{rootpath}}content/css/bootstrip.css" type="text/css">
+        <link rel="stylesheet" href="{{rootpath}}content/css/bootstrip-theme-default.css" type="text/css">
+        <link rel="stylesheet" href="{{rootpath}}content/css/overrides.css" type="text/css">
         <title>{{title}}</title>
     </head>
     <body class="layout {{#if hasFailing}}layout--failing{{/if}}">
         <div class="layout-header">
-            <a href="/">
+            <a href="{{rootpath}}">
                 <h1>
                     {{title}}
                 </h1>
@@ -35,10 +35,12 @@
         <div class="layout-content">
             {{{block "body"}}}
         </div>
+
         <div class="layout-footer">
             {{{block "footer"}}}
         </div>
-        <script src="/content/js/bootstrip.js"></script>
-        <script src="/content/js/base.js"></script>
+        <script src="{{rootpath}}content/js/bootstrip.js"></script>
+        <script src="{{rootpath}}content/js/base.js"></script>
+
     </body>
 </html>

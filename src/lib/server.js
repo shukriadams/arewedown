@@ -55,7 +55,11 @@ module.exports = {
         server = http.createServer(express)
         expressServer = server.listen(settings.port)
 
-        console.log(`Are We Down? listening on port ${settings.port}.`)
+        let status = `Are We Down? : Listening on port ${settings.port}`
+        if (settings.rootpath !== '/') 
+            status += `and rootpath: ${settings.rootpath}`
+
+        console.log(status)
     },
 
     

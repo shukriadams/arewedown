@@ -21,7 +21,8 @@ module.exports = express => {
                 const view = await handlebarsLoader.getPage('invalidWatcher')
                 res.status(404)
                 return res.send(view({
-                    title : req.params.watcher
+                    title : req.params.watcher,
+                    rootpath: settings.rootpath
                 }))
             }
     
@@ -123,7 +124,8 @@ module.exports = express => {
                 totalDownTime : timebelt.minutesToPeriodString(totalDownTime),
                 watcherRuntime : startDate ? timebelt.timespanString(new Date(), startDate, ' days', ' hours', ' minutes', ' seconds') : null,
                 page : arrayHelper.toPage(files, page, settings.pageSize),
-                baseurl : `/watcher/${watcher.__safeName}?`
+                baseurl : `/watcher/${watcher.__safeName}?`,
+                rootpath: settings.rootpath
             }))
 
         } catch(ex) {

@@ -99,8 +99,11 @@ module.exports = {
         
             // override default title
             header: 'Are We Down?',
-        
-            // path all log data is written to. This directory is in the AWD? root directory.
+
+            // rooth path
+            rootpath: '/',
+
+            // path all log data is written to. This folder is in the AWD? root folder.
             logs : './logs',
             
             /// path transport queue is written too. This directory is in the AWD? root directory.
@@ -174,6 +177,10 @@ module.exports = {
 
         }, _settings)
         
+        if (!_settings.rootpath.endsWith('/')) {
+            _settings.rootpath += '/'
+        }
+
         // it's still possible to nullify these with goofy setup.yml content, so force exist as we rely on them being present
         _settings.dashboards = _settings.dashboards || {}
         _settings.recipients = _settings.recipients || {}
