@@ -26,7 +26,8 @@ module.exports = express => {
 
                 return res.send(view({
                     title : dashboardNode,
-                    hasErrors : true
+                    hasErrors : true, log,
+                    rootpath: settings.rootpath
                 }))
             }
 
@@ -55,7 +56,8 @@ module.exports = express => {
                 dashboardRefreshInterval : settings.dashboardRefreshInterval,
                 hasErrors,
                 renderDate: `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`,
-                watchers 
+                watchers,
+                rootpath: settings.rootpath
             }))
             
         } catch (ex){

@@ -38,6 +38,7 @@ module.exports = express => {
                 dashboardNode,
                 dashboardLoadTimeout : settings.dashboardLoadTimeout,
                 dashboardRefreshInterval : settings.dashboardRefreshInterval,
+                rootpath: settings.rootpath
             }))
         } catch (ex){
             log.error(ex)
