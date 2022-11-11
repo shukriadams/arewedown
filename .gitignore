@@ -28,3 +28,6 @@ build/win64
 vagrant/virtio/.vagrant/
 vagrant/virtualbox/.vagrant
 src/yarn.lock
+
+.idea
+*.iml
