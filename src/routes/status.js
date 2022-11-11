@@ -1,4 +1,5 @@
 module.exports = express => {
+
     /**
      * Returns a json string with the status of jobs
      */

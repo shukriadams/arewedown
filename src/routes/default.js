@@ -1,4 +1,5 @@
 module.exports = express => {
+
     /**
      * This is the default view of this site. To load use
      * 

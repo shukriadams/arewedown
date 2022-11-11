@@ -26,7 +26,8 @@ module.exports = express => {
 
                 return res.send(view({
                     title : dashboardNode,
-                    hasErrors : true
+                    hasErrors : true, log,
+                    rootpath: settings.rootpath
                 }))
             }
 

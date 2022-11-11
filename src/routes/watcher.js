@@ -1,5 +1,6 @@
 module.exports = express => {
-    express.get(`/watcher/:watcher`, async (req, res) =>{
+
+    express.get('/watcher/:watcher', async (req, res) =>{
 
         const log = require('./../lib/logger').instance()
 
@@ -16,7 +17,8 @@ module.exports = express => {
                 const view = await handlebarsLoader.getPage('invalidWatcher')
                 res.status(404)
                 return res.send(view({
-                    title : req.params.watcher
+                    title : req.params.watcher,
+                    rootpath: settings.rootpath
                 }))
             }
     

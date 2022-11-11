@@ -5,7 +5,7 @@ module.exports = {
     /**
      * Explicitly crash app if a value is null or not defined - zero and empty strings must be allowed
      */
-    failIfNotSet(value, message) {
+    failIfNotSet(value, message){
         if (value === null || value === undefined)
             throw message
     },
@@ -16,12 +16,12 @@ module.exports = {
      * to store sensitive information like passwords in env variables instead of in settings.yml
      * @param {string} value
      */
-    replaceTemplatedEnvVars(value) {
+    replaceTemplatedEnvVars(value){
 
         const process = require('process'),
             match = value.match(/{{env.(.*)}}/i)
 
-        if (match) {
+        if (match){
             const value = match.pop()
 
             if (process.env[value])
@@ -38,7 +38,7 @@ module.exports = {
     /**
      *
      */
-    searchAndReplaceTemplatedEnvVars(node) {
+    searchAndReplaceTemplatedEnvVars(node){
         for (let child in node)
             if (typeof node[child] === 'string')
                 node[child] = this.replaceTemplatedEnvVars(node[child])
@@ -46,9 +46,9 @@ module.exports = {
             else if (Array.isArray(node[child]))
                 for (item of node[child])
                     this.searchAndReplaceTemplatedEnvVars(item)
-            else if (typeof node[child] === 'object')
+            else if (typeof node[child] === 'object' )
                 this.searchAndReplaceTemplatedEnvVars(node[child])
-    },
+        },
 
 
     /**
@@ -57,7 +57,7 @@ module.exports = {
      *
      * @param {object} forcedIncomingSettings Used by testing only
      */
-    load(forcedIncomingSettings = null) {
+    load(forcedIncomingSettings = null){
         let fs = require('fs-extra'),
             process = require('process'),
             yaml = require('js-yaml'),
@@ -102,7 +102,7 @@ module.exports = {
             rootpath: '/',
 
             // path all log data is written to. This folder is in the AWD? root folder.
-            logs: './logs',
+            logs : './logs',
 
             // can be error|warn|info|debug in increasing levels of spamminess.
             logLevel: 'warn',
@@ -124,21 +124,21 @@ module.exports = {
             allowHttpExit: false,
 
             // internal worker timer, cleans up/self-maintains. Should run once a day only
-            internalWorkerTimer: '0 0 * * *',
+            internalWorkerTimer : '0 0 * * *',
 
             // in days. set to zero to disable.
             logRetention: 365,
 
             // root-level objects
-            dashboards: {},
-            recipients: {},
-            transports: {},
-            watchers: {},
+            dashboards : {},
+            recipients : {},
+            transports : {},
+            watchers : {},
 
             // DEVELOPMENT STUFF - you will likely never have to change these
 
             // set to false when developing for views to rebuild on each page reload
-            cacheViews: true
+            cacheViews : true
 
         }, _settings)
 
@@ -154,26 +154,26 @@ module.exports = {
 
         // ensure that "default" dashboard is defined if no dashboards set
         if (!Object.keys(_settings.dashboards).length)
-            _settings.dashboards['default'] = {name: ''}
+            _settings.dashboards['default'] = { name : '' }
 
         // apply default recipient settings
-        for (const recipient in _settings.recipients) {
+        for (const recipient in _settings.recipients){
 
             _settings.recipients[recipient] = Object.assign({
-                enabled: true
+                enabled : true
             }, _settings.recipients[recipient])
 
             // remove if disabled
-            if (!_settings.recipients[recipient].enabled) {
+            if (!_settings.recipients[recipient].enabled){
                 disabledRecipients.push(recipient)
                 delete _settings.recipients[recipient]
             }
         }
 
         // apply default transport settings
-        for (const transport in _settings.transports) {
+        for (const transport in _settings.transports){
             _settings.transports[transport] = Object.assign({
-                enabled: true
+                enabled : true
             }, _settings.transports[transport])
 
             // remove if disabled
@@ -182,16 +182,16 @@ module.exports = {
         }
 
         // apply default watcher settings
-        for (const name in _settings.watchers) {
+        for (const name in _settings.watchers){
             let watcher = _settings.watchers[name]
 
             // apply default watcher settings
             watcher = Object.assign({
 
                 // this is the parent node's name repeated
-                __name: name,
+                __name : name,
 
-                __safeName: sanitize(name),
+                __safeName : sanitize(name),
 
                 // internally set error message. normally for validation text. merged with cronprocess's, .errorMessage
                 __errorMessage: null,
@@ -201,10 +201,10 @@ module.exports = {
                 __hasErrors: false,
 
                 // users can add their own convenient name, if not this defaults to node name
-                name: name,
+                name : name,
 
                 //cronmask to time test - default is 1 minute
-                interval: '*/1 * * * *',
+                interval : '*/1 * * * *',
 
                 // internal test to call. must be in src/tests folder, must not have .js extension, egs `net.httpCheck`
                 test: null,
@@ -212,19 +212,19 @@ module.exports = {
                 // string of user names to receive alerts on watcher status change. 
                 // can be * to use all defined recipients
                 // is converted to string array
-                recipients: '*',
+                recipients : '*',
 
                 // external command. either test or cmd must be given
                 cmd: null,
 
                 // enabled field is optional and true by default. setting this to false will cause the 
                 // watcher to be completely ignored
-                enabled: true,
+                enabled : true,
 
             }, watcher)
 
             // remove if disabled
-            if (!watcher.enabled) {
+            if (!watcher.enabled){
                 delete _settings.watchers[name]
                 continue
             }
@@ -242,37 +242,37 @@ module.exports = {
         }
 
         // apply default dashboard settings
-        for (const dashboard in _settings.dashboards) {
+        for (const dashboard in _settings.dashboards){
 
             _settings.dashboards[dashboard] = Object.assign({
                 // node name, attached here for convenience
-                __name: dashboard,
+                __name : dashboard,
 
                 // nodename, made safe for filesystems
-                __safeName: sanitize(dashboard),
+                __safeName : sanitize(dashboard),
 
                 // users can add their own convenient name, if not this defaults to node name
-                name: dashboard,
+                name : dashboard,
 
                 enabled: true,
 
                 // set to true to have this be the default dashboard when viewing '/' in a browser. if not set, the first
                 // dashboard defined will be default. If multiple are defined with default, the first one defined is taken
-                default: false,
+                default : false,
 
                 // force to all watchers
-                watchers: '*'
+                watchers : '*'
             }, _settings.dashboards[dashboard])
 
             // remove if disabled
-            if (!_settings.dashboards[dashboard].enabled) {
+            if (!_settings.dashboards[dashboard].enabled){
                 delete _settings.dashboards[dashboard]
                 continue
             }
 
             // if dashboard is set to * watchers, replace it's watchers list with literal names of all watchers
-            if (_settings.dashboards[dashboard].watchers.trim() === '*') {
-                if (allWatcherNames.length) {
+            if (_settings.dashboards[dashboard].watchers.trim() === '*'){
+                if (allWatcherNames.length){
                     console.debug(`assigning all watchers to dashboard "${dashboard}"`)
                     _settings.dashboards[dashboard].watchers = allWatcherNames.join(',')
                 } else {
@@ -284,12 +284,12 @@ module.exports = {
 
         // if a watcher has no explicit recipients list, assign all recipient names to list
         const allRecipientNames = Object.keys(_settings.recipients)
-        for (const watcherName in _settings.watchers) {
+        for (const watcherName in _settings.watchers){
             const watcher = _settings.watchers[watcherName]
 
-            if (watcher.recipients === '*') {
+            if (watcher.recipients === '*'){
                 // replace with array of all recipients, or emty array
-                if (allRecipientNames.length) {
+                if (allRecipientNames.length){
                     watcher.recipients = allRecipientNames
                     console.debug(`assigning all recipients "${allRecipientNames.join(',')}" to watcher ${watcherName}`)
                 } else {
@@ -320,7 +320,7 @@ module.exports = {
         }
 
         // validate SMTP if enabled
-        if (_settings.transports.smtp && _settings.transports.smtp.enabled) {
+        if (_settings.transports.smtp && _settings.transports.smtp.enabled){
             this.failIfNotSet(_settings.transports.smtp.server, 'settings "transports.smtp" is missing expected value ".server"')
             this.failIfNotSet(_settings.transports.smtp.port, 'settings "transports.smtp" is missing expected value ".port"')
             this.failIfNotSet(_settings.transports.smtp.secure, 'settings "transports.smtp" is missing expected value ".secure"')
@@ -330,7 +330,7 @@ module.exports = {
         }
 
         // validate slack settings if enabled
-        if (_settings.transports.slack && _settings.transports.slack.enabled) {
+        if (_settings.transports.slack && _settings.transports.slack.enabled){
             this.failIfNotSet(_settings.transports.slack.token, 'settings "transports.slack" is missing expected value ".token"')
             this.failIfNotSet(_settings.transports.slack.secret, 'settings "transports.slack" is missing expected value ".secret"')
         }
@@ -340,7 +340,7 @@ module.exports = {
         if (!Object.keys(_settings.watchers).length)
             console.warn('!! No watchers were defined in settings file.')
 
-        for (const name in _settings.watchers) {
+        for (const name in _settings.watchers){
             const watcher = _settings.watchers[name]
 
             // todo : warn on multiple defaults
@@ -349,20 +349,18 @@ module.exports = {
 
 
         this.searchAndReplaceTemplatedEnvVars(_settings)
-
-
     },
 
 
     /**
      *
      */
-    reset() {
+    reset(){
         _settings = null
     },
 
 
-    get() {
+    get(){
         if (!_settings)
             this.load()
 

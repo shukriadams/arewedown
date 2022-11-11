@@ -1,4 +1,5 @@
 module.exports = express => {
+
     /**
      * Shuts the application down. This is the cleanest way to apply new settings without having to restart the service or docker container,
      * as a properly daemonized app will instantly restart.

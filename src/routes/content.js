@@ -1,4 +1,5 @@
 module.exports = express => {
+
     /**
      * Serves static files (CSS, JS etc) from public folder. This is used instead of Express' built in static file middleware 
      * so we can serve files from inside pkg builds (express static file handler doesn't work with that)
