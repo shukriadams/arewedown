@@ -60,24 +60,15 @@ module.exports = class {
                 }
             }
 
-
         if (thisExistingStatus && thisExistingStatus.date)
             this.enteredStatusTime = thisExistingStatus.date
 
         if (thisExistingStatus && thisExistingStatus.status)
             this.status = thisExistingStatus.status
 
-
         this.log.info(`Starting watcher "${this.config.name || this.config.__name}"`)
         this.cron = new CronJob(this.config.interval, this.tick.bind(this), null, true, null, null, true /*tick immediately on itit*/)
         this.calculateNextRun()
-    }
-
-    stop(){
-        if (!this.cron)
-            return
-
-        this.cron.stop()
     }
 
     calculateDisplayTimes(){
@@ -167,7 +158,7 @@ module.exports = class {
                 
                 testRun = testname
 
-                // This is where the business of AWD? runs, this executes the test for a given watcher
+                // Executes the test for a given watcher
                 await test.run.call(this, this.config)
 
                 // if reach here, no exception thrown, so test passed
@@ -226,7 +217,8 @@ module.exports = class {
                 continue
             }
 
-            for (const recipientName of this.config.recipients){
+            for (const 
+                recipientName of this.config.recipients){
                 const recipient = settings.recipients[recipientName]
 
                 if (!recipient[transportName])

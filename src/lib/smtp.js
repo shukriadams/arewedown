@@ -1,33 +1,4 @@
-class SMTPMock {
 
-    async connect(){
-        console.log('SMPT Mock : connecting')
-    }
-
-    async greet(){
-        console.log('SMPT Mock : greeting')
-    }
-
-    async authPlain(){
-        console.log('SMPT Mock : authPlain')
-    }
-
-    async data(content){
-        console.log(`SMPT Mock : sending data\n${JSON.stringify(content)}`)
-    }
-
-    async quit(){
-        console.log('SMPT Mock : quiting')
-    }
-
-    async mail(from){
-        console.log(`SMPT Mock : setting from email\n${from}`)
-    }
-
-    async rcpt(to){
-        console.log(`SMPT Mock : setting to email\n${JSON.stringify(to)}`)
-    }
-}
 
 module.exports = { 
 
@@ -78,7 +49,7 @@ module.exports = {
 
 
     /**
-     * Sends a test email to the given received. This can be used to independently test SMTP configuratio and
+     * Sends a test email to the given received. This can be used to independently test SMTP configuration and
      * transmission 
      * 
      * @param receiverTransmissionConfig {object} : recipient config for this transmission.
@@ -91,9 +62,8 @@ module.exports = {
                 `Subject : AREWEDOWN? test` +
                 `To: ${receiverTransmissionConfig}\n` +
                 `\n` +
-                `Testing your SMTP connection from AREWEDOWN`
-
-        const result = await this._send(receiverTransmissionConfig, content)
+                `Testing your SMTP connection from AREWEDOWN`,
+            result = await this._send(receiverTransmissionConfig, content)
         
         return `Email sent to ${receiverTransmissionConfig}\n` + 
             `\n\n` +   
@@ -157,6 +127,44 @@ module.exports = {
         const settings = require('./settings').get(),
             smtpClient = require('smtp-client').SMTPClient
 
-        return settings.transports.smtp.mock ? SMTPMock : smtpClient
+        return settings.transports.smtp.mock ? 
+
+            class SMTPMock {
+
+                /* istanbul ignore next */
+                async connect(){
+                    console.log('SMPT Mock : connecting')
+                }
+            
+                /* istanbul ignore next */
+                async greet(){
+                    console.log('SMPT Mock : greeting')
+                }
+            
+                /* istanbul ignore next */
+                async authPlain(){
+                    console.log('SMPT Mock : authPlain')
+                }
+            
+                /* istanbul ignore next */
+                async data(content){
+                    console.log(`SMPT Mock : sending data\n${JSON.stringify(content)}`)
+                }
+            
+                /* istanbul ignore next */
+                async quit(){
+                    console.log('SMPT Mock : quiting')
+                }
+            
+                /* istanbul ignore next */
+                async mail(from){
+                    console.log(`SMPT Mock : setting from email\n${from}`)
+                }
+            
+                /* istanbul ignore next */
+                async rcpt(to){
+                    console.log(`SMPT Mock : setting to email\n${JSON.stringify(to)}`)
+                }
+            } : smtpClient
     }
 }

@@ -121,8 +121,11 @@ module.exports =  {
 
             for(let recipientDir of receiversDirs){
                 try {
-                    const delta = await this.getAndClearDeltaForRecipient(recipientDir),
-                        transportConfig = settings.recipients[delta.receiverName] ? settings.recipients[delta.receiverName][transportName] : null,
+                    const delta = await this.getAndClearDeltaForRecipient(recipientDir)
+                    if (!delta)
+                        continue
+                        
+                    const transportConfig = settings.recipients[delta.receiverName] ? settings.recipients[delta.receiverName][transportName] : null,
                         text = this.generateContent(delta),
                         textHash = crypto.createHash('md5').update(text).digest('hex'),
                         receiverLastMessageLog = path.join(recipientDir, 'lastMessageHash.txt')

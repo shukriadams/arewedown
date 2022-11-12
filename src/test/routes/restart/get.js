@@ -3,7 +3,7 @@ describe('routes/exit/get', async()=>{
     it('routes/exit/get::happy', async() => {
         const ctx =  require(_$t+'context')
         ctx.settings({ UIRestart: true })
-        ctx.inject.overwriteObject('process', { exit() {} })
+        ctx.inject.object('process', { exit() {} })
 
         const route = ctx.express.getRoute(_$+'routes/restart')
         await route(ctx.express.req, ctx.express.res)
@@ -20,7 +20,7 @@ describe('routes/exit/get', async()=>{
     it('routes/exit/get::throws exception', async() => {
         const ctx =  require(_$t+'context')
         ctx.settings({ UIRestart: true })
-        ctx.inject.overwriteObject('process', { exit() { throw 'error' }})
+        ctx.inject.object('process', { exit() { throw 'error' }})
 
         const route = ctx.express.getRoute(_$+'routes/restart')
         await route(ctx.express.req, ctx.express.res)

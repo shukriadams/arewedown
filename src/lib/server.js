@@ -1,5 +1,3 @@
-let expressServer = null
-
 module.exports = {
 
     /**
@@ -14,13 +12,11 @@ module.exports = {
             daemon = require('./daemon'),
             Express = require('express'),
             handlebarsLoader = require('madscience-handlebarsloader'),
-            Settings = require('./settings'),
+            settings = require('./settings').get(),
             transports = require('./transports'),
             express = Express(),
             startArgs = require('./startArgs').get()
 
-        Settings.reset()
-        let settings = Settings.get()
 
         // If starting with --version flag, print version from package.json then exit
         // When running live, package.json will get its version from git release tag - the build script is 
@@ -53,7 +49,7 @@ module.exports = {
         })
 
         server = http.createServer(express)
-        expressServer = server.listen(settings.port)
+        server.listen(settings.port)
 
         let status = `Are We Down? : Listening on port ${settings.port}`
         if (settings.rootpath !== '/') 

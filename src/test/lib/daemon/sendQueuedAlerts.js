@@ -79,11 +79,27 @@ describe('/lib/daemon/sendQueuedAlerts', async()=>{
         await daemon.sendQueuedAlerts() 
     })
 
+    it('/lib/daemon/sendQueuedAlerts::cover::exception', async() => {
+        const ctx = require(_$t+'context')
+
+        ctx.inject.object('madscience-fsUtils', { 
+            //return anything so we enter loop
+            getChildDirs: ()=> ['']
+
+        }) 
+
+        const daemon = ctx.clone(require(_$+'lib/daemon'))
+        daemon.getAndClearDeltaForRecipient = ()=>{ 
+            // throw ex to hit exception handler
+            throw 'err'
+        }
+
+        await daemon.sendQueuedAlerts()
+    })  
 
     it('/lib/daemon/sendQueuedAlerts::cover::message already sent', async() => {
         const ctx = require(_$t+'context'),
-            crypto = require('crypto'),
-            messageHAsh = crypto.createHash('md5').update('mymessage').digest('hex')
+            crypto = require('crypto')
 
         // mock 
         ctx.inject.object('madscience-fsUtils', { 

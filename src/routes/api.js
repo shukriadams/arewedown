@@ -7,7 +7,7 @@ module.exports = express => {
         const log = require('./../lib/logger').instance()
 
         try {
-            let settings = require('./../lib/settings').get(),
+            let settings = require(_$+'lib/settings').get(),
                 dashboards = Object.keys(settings.dashboards)
 
             res.json({

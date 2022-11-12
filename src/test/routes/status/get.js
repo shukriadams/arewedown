@@ -3,7 +3,7 @@ describe('routes/status/get', async()=>{
     it('routes/status/get::happy', async() => {
         const ctx =  require(_$t+'context')
         
-        ctx.inject.overwriteObject('./../lib/daemon', {
+        ctx.inject.object('./../lib/daemon', {
             watchers : [ { status : 'up', config : { __hasErrors : false} }]
         })
         

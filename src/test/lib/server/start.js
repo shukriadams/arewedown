@@ -19,6 +19,8 @@ describe('lib/server/start', async()=>{
     it('lib/server/start::happy::start the server', async() => {
         const ctx = require(_$t+'context')
         
+        ctx.settings({ rootpath : '/some/path' })
+
         ctx.inject.object('./daemon', {
             start (){ }
         })
@@ -31,7 +33,7 @@ describe('lib/server/start', async()=>{
             }
         })
         
-        const server = ctx.clone(require(_$+'lib/server'))
+        const server = require(_$+'lib/server')
         // disable all server methods used in start
         server.executeStartScript = ()=>{}
         server.validateTransports = ()=>{}

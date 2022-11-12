@@ -61,14 +61,14 @@ const clonedeep = require('lodash.clonedeep'),
         inject : {
             
             /**
-             * Overwrites an object
+             * creates a new module
              */
             virtual(path, override){
                 requireMock.virtual(path, override)
             },
 
             /**
-             * Overwrites an object
+             * merges an object
              */
             object(path, override){
                 requireMock.add(path, override)
@@ -76,10 +76,6 @@ const clonedeep = require('lodash.clonedeep'),
 
             removeObject(path){
                 requireMock.removeObject(path)
-            },
-
-            overwriteObject(path, obj){
-                requireMock.overwriteObject(path, obj)
             },
 
             class(path, cls){

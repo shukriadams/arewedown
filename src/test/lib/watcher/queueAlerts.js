@@ -2,12 +2,15 @@ describe('lib/watcher/queueAlerts', async()=>{
     
     const createTestStructures =()=>{
         const ctx = require(_$t+'context')
+        
         ctx.inject.object('cron', {
             CronJob : class {  nextDates(){ return ''} }
         })
+        
         ctx.inject.object('./logger', { 
             instanceWatcher(){ return { info(){}, debug(){}, error(){} }}
         })
+
         ctx.settings({ 
             transports : {
                 smtp : {

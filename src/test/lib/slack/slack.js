@@ -1,4 +1,5 @@
 describe('lib/slack', async()=>{
+    
     const createTestStructures =()=>{
         const ctx = require(_$t+'context')
         ctx.settings({ transports : { slack : { token : 'token', secret : 'secret' } } })

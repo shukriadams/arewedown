@@ -100,7 +100,7 @@ module.exports = {
             // override default title
             header: 'Are We Down?',
 
-            // rooth path
+            // root path
             rootpath: '/',
 
             // path all log data is written to. This folder is in the AWD? root folder.
@@ -177,10 +177,9 @@ module.exports = {
 
         }, _settings)
         
-        if (!_settings.rootpath.endsWith('/')) {
+        if (!_settings.rootpath.endsWith('/')) 
             _settings.rootpath += '/'
-        }
-
+            
         // it's still possible to nullify these with goofy setup.yml content, so force exist as we rely on them being present
         _settings.dashboards = _settings.dashboards || {}
         _settings.recipients = _settings.recipients || {}
@@ -258,9 +257,9 @@ module.exports = {
                 // internal test to call. must be in src/tests folder, must not have .js extension, egs `net.httpCheck`
                 test: null,
 
-                // string of user names to receive alerts on watcher status change. 
-                // can be * to use all defined recipients
-                // is converted to string array
+                // String of user names to receive alerts on watcher status change. 
+                // Will be converted to string array on load.
+                // Can be *, in which case everyone in settings.recipients will be pasted in
                 recipients : '*',
         
                 // external command. either test or cmd must be given

@@ -26,7 +26,8 @@ for (let i = 0 ; i < dateFields.length ; i ++) {
 }
 
 function updateRenderTime(){
-    nowHolder.innerHTML = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    if (nowHolder)
+        nowHolder.innerHTML = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
 
 const messageReceiver = message =>{
