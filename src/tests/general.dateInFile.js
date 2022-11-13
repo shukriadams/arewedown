@@ -7,7 +7,7 @@
  * 
  * The date in the file should look like
  * 
- * 2022-11-06T10:59:28+00:00 
+ * 2022-11-06T10:59:28+00:00
  */
  module.exports = {
     
@@ -44,7 +44,7 @@
             }
 
         const rangeLookup = config.range.trim().match(/^(\d+)(S|M|H|D)$/i)
-        if (rangeLookup.length !== 3)
+        if (!rangeLookup || rangeLookup.length !== 3)
             throw {
                 type : 'configError',
                 text : `The provided range "${config.range}" is invalid - must be a number followed by one of S(econds), M(inutes), H(ours) or D(ays), ex. 10S, 24H, or 7D.`
@@ -79,22 +79,13 @@
                     out: async stdout => {
                         stdout = stdout.trim()
 
-                        let parsedDate = null
-                        try {
-                            parsedDate = new Date(stdout)
-                            if (isNaN(parsedDate))
-                                return reject({
-                                    type: 'awdtest.fail',
-                                    test : 'general.dataInFile',
-                                    text: stdout ? `Remote file content "${stdout}" is not a DateTime` : "Remote file is empty" 
-                                })        
-                        } catch(ex){
+                        let parsedDate = new Date(stdout)
+                        if (isNaN(parsedDate))
                             return reject({
                                 type: 'awdtest.fail',
                                 test : 'general.dataInFile',
-                                text: `Remote file content "${stdout}" is not a DateTime : ${ex}` 
-                            })        
-                        }
+                                text: stdout ? `Remote file content "${stdout}" is not a DateTime` : "Remote file is empty" 
+                            })  
 
                         if (parsedDate < minAllowedDate)
                             return reject({

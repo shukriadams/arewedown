@@ -35,16 +35,16 @@
                 text : '.threshold required'
             }
 
-        if (config.threshold < 0 || config.threshold > 100)
-            throw {
-                type : 'configError',
-                text : '.threshold must be between 0 and 100'
-            }
-
         if(!parseInt(config.threshold))
             throw {
                 type : 'configError',
                 text : '.threshold must be and integer'
+            }
+
+        if (config.threshold < 0 || config.threshold > 100)
+            throw {
+                type : 'configError',
+                text : '.threshold must be between 0 and 100'
             }
     },
 
@@ -61,17 +61,22 @@
                 ssh.exec(`df ${config.path}`, {
 
                     out: stdout => {
-                        
-                        stdout = stdout
+
+                        /*  Expected stdout will be 2 lines, egs
+
+                            Filesystem     1K-blocks    Used Available Use% Mounted on
+                            /dev/sda3      129125532 3562588 118960704   3% /   
+                        */
+
                         stdout = stdout.split('\n')
 
                         // expect 2 lines
                         if (stdout.length > 1){
                             
-                            // look for percentage
+                            // look for percentage on line 2
                             const match = stdout[1].match(/ (\d*?)% /i)
 
-                            if (match.length > 1){
+                            if (match && match.length > 1){
                                 const usedPercent = parseInt(match[1])
                                 
                                 if (usedPercent <= config.threshold)

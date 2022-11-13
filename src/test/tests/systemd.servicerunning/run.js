@@ -36,6 +36,21 @@ describe('tests/systemd.servicerunning/run', async()=>{
         ctx.assert.includes(exception.text, 'not running')
     })
     
+    it('tests/systemd.servicerunning/run::cover::stderr', async() => {
+        const ctx =  require(_$t+'context')
+        ctx.inject.class('simple-ssh', class {
+            exec(cmd, args){
+                args.err('some err')
+                return {
+                    start(){}
+                }
+            }
+        })
+
+        const test = require(_$+'tests/systemd.servicerunning')
+        await ctx.assert.throws(async() => await test.run({ host, user, password, service }) )
+    })
+
     it('tests/systemd.servicerunning/run::unhappy unhandled exception', async() => {
         const ctx =  require(_$t+'context')
         ctx.inject.class('simple-ssh', class {

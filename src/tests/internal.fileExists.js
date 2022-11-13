@@ -1,6 +1,8 @@
 /**
  * Internal test, for development only.
  */
+
+/* istanbul ignore next : dev content */
  module.exports = {
 
     validateConfig(config){

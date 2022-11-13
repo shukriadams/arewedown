@@ -63,7 +63,11 @@
 
                 }).start()
             }catch(ex){
-                reject(ex)
+                reject({
+                    type: 'awdtest.fail',
+                    test : 'filesystem.zfs.zpoolStatus',
+                    text: ex 
+                }) 
             }
         })
     }
