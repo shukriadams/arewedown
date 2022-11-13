@@ -39,6 +39,7 @@ module.exports = express => {
                 arrayHelper = require('./../lib/array'),
                 daemon = require('./../lib/daemon'),
                 dashboardNode = req.params.dashboard,
+                out = [],
                 dashboard = settings.dashboards[dashboardNode]
 
             if (!dashboard){
@@ -60,9 +61,7 @@ module.exports = express => {
             // force update display times on watcher
             watchers.map(w => w.calculateDisplayTimes())
 
-
-            let out = []
-            for (let watcher of watchers){
+            for (let watcher of watchers)
                 out.push({
                     name: watcher.config.__name,
                     status : watcher.status,
@@ -71,14 +70,18 @@ module.exports = express => {
                     errorMessage : watcher.errorMessage,
                     nextRun : watcher.nextRun 
                 })
-            }            
+                        
 
-            // sort by status
-            out.sort((a,b)=> a.status === 'down' && b.status !== 'down' ? -1 :
-                b.status === 'down' && a.status !== 'down' ? 1
-                : 0
+            // sort by status, down first
+            /* istanbul ignore next : too fiddly to hit */
+            out.sort((a,b)=> 
+                a.status === 'down' && b.status !== 'down' ? -1 :
+                b.status === 'down' && a.status !== 'down' ? 1 : 
+                    0
             ) 
-            // then by name
+
+            // then by name within status
+            /* istanbul ignore next : too fiddly to hit */
             out.sort((a,b)=>{ 
                 if (a.status === 'down' && b.status !== 'down')
                     return a.name.localeCompare(b.name) ? 1 : -1

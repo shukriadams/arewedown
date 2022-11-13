@@ -2,6 +2,10 @@ const clonedeep = require('lodash.clonedeep'),
     assert = require('madscience-node-assert'),
     requireMock = require('./require'),
     context = {
+        clear(){
+            this.express.req.params = {}
+            this.express.req.query = {}
+        },
         express : {
             req : {
                 params : {},
@@ -12,21 +16,40 @@ const clonedeep = require('lodash.clonedeep'),
                 end(){},
                 json(){},
                 redirect(){},
-                status(){ },
+                status(){},
                 send(){}
             },
-            getRoute(routePath){
-                let route =  require(routePath),
-                    routeInternals
 
-                const expressStub = {
-                    get(route, handler) { routeInternals = handler},
-                    post(route, handler) { routeInternals = handler},
-                    delete(route, handler) { routeInternals = handler}
-                }
+            /**
+             * Captures routes in an express route handler file (/src/routes/*). We can then call route code directly from tests.
+             * routeModulePath : string : Required. path of the routeModule in /src/routes
+             * expectedRouteString : string. Optional. If a route has multiple http method handlers, set this to limit cature to 
+             *                       specific handlers
+             */
+            captureRoutes(routeModulePath, expectedRouteString){
+                let routeModule = require(routeModulePath),
+                    routeCaller,
+                    fakeExpress = {
+                        // capture expressCallback for http methods
 
-                // binds express to the route, this is expected on app start, so do as part of getting route
-                route(expressStub)
+                        get(routeString, expressCallback) { 
+                            if (!expectedRouteString || expectedRouteString === routeString)
+                                routeCaller = expressCallback 
+                        },
+                        post(routeString, expressCallback) { 
+                            if (!expectedRouteString || expectedRouteString === routeString)
+                                routeCaller = expressCallback 
+                        },
+                        delete(routeString, expressCallback) { 
+                            if (!expectedRouteString || expectedRouteString === routeString)
+                                routeCaller = expressCallback 
+                        }
+                    }
+
+                // inject out fake express into the route handler, this is expected on app start, so do as part of getting route.
+                // In this way the route will be handled by our fakeExpress instead of real express, and fakeexpress in turn calls
+                // our test code against the route
+                routeModule(fakeExpress)
 
                 // stub out all page views, this is also normally done on app start with handlebarsLoader.initialize(), 
                 // so we need to fake it here
@@ -36,7 +59,23 @@ const clonedeep = require('lodash.clonedeep'),
                         return ()=>{ }
                     }
                 })
-                return routeInternals
+
+                // stub out logs, we never want to test logging from routes
+                context.inject.object('./../lib/logger', {
+                    instance:()=> { 
+                        return {
+                            error(){},
+                            warning(){},
+                            info(){},
+                            debug(){}
+                        }
+                    },
+                    instanceWatcher:()=> { 
+                        return this.instance()
+                    }
+                })
+
+                return routeCaller
             }
         },
 

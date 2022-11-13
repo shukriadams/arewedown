@@ -7,22 +7,22 @@ describe('routes/status/get', async()=>{
             watchers : [ { status : 'up', config : { __hasErrors : false} }]
         })
         
-        const route = ctx.express.getRoute(_$+'routes/status')
+        const route = ctx.express.captureRoutes(_$+'routes/status', '/status')
         route(ctx.express.req, ctx.express.res)
     })
 
     it('routes/status/get::unhappy::cover', async() => {
         let ctx =  require(_$t+'context')
-            calls = 0
+            call = 0
 
         ctx.express.res.json = ()=>{
-            if (calls === 0){
-                calls ++
+            if (call === 0){
+                call ++
                 throw 'fail on 1st call'
             }
         }
 
-        const route = await ctx.express.getRoute(_$+'routes/status')
+        const route = await ctx.express.captureRoutes(_$+'routes/status', '/status')
         route(ctx.express.req, ctx.express.res)
     })
 

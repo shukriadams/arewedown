@@ -9,7 +9,7 @@ module.exports = {
     },
 
     // returns an instance of the global log
-    instance (){
+    instance(){
         const winstonWrapper = require('winston-wrapper'),
             settings = require('./settings').get()
 
@@ -20,7 +20,7 @@ module.exports = {
     },
 
     // returns an instance of logger
-    instanceWatcher(name) {
+    instanceWatcher(name){
         const fs = require('fs-extra'), 
             winstonWrapper = require('winston-wrapper'),
             path = require('path'),

@@ -42,7 +42,9 @@ module.exports = express => {
                 b.status === 'down' && a.status !== 'down' ? 1
                 : 0
             ) 
+
             // then by name
+             /* istanbul ignore next : too difficult to reach */
             watchers.sort((a,b)=>{ 
                 if (a.status === 'down' && b.status !== 'down')
                     return a.config.name.localeCompare(b.config.name) ? 1 : -1

@@ -2,7 +2,7 @@ describe('routes/api/get', async()=>{
 
     it('routes/api/get::happy', async() => {
         const ctx =  require(_$t+'context'),
-            route = ctx.express.getRoute(_$+'routes/api')
+            route = ctx.express.captureRoutes(_$+'routes/api')
 
         await route(ctx.express.req, ctx.express.res)
     })
@@ -21,7 +21,7 @@ describe('routes/api/get', async()=>{
             }
         }
     
-        const route = ctx.express.getRoute(_$+'routes/api')
+        const route = ctx.express.captureRoutes(_$+'routes/api')
 
         await route(ctx.express.req, ctx.express.res)
     })

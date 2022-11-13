@@ -20,6 +20,7 @@ module.exports = express => {
             if (!watcher){
                 const view = await handlebarsLoader.getPage('invalidWatcher')
                 res.status(404)
+
                 return res.send(view({
                     title : req.params.watcher,
                     rootpath: settings.rootpath
@@ -34,18 +35,18 @@ module.exports = express => {
                 files = []
 
             if (await fs.exists(historyFolder))
-                files = await fsUtils.readFilesUnderDirSync(historyFolder, false)
+                files = await fsUtils.readFilesUnderDir(historyFolder, false)
 
             // remove status.json as that doesn't contain historical data, then sort by filename (datetime) desc
             files = files
                 .filter(file => file !== 'status.json' )
                 .sort((a, b)=>
-                    a > b ? -1:
-                    b > a ? 1:
+                    a > b ? -1 :
+                    b > a ? 1 :
                         0)
 
             // files is filename strings, convert to objects containing both the filename, and the file content
-            for(let i = 0 ; i < files.length ; i++){
+            for(let i = 0 ; i < files.length ; i ++){
                 let file = files[i],
                     data 
 

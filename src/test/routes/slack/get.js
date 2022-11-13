@@ -12,7 +12,7 @@ describe('routes/slack/get', async()=>{
             }
         })
         
-        const route = ctx.express.getRoute(_$+'routes/slack')
+        const route = ctx.express.captureRoutes(_$+'routes/slack')
         await route(ctx.express.req, ctx.express.res)
     })
 
@@ -28,7 +28,7 @@ describe('routes/slack/get', async()=>{
             }
         })
         
-        const route = ctx.express.getRoute(_$+'routes/slack')
+        const route = ctx.express.captureRoutes(_$+'routes/slack')
         await route(ctx.express.req, ctx.express.res)
     })
 

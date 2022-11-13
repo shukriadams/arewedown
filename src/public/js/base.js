@@ -9,7 +9,6 @@ let dashboardRefreshInterval = document.querySelector('#dashboardRefreshInterval
     progressBars = document.querySelectorAll('[data-nextUpdate]'),
     dashboardMenu = document.querySelector('.dashboardMenu'),
     restartServer = document.querySelector('.restartServer'),
-    rerunAllWatchers = document.querySelector('.rerunAllWatchers'),
     renderTime = null, 
     dateFields = document.querySelectorAll('[data-formatDate]'),
     nowHolder = document.querySelector('.now')
@@ -39,9 +38,6 @@ const messageReceiver = message =>{
 
     if (restartServer)    
         restartServer.removeEventListener('click', restartServerEventHandler)
-
-    if (rerunAllWatchers)
-        rerunAllWatchers.removeEventListener('click', rerunAllWatchersHandler)
 
     window.removeEventListener('message', messageReceiver)
 }   
@@ -196,11 +192,6 @@ if (dashboardRefreshInterval && dashboardName)
             })  
     }, dashboardRefreshInterval)
 
-const rerunAllWatchersHandler = event => {
-    let targetDashboard = dashboardMenu ? dashboardMenu.value : '*'
-    fetch(`/rerun/dashboard/${encodeURI(targetDashboard)}`)
-}
-
 function showTimes(){
     let agos = document.querySelectorAll('.date-ago'),
         now = new Date()
@@ -297,8 +288,5 @@ if (dashboardMenu)
 
 if (restartServer)    
     restartServer.addEventListener('click', restartServerEventHandler)
-
-if (rerunAllWatchers)
-    rerunAllWatchers.addEventListener('click', rerunAllWatchersHandler)
 
 window.addEventListener('message', messageReceiver)

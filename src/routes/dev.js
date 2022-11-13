@@ -1,10 +1,11 @@
 /**
- * 
+ * istanbul ignore next : no need to test dev structures
  */
 module.exports = express => {
     
-    let cycle=0
+    let cycle = 0
 
+    /* istanbul ignore next : no need to test dev structures */
     express.get('/dev/cycle', async (req, res)=>{
         const log = require('./../lib/logger').instance()
 
