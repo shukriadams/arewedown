@@ -13,7 +13,7 @@ describe('lib/watcher/start', async()=>{
         })
 
         ctx.inject.object('./history', {
-            getStatus:()=>{ return {} }
+            getStatus:()=>{ return { date : new Date(), status : 'up'} }
         })
 
         ctx.inject.object('../tests/net.httpCheck', { 

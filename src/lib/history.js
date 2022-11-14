@@ -99,6 +99,7 @@ module.exports = {
         let historyPath
 
         if (history.length){
+            // take last
             historyPath = history.sort()[history.length - 1]
         } else {
             // no events found, so treat status as an event, this will contain data watcher first ran

@@ -1,8 +1,7 @@
 describe('lib/history/getLastEvent', async()=>{
 
     it('lib/history/getLastEvent::happy', async()=>{
-        const ctx = require(_$t+'context'),
-            history = ctx.clone(require(_$+'lib/history'))
+        const ctx = require(_$t+'context')
 
         ctx.inject.object('fs-extra', { 
             exists: ()=> true,
@@ -13,27 +12,28 @@ describe('lib/history/getLastEvent', async()=>{
             readFilesInDir: ()=> ['status.json', 'item.json'] // return 2 events, 1 will always
         }) 
 
-        const event = await history.getLastEvent('test')
+        const history = ctx.clone(require(_$+'lib/history')),
+           event = await history.getLastEvent('test')
+
         ctx.assert.equal(event.name, 'myevent')
     })
 
 
-
     it('lib/history/getLastEvent::unhappy history log dir doesnt exist', async()=>{
-        const ctx = require(_$t+'context'),
-            history = ctx.clone(require(_$+'lib/history'))
+        const ctx = require(_$t+'context')
 
         ctx.inject.object('fs-extra', { 
             exists: ()=> false
         }) 
        
-        const event = await history.getLastEvent('test')
+        const history = ctx.clone(require(_$+'lib/history')),
+            event = await history.getLastEvent('test')
+
         ctx.assert.null(event)
     })
 
-    it('lib/history/getLastEvent::unhappy history file oesnt exist', async()=>{
+    it('lib/history/getLastEvent::unhappy history file doesnt exist', async()=>{
         let ctx = require(_$t+'context'),
-            history = ctx.clone(require(_$+'lib/history')),
             exists = false
 
         ctx.inject.object('fs-extra', { 
@@ -43,14 +43,19 @@ describe('lib/history/getLastEvent', async()=>{
                 return exists
             }
         }) 
-       
-        const event = await history.getLastEvent('test')
+
+        ctx.inject.object('madscience-fsUtils', { 
+            readFilesInDir: ()=> ['status.json', 'item.json'] // return 2 events, 1 will always
+        }) 
+        
+        const history = require(_$+'lib/history'),
+            event = await history.getLastEvent('test')
+
         ctx.assert.null(event)
     })
 
     it('lib/history/getLastEvent::unhappy no history', async()=>{
-        const ctx = require(_$t+'context'),
-            history = ctx.clone(require(_$+'lib/history'))
+        const ctx = require(_$t+'context')
 
         ctx.inject.object('fs-extra', { 
             exists: ()=> true
@@ -60,13 +65,14 @@ describe('lib/history/getLastEvent', async()=>{
             readFilesInDir: ()=> [] // return no events
         }) 
 
-        const event = await history.getLastEvent('test')
+        const history = require(_$+'lib/history'),
+            event = await history.getLastEvent('test')
+
         ctx.assert.null(event)
     })
 
     it('lib/history/getLastEvent::unhappy read json throws error', async()=>{
-        const ctx = require(_$t+'context'),
-            history = ctx.clone(require(_$+'lib/history'))
+        const ctx = require(_$t+'context')
 
         ctx.inject.object('fs-extra', { 
             exists: ()=> true,
@@ -77,7 +83,9 @@ describe('lib/history/getLastEvent', async()=>{
             readFilesInDir: ()=> ['item.json'] // return 1 event
         }) 
 
-        const event = await history.getLastEvent('test')
+        const history = require(_$+'lib/history'),
+            event = await history.getLastEvent('test')
+
         ctx.assert.null(event)
     })
 
