@@ -57,7 +57,7 @@ fi
 
 # write version to build
 if [ ! -z $writeVersion ]; then
-    node writeVersion --version $TAG --path ./../src/package.json
+    python3 writeVersion.py --version $TAG --path ./../src/package.json
 fi
 
 

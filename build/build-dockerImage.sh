@@ -1,8 +1,13 @@
 # Use (all switches are optional)
+# cd <this dir>
 # sh ./buildDockerImage --arch <ARCH> --smoketest --dockerpush
-
+#
 # ARCH can be amd64|arm32v7, if omitted defaults to "amd64"
-
+# 
+# To push to Docker, required env vars are :
+# - DOCKER_PASS
+# - DOCKER_USER
+#
 # fail on errors
 set -e
 
@@ -43,7 +48,7 @@ fi
 # shorten x.y.z tag to just x.y for docker "short" minor tag. If we're doing a test a release, tag will have a string appended,  egs x.y.z-test,
 # which will return an empty string
 # minorTag is done in a nodejs script because it's much easier to use regex in JS than in bourne shell.
-MINOR_TAG=$(node ./toMinorTag --version $TAG) 
+MINOR_TAG=$(python3 toMinorTag.py --version $TAG) 
 
 # delete temp stage dir, do this in container is dir will contain many subdirs with in-container ownership.
 # this _could_ be fixed by properly setting user contain runs as, but that's not working yet

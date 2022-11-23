@@ -8,7 +8,7 @@
 
 Grep in particular is useful for tests as it will automatically exit with an error code if it finds no matches for a string.
 
-You can also call your own Python, Bash or NodeJS scripts. In the docker-compose example above we mounted a directory to `/etc/arewedown/custom-tests` in our container. If you put the a Python script in that folder 
+You can also call your own Python (v3), Bash or NodeJS (v12) scripts. In the docker-compose example above we mounted a directory to `/etc/arewedown/custom-tests` in our container. If you put the a Python script in that folder 
 
     import sys
     # parse arg --foo, do some test, if fails exit with code 1, else code 0
@@ -51,7 +51,7 @@ Reading args in Python3 is easily done with built-in `argparse`
 
 ### Getting args in NodeJS
 
-The easiest way to read arguments passed to a NodeJS script is with [minimist](https://www.npmjs.com/package/minimist). If you don't want to install npm packages use this function
+The easiest way to read arguments passed to a NodeJS script is with [minimist](https://www.npmjs.com/package/minimist). If you don't want to install npm packages you can try
 
     function getArg(arg){
         for (let i = 0 ; i < process.argv.length ; i ++)

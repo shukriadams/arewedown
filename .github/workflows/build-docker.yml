@@ -42,8 +42,6 @@ jobs:
           env:
             DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
             DOCKER_USER: ${{ secrets.DOCKER_USER }}
-        - name: Wait so image has a chance to upload
-          run: sleep 60s
 
     manifest:
         runs-on: ubuntu-latest

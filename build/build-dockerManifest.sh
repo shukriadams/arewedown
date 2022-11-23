@@ -11,7 +11,7 @@ fi
 # shorten x.y.z tag to just x.y for docker "short" minor tag. If we're doing a test a release, tag will have a string appended,  egs x.y.z-test,
 # which will return an empty string
 # minorTag is done in a nodejs script because it's much easier to use regex in JS than in bourne shell.
-MINOR_TAG=$(node ./toMinorTag --version $TAG) 
+MINOR_TAG=$(python3 toMinorTag.py --version $TAG) 
 
 docker login -u $DOCKER_USER -p $DOCKER_PASS 
 
