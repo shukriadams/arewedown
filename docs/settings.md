@@ -34,16 +34,8 @@ AWD? are likely to be treated as a spam/phishing risk. If you want to use SMTP, 
 - Always assume mail from AWD? will get trapped in a spam tray or filter. Corporate mail filters are particularly difficult to get through.
 - Test your SMTP connection independently outside of AWD? - Mailgun's standard test is useful
 
-        # get swaks, a useful command line smtp client
-        curl http://www.jetmore.org/john/code/swaks/files/swaks-20130209.0/swaks -o swaks
+        sudo apt install swaks -y
 
-        # Set the permissions for the script so you can run it
-        chmod +x swaks
-
-        # It's based on perl, so install perl
-        sudo apt-get -y install perl
-
-        # Now send!
         ./swaks --auth \
             --server smtp.some-service.com \
             --au postmaster@YOUR_DOMAIN_NAME \
