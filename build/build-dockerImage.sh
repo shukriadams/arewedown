@@ -54,7 +54,7 @@ MINOR_TAG=$(python3 toMinorTag.py --version $TAG)
 # this _could_ be fixed by properly setting user contain runs as, but that's not working yet
 docker run \
     -v $(pwd):/tmp/build \
-    $BUILDCONTAINER sh -c  'cd /tmp/build && rm -rf .stage'
+    $BUILDCONTAINER sh -c  'cd /tmp/build && rm -rf .stage && rm -rf logs'
 
 # copy src to .stage so we can build it both locally and on Github without writing unwanted changes into src
 mkdir -p .stage
