@@ -15,27 +15,27 @@ set -e
 # tag must be passed in as an argument when calling this script
 DOCKERPUSH=0
 SMOKETEST=0
+FORCE=0
 ARCH="amd64" # set to amd64|arm32v7
 BUILDARCH="" # set to "-arm" for arm, -arm corresponds to arm32v7 at the moment
 
 while [ -n "$1" ]; do 
     case "$1" in
-    --dockerpush) DOCKERPUSH=1 ;;
-    --smoketest) SMOKETEST=1 ;;
-    --arch)
+    --dockerpush|-p) DOCKERPUSH=1 ;;
+    --smoketest|-t) SMOKETEST=1 ;;
+    --force|-f) FORCE=1 ;;
+    --arch|-a)
         ARCH="$2" shift;;
     esac 
     shift
 done
 
-if [ $ARCH = "arm32v7" ] 
-then
+# if building arm43v7, set buildarch to -arm, will be appended to build containers
+if [ $ARCH = "arm32v7" ]; then 
    BUILDARCH="-arm" 
 fi
 
 BUILDCONTAINER=shukriadams/node12build:0.0.4$BUILDARCH
-
-
 
 # get tag fom current context
 TAG=$(git describe --abbrev=0 --tags)
@@ -137,13 +137,20 @@ if [ ! -z $MINOR_TAG ]; then
 fi
 
 if [ $DOCKERPUSH -eq 1 ]; then
-    docker login -u $DOCKER_USER -p $DOCKER_PASS 
 
-    docker push shukriadams/arewedown:$TAG-$ARCH
-    docker push shukriadams/arewedown:$HASH-$ARCH 
+    # check if git revision has been built, no need to rebuilt if so
+    EXISTS=$(curl --silent -f --head -lL https://hub.docker.com/v2/repositories/shukriadams/arewedown/tags/$HASH-$ARCH || true)
 
-    if [ ! -z $MINOR_TAG ]; then
-        docker push shukriadams/arewedown:$MINOR_TAG-$ARCH
+    if [ -z $EXISTS ] || [ $FORCE -eq 1 ]; then
+        docker login -u $DOCKER_USER -p $DOCKER_PASS 
+        docker push shukriadams/arewedown:$TAG-$ARCH
+        docker push shukriadams/arewedown:$HASH-$ARCH
+
+        if [ ! -z $MINOR_TAG ]; then
+            docker push shukriadams/arewedown:$MINOR_TAG-$ARCH
+        fi
+    else
+        echo "hash already exists, skipping push. Use --force to override"
     fi
 fi
 
