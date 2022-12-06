@@ -66,7 +66,7 @@ module.exports = {
                     attachments : [
                         {
                             fallback : message,
-                            color : delta.failing.length ? '#D92424' : '#007a5a',
+                            color : delta.failingDelta.length ? '#D92424' : '#007a5a',
                             title : message
                         }
                     ]                    

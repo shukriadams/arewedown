@@ -25,6 +25,10 @@ describe('lib/daemon/getAndClearDeltaForRecipient', async()=>{
         })
 
         const daemon = ctx.clone(require(_$+'lib/daemon'))
+        daemon.watchers = [
+            { status: 'down', config: { name: 'fifth'} }
+        ]
+
         await daemon.getAndClearDeltaForRecipient('somedir')
     })
 

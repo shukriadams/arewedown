@@ -26,14 +26,14 @@ describe('lib/slack', async()=>{
         return ctx
     }
 
-    it('lib/smtp/slack/ensureSettingsOrExit:happy', async()=>{
+    it('lib/slack/ensureSettingsOrExit:happy', async()=>{
         const ctx = createTestStructures(),
             slack = ctx.clone(require(_$+'lib/slack'))
 
         await slack.ensureSettingsOrExit()
     })
 
-    it('lib/smtp/slack/ensureSettingsOrExit:coverage conversation not ok', async()=>{
+    it('lib/slack/ensureSettingsOrExit:coverage conversation not ok', async()=>{
         const ctx = createTestStructures()
         ctx.inject.object('@slack/bolt', {
             App : class {
@@ -53,7 +53,7 @@ describe('lib/slack', async()=>{
         await ctx.assert.throws(async() => await slack.ensureSettingsOrExit() )
     })
 
-    it('lib/smtp/slack/ensureSettingsOrExit:coverage conversation throws generic error', async()=>{
+    it('lib/slack/ensureSettingsOrExit:coverage conversation throws generic error', async()=>{
         const ctx = createTestStructures()
         ctx.inject.object('@slack/bolt', {
             App : class {
@@ -71,7 +71,7 @@ describe('lib/slack', async()=>{
         await ctx.assert.throws(async() => await slack.ensureSettingsOrExit() )
     })
 
-    it('lib/smtp/slack/ensureSettingsOrExit:coverage conversation throws auth error', async()=>{
+    it('lib/slack/ensureSettingsOrExit:coverage conversation throws auth error', async()=>{
         const ctx = createTestStructures()
         ctx.inject.object('@slack/bolt', {
             App : class {
@@ -93,14 +93,14 @@ describe('lib/slack', async()=>{
 
 
     
-    it('lib/smtp/slack/send:happy', async()=>{
+    it('lib/slack/send:happy', async()=>{
         const ctx = createTestStructures(),
             slack = ctx.clone(require(_$+'lib/slack'))
 
-        await slack.send('slackid', { failing : [], passing: [] })
+        await slack.send('slackid', { failingDelta : [], passingDelta: [], failingOther: [] })
     })
 
-    it('lib/smtp/slack/send:unhappy throws generic error', async()=>{
+    it('lib/slack/send:unhappy throws generic error', async()=>{
         const ctx = createTestStructures()
         ctx.inject.object('@slack/bolt', {
             App : class {
@@ -115,11 +115,11 @@ describe('lib/slack', async()=>{
         })
         
         const slack = ctx.clone(require(_$+'lib/slack'))
-        const ex = await ctx.assert.throws(async() => await slack.send('slackid', { failing : [], passing: [] }))
+        const ex = await ctx.assert.throws(async() => await slack.send('slackid', { failingDelta : [], passingDelta: [], failingOther: [] }))
         ctx.assert.equal(ex, 'error')
     })
 
-    it('lib/smtp/slack/send:unhappy throws not_in_channel error', async()=>{
+    it('lib/slack/send:unhappy throws not_in_channel error', async()=>{
         const ctx = createTestStructures()
         ctx.inject.object('@slack/bolt', {
             App : class {
@@ -138,10 +138,10 @@ describe('lib/slack', async()=>{
         })
         
         const slack = ctx.clone(require(_$+'lib/slack'))
-        await ctx.assert.throws(async() => await slack.send('slackid', { failing : [], passing: [] }) )
+        await ctx.assert.throws(async() => await slack.send('slackid', { failingDelta : [], passingDelta: [], failingOther: [] }) )
     })
 
-    it('lib/smtp/slack/delete:happy', async()=>{
+    it('lib/slack/delete:happy', async()=>{
         const ctx = createTestStructures(),
             slack = ctx.clone(require(_$+'lib/slack'))
 

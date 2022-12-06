@@ -63,10 +63,13 @@ module.exports =  {
                 receiverName,
 
                 // names of passing alerts based on queued alerts, this can be out of sync with actual passing
-                passing : [],
+                passingDelta : [],
                 
                 // names of failing alerts based on queued alerts, this can be out of sync with actual failing
-                failing : [],
+                failingDelta : [],
+
+                // names of remaining failing alers, not in failingDelta
+                failingOther: [],
 
                 actualPassingCount,
 
@@ -86,9 +89,9 @@ module.exports =  {
                     watcherSafeName = path.basename(alertPath)
 
                 if (alert.status === 'up')
-                    delta.passing.push(watcherSafeName)
+                    delta.passingDelta.push(watcherSafeName)
                 else if (alert.status === 'down')
-                    delta.failing.push(watcherSafeName)
+                    delta.failingDelta.push(watcherSafeName)
 
             } catch(ex){
                 log.error(`Unexpected error trying to read queued message ${alertPath} : `, ex)
@@ -96,6 +99,11 @@ module.exports =  {
                 // remove alert if it was read, or if there was an error reading it
                 this.removeAlert(alertPath)
             }
+        }
+
+        for (let watcher of this.watchers){
+            if (watcher.status === 'down' && !delta.failingDelta.includes(watcher.config.name))
+                delta.failingOther.push(watcher.config.name)
         }
 
         return delta
@@ -166,11 +174,14 @@ module.exports =  {
         if (delta.actualFailingCount)
             message += `WARNING : ${delta.actualFailingCount} watcher${this.plural(delta.actualFailingCount,'','s')} ${this.plural(delta.actualFailingCount)} down. `
 
-        if (delta.failing && delta.failing.length)    
-            message += `Latest fail${this.plural(delta.failing,'','s')} ${this.plural(delta.failing)} ${delta.failing.join(', ')}. `
+        if (delta.failingDelta.length)    
+            message += `Latest fail${this.plural(delta.failingDelta,'','s')} ${this.plural(delta.failingDelta)} ${delta.failingDelta.join(', ')}. `
 
-        if (delta.passing && delta.passing.length)
-            message += `${delta.passing.join(', ')} ${this.plural(delta.passing)} up again. `
+        if (delta.failingOther.length)    
+            message += `Still failing: ${delta.failingOther.join(', ')}. `
+
+        if (delta.passingDelta.length)
+            message += `${delta.passingDelta.join(', ')} ${this.plural(delta.passingDelta)} up again. `
 
         return message
     },

@@ -1,13 +1,14 @@
 describe('daemon/generateContent', async()=>{
 
     it('daemon/generateContent::happy::typical string from delta', async() => {
-       const ctx = require(_$t+'context'),
+        const ctx = require(_$t+'context'),
             daemon = ctx.clone(require(_$+'lib/daemon')),
             message = daemon.generateContent({ 
                 actualPassingCount : 3,
                 actualFailingCount: 4, 
-                failing : ['first', 'second'], 
-                passing : ['third', 'fourth']
+                failingDelta : ['first', 'second'], 
+                passingDelta : ['third', 'fourth'],
+                failingOther : ['fifth']
             })
             
         // string should contain the names of all recently passing and failing tests, and the fail count, but not the pass count
@@ -23,8 +24,11 @@ describe('daemon/generateContent', async()=>{
         const ctx = require(_$t+'context'),
              daemon = ctx.clone(require(_$+'lib/daemon')),
              message = daemon.generateContent({ 
-                 actualPassingCount : 0,
-                 actualFailingCount: 0, 
+                failingDelta : [], 
+                passingDelta : [],
+                failingOther : [],
+                actualPassingCount : 0,
+                actualFailingCount: 0, 
              })
              
          ctx.assert.includes(message, 'No watchers running')
@@ -34,8 +38,11 @@ describe('daemon/generateContent', async()=>{
         const ctx = require(_$t+'context'),
              daemon = ctx.clone(require(_$+'lib/daemon')),
              message = daemon.generateContent({ 
-                 actualPassingCount : 3,
-                 actualFailingCount: 0, 
+                failingDelta : [], 
+                passingDelta : [],
+                failingOther : [],
+                actualPassingCount : 3,
+                actualFailingCount: 0, 
              })
              
          ctx.assert.includes(message, 'SUCCESS')
@@ -45,8 +52,11 @@ describe('daemon/generateContent', async()=>{
         const ctx = require(_$t+'context'),
              daemon = ctx.clone(require(_$+'lib/daemon')),
              message = daemon.generateContent({ 
-                 actualPassingCount : 3,
-                 actualFailingCount: 1, 
+                failingDelta : [], 
+                passingDelta : [],
+                failingOther : [],
+                actualPassingCount : 3,
+                actualFailingCount: 1, 
              })
              
          ctx.assert.includes(message, 'WARNING')
