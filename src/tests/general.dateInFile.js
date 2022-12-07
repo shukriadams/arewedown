@@ -61,7 +61,8 @@
             ssh = new SSH({
                 host: config.host,
                 user: config.user,
-                pass: config.password
+                pass: config.password,
+                port: config.port || 22
             })            
         
         if (rangeUnit === 's')

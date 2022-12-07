@@ -66,6 +66,7 @@ module.exports = {
             yaml = require('js-yaml'),
             dotenv = require('dotenv'),
             sanitize = require('sanitize-filename'),
+            disabledWatchersCount = 0,
             allWatcherNames = [],
             disabledRecipients = []
 
@@ -224,11 +225,25 @@ module.exports = {
             if (!_settings.transports[transport].enabled)
                 delete _settings.transports[transport]
         }
-        
+
+        // allow primative properties on .watchers node to cascade
+        // down as defaults on all .watchers child objects
+        let watcherGlobalOverrides = {},
+            allowedTypes = ['number', 'boolean', 'string']
+
+        for (const name in _settings.watchers){
+            const property = _settings.watchers[name]
+
+            if (allowedTypes.includes(typeof property))
+                watcherGlobalOverrides[name] = property
+        }
+
         // apply default watcher settings
         for (const name in _settings.watchers){
             let watcher = _settings.watchers[name]
-        
+            
+            watcher = Object.assign(watcherGlobalOverrides, watcher)
+
             // apply default watcher settings
             watcher = Object.assign({
                 
@@ -239,11 +254,11 @@ module.exports = {
                 __safeName : sanitize(name),
                 
                 // internally set error message. normally for validation text. merged with cronprocess's, .errorMessage
-                __errorMessage: null,
+                __errorMessage : null,
         
                 // system will flag watchers if they fail start validation. watchers with config errors
                 // will not run (to save on error spam in logs), but will still be visible in dashboards
-                __hasErrors: false,
+                __hasErrors : false,
         
                 // users can add their own convenient name, if not this defaults to node name
                 name : name,   
@@ -252,18 +267,18 @@ module.exports = {
                 interval : '*/1 * * * *',
 
                 // Slaved to global watcherOffset. Disabled by default.
-                offset: 0,
+                offset : 0,
 
                 // internal test to call. must be in src/tests folder, must not have .js extension, egs `net.httpCheck`
-                test: null,
+                test : null,
 
                 // String of user names to receive alerts on watcher status change. 
                 // Will be converted to string array on load.
                 // Can be *, in which case everyone in settings.recipients will be pasted in
                 recipients : '*',
-        
+
                 // external command. either test or cmd must be given
-                cmd: null,
+                cmd : null,
         
                 // enabled field is optional and true by default. setting this to false will cause the 
                 // watcher to be completely ignored
@@ -274,6 +289,7 @@ module.exports = {
             // remove if disabled
             if (!watcher.enabled){
                 delete _settings.watchers[name]
+                disabledWatchersCount ++
                 continue
             }
         
@@ -302,7 +318,7 @@ module.exports = {
                 // users can add their own convenient name, if not this defaults to node name
                 name : dashboard,    
         
-                enabled: true,
+                enabled : true,
         
                 // set to true to have this be the default dashboard when viewing '/' in a browser. if not set, the first
                 // dashboard defined will be default. If multiple are defined with default, the first one defined is taken
@@ -324,7 +340,6 @@ module.exports = {
                     console.debug(`assigning all watchers to dashboard "${dashboard}"`)
                     _settings.dashboards[dashboard].watchers = allWatcherNames.join(',')
                 } else {
-                    console.debug(`!! No watchers to assign to empty dashboard "${dashboard}".`)
                     _settings.dashboards[dashboard].watchers = ''
                 }
             }
@@ -383,10 +398,12 @@ module.exports = {
             this.failIfNotSet(_settings.transports.slack.secret, 'settings "transports.slack" is missing expected value ".secret"')
         }
 
+        if (disabledWatchersCount)
+            console.warn(`${disabledWatchersCount} watchers disabled`)
         
         // validate watchers
         if (!Object.keys(_settings.watchers).length)
-            console.warn('!! No watchers were defined in settings file.')
+            console.warn('WARNING: No watchers defined or enabled, nothing is being watched and no alerts will be sent')
         
         for (const name in _settings.watchers){
             const watcher = _settings.watchers[name]

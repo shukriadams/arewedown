@@ -5,6 +5,11 @@ describe('lib/settings/load', async()=>{
         settings.load()
     })
 
+    it('lib/settings/load::cover::global overrides', async() => {
+        const settings = require(_$+'lib/settings')
+        settings.load({ watchers : { foo : 'bar', test : {  } } })
+    })
+
     it('lib/settings/load::cover::force delete of disable dashboard', async() => {
         const settings = require(_$+'lib/settings')
         settings.load({ dashboards : { test : { enabled : false } } })
