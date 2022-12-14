@@ -54,7 +54,7 @@ describe('lib/watcher/doTest', async()=>{
     it('lib/watcher/doTest::happy::cover', async()=>{
         createTestStructures()
         const Watcher = require(_$+'lib/watcher'),
-            watcher = new Watcher({ test : 'mytest', __safeName:'mytest', recipients : ['testuser'] })
+            watcher = new Watcher({ test : 'mytest', __safeId:'mytest', recipients : ['testuser'] })
 
         watcher.doTest()
     })

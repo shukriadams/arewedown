@@ -55,14 +55,6 @@ const dashboardMenuEventHandler = event => {
 }
 
 const fetchText=(url, options={})=>{
-/*
-    let controller = null
-    if (options.timeout){
-        controller = new AbortController()
-        options.signal = controller.signal
-        signal.addEventListener('abort', () => controller.abort())
-    }
-    */
     return new Promise((resolve, reject)=>{
         try {
             fetch(url, options)
@@ -117,79 +109,84 @@ const restartServerEventHandler = async event => {
     }, 1000)
 }
 
+window.awd.update = ()=>{
+
+
+
+    fetch(`/status/dashboard/${dashboardName}`)
+        .then(response => response.json())
+        .then(data => {
+
+            // dev only
+            if (window.awd.renderUpdates === false)
+                return
+    
+            let allWatchers = []
+
+            for(let watcherdata of data.watchers){
+                const watcher = document.querySelector(`[data-watcher="${watcherdata.name}"]`),
+                    card = watcher.querySelector('.watcher')
+
+                allWatchers.push({
+                    element : watcher,
+                    watcherdata
+                })
+
+                try {
+
+                    if (watcherdata.status === 'up'){
+                        card.classList.add('watcher--up')
+                        card.classList.remove('watcher--down')
+                    }
+                    else if (watcherdata.status === 'down'){
+                        card.classList.add('watcher--down')
+                        card.classList.remove('watcher--up')
+                    }
+                    else {
+                        card.classList.remove('watcher--up')
+                        card.classList.remove('watcher--down')
+                    }
+
+                } catch(ex) {
+                    console.log(ex)
+                }
+
+                watcher.querySelector('.watcher-state').innerHTML = watcherdata.status
+                watcher.querySelector('.watcher-timeInState').innerHTML = watcherdata.timeInState || ''
+                const nextUpdateHolder = watcher.querySelector('.watcher-nextUpdate')
+                if (nextUpdateHolder)
+                    nextUpdateHolder.setAttribute('data-nextUpdate', watcherdata.nextRun || '')
+                    
+                watcher.querySelector('.watcher-errorMessage').innerHTML = watcherdata.errorMessage
+            }
+
+            let previousSibling = null
+            for (let i = 0; i < allWatchers.length; i ++){
+                let thisnode = allWatchers[allWatchers.length - 1 - i].element
+                thisnode.parentNode.insertBefore(thisnode, previousSibling)
+                previousSibling = thisnode
+            }
+
+            const layout = document.querySelector('.layout')
+            if (data.hasFailing)
+                layout.classList.add('layout--failing')
+            else
+                layout.classList.remove('layout--failing')
+
+            updateRenderTime()
+        })
+        .catch(error => {
+            console.log(error)
+        })  
+}
 
 if (dashboardRefreshInterval && dashboardName)
     setInterval(()=>{
-
-        // dev only
+        
         if (window.awd.fetchUpdates === false)
             return
 
-        fetch(`/status/dashboard/${dashboardName}`)
-            .then(response => response.json())
-            .then(data => {
-
-                // dev only
-                if (window.awd.renderUpdates === false)
-                    return
-        
-                let allWatchers = []
-
-                for(let watcherdata of data.watchers){
-                    const watcher = document.querySelector(`[data-watcher="${watcherdata.name}"]`),
-                        card = watcher.querySelector('.watcher')
-
-                    allWatchers.push({
-                        element : watcher,
-                        watcherdata
-                    })
-
-                    try {
-
-                        if (watcherdata.status === 'up'){
-                            card.classList.add('watcher--up')
-                            card.classList.remove('watcher--down')
-                        }
-                        else if (watcherdata.status === 'down'){
-                            card.classList.add('watcher--down')
-                            card.classList.remove('watcher--up')
-                        }
-                        else {
-                            card.classList.remove('watcher--up')
-                            card.classList.remove('watcher--down')
-                        }
-
-                    } catch(ex) {
-                        console.log(ex)
-                    }
-
-                    watcher.querySelector('.watcher-state').innerHTML = watcherdata.status
-                    watcher.querySelector('.watcher-timeInState').innerHTML = watcherdata.timeInState || ''
-                    const nextUpdateHolder = watcher.querySelector('.watcher-nextUpdate')
-                    if (nextUpdateHolder)
-                        nextUpdateHolder.setAttribute('data-nextUpdate', watcherdata.nextRun || '')
-                        
-                    watcher.querySelector('.watcher-errorMessage').innerHTML = watcherdata.errorMessage
-                }
-
-                let previousSibling = null
-                for (let i = 0; i < allWatchers.length; i ++){
-                    let thisnode = allWatchers[allWatchers.length - 1 - i].element
-                    thisnode.parentNode.insertBefore(thisnode, previousSibling)
-                    previousSibling = thisnode
-                }
-
-                const layout = document.querySelector('.layout')
-                if (data.hasFailing)
-                    layout.classList.add('layout--failing')
-                else
-                    layout.classList.remove('layout--failing')
-
-                updateRenderTime()
-            })
-            .catch(error => {
-                console.log(error)
-            })  
+        window.awd.update()
     }, dashboardRefreshInterval)
 
 function showTimes(){

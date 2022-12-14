@@ -33,7 +33,7 @@ module.exports = express => {
 
             const dashboardWatchers = arrayHelper.split(dashboard.watchers, ','), // clone array, we don't want to change source
                 // get cronprocesses that are running and used on the current dashboard
-                watchers = daemon.watchers.filter(watcher => dashboardWatchers.includes(watcher.config.__name) )
+                watchers = daemon.watchers.filter(watcher => dashboardWatchers.includes(watcher.config.__id) )
 
             hasFailing = watchers.filter(watcher => watcher.status === 'down').length > 0
 

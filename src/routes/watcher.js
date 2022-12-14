@@ -27,7 +27,7 @@ module.exports = express => {
                 }))
             }
     
-            let historyFolder = path.join(settings.logs, watcher.__safeName, 'history'),
+            let historyFolder = path.join(settings.logs, watcher.__safeId, 'history'),
                 incidentCount = 0,
                 startDate = null,
                 lastIncidentDate = null,
@@ -113,7 +113,7 @@ module.exports = express => {
             
             for (let dashboardName in settings.dashboards){
                 const dashboard = settings.dashboards[dashboardName]
-                if (dashboard.watchers.split(',').includes(watcher.__safeName))
+                if (dashboard.watchers.split(',').includes(watcher.__safeId))
                     dashboardsWithWatcher.push(dashboard)
             }
 
@@ -125,7 +125,7 @@ module.exports = express => {
                 totalDownTime : timebelt.minutesToPeriodString(totalDownTime),
                 watcherRuntime : startDate ? timebelt.timespanString(new Date(), startDate, ' days', ' hours', ' minutes', ' seconds') : null,
                 page : arrayHelper.toPage(files, page, settings.pageSize),
-                baseurl : `/watcher/${watcher.__safeName}?`,
+                baseurl : `/watcher/${watcher.__safeId}?`,
                 rootpath: settings.rootpath
             }))
 

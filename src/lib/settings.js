@@ -239,19 +239,19 @@ module.exports = {
         }
 
         // apply default watcher settings
-        for (const name in _settings.watchers){
-            let watcher = _settings.watchers[name]
+        for (const watcherId in _settings.watchers){
+            let watcher = _settings.watchers[watcherId]
             
             watcher = Object.assign(watcherGlobalOverrides, watcher)
 
             // apply default watcher settings
             watcher = Object.assign({
                 
-                // this is the parent node's name repeated
-                __name : name,
+                // this is the parent node's id repeated
+                __id : watcherId,
 
                 // filesystem-friendly version of name
-                __safeName : sanitize(name),
+                __safeId : sanitize(watcherId),
                 
                 // internally set error message. normally for validation text. merged with cronprocess's, .errorMessage
                 __errorMessage : null,
@@ -261,7 +261,7 @@ module.exports = {
                 __hasErrors : false,
         
                 // users can add their own convenient name, if not this defaults to node name
-                name : name,   
+                name : watcherId,   
         
                 //cronmask to time test - default is 1 minute
                 interval : '*/1 * * * *',
@@ -288,12 +288,12 @@ module.exports = {
         
             // remove if disabled
             if (!watcher.enabled){
-                delete _settings.watchers[name]
+                delete _settings.watchers[watcherId]
                 disabledWatchersCount ++
                 continue
             }
         
-            allWatcherNames.push(name)
+            allWatcherNames.push(watcherId)
         
             // ensure user didn't force null on this, from here on we assume this value is set
             watcher.recipients = watcher.recipients || '*' 
@@ -302,21 +302,21 @@ module.exports = {
             if (!watcher.cmd && !watcher.test)
                 watcher.test = 'net.httpCheck'
         
-            _settings.watchers[name] = watcher
+            _settings.watchers[watcherId] = watcher
         }
         
         // apply default dashboard settings
-        for (const dashboard in _settings.dashboards){
+        for (const dashboardId in _settings.dashboards){
         
-            _settings.dashboards[dashboard] = Object.assign({
-                // node name, attached here for convenience
-                __name : dashboard,  
+            _settings.dashboards[dashboardId] = Object.assign({
+                // node id, attached here for convenience
+                __id : dashboardId,  
         
                 // nodename, made safe for filesystems
-                __safeName : sanitize(dashboard), 
+                __safeId : sanitize(dashboardId), 
         
                 // users can add their own convenient name, if not this defaults to node name
-                name : dashboard,    
+                name : dashboardId,    
         
                 enabled : true,
         
@@ -326,38 +326,38 @@ module.exports = {
         
                 // force to all watchers
                 watchers : '*'  
-            }, _settings.dashboards[dashboard])
+            }, _settings.dashboards[dashboardId])
         
             // remove if disabled
-            if (!_settings.dashboards[dashboard].enabled){
-                delete _settings.dashboards[dashboard]
+            if (!_settings.dashboards[dashboardId].enabled){
+                delete _settings.dashboards[dashboardId]
                 continue
             }
         
             // if dashboard is set to * watchers, replace it's watchers list with literal names of all watchers
-            if (_settings.dashboards[dashboard].watchers.trim() === '*'){
+            if (_settings.dashboards[dashboardId].watchers.trim() === '*'){
                 if (allWatcherNames.length){
-                    console.debug(`assigning all watchers to dashboard "${dashboard}"`)
-                    _settings.dashboards[dashboard].watchers = allWatcherNames.join(',')
+                    console.debug(`assigning all watchers to dashboard "${dashboardId}"`)
+                    _settings.dashboards[dashboardId].watchers = allWatcherNames.join(',')
                 } else {
-                    _settings.dashboards[dashboard].watchers = ''
+                    _settings.dashboards[dashboardId].watchers = ''
                 }
             }
         }
         
         // if a watcher has no explicit recipients list, assign all recipient names to list
         const allRecipientNames = Object.keys(_settings.recipients)
-        for (const watcherName in _settings.watchers){
-            const watcher = _settings.watchers[watcherName]
+        for (const watcherId in _settings.watchers){
+            const watcher = _settings.watchers[watcherId]
         
             if (watcher.recipients === '*'){
                 // replace with array of all recipients, or emty array
                 if (allRecipientNames.length){
                     watcher.recipients = allRecipientNames
-                    console.debug(`assigning all recipients "${allRecipientNames.join(',')}" to watcher ${watcherName}`)
+                    console.debug(`assigning all recipients "${allRecipientNames.join(',')}" to watcher ${watcherId}`)
                 } else {
                     watcher.recipients = []
-                    console.warn(`WARNING : no default recipients to assign to contactless-watcher ${watcherName} - this watcher will fail silently`)
+                    console.warn(`WARNING : no default recipients to assign to contactless-watcher ${watcherId} - this watcher will fail silently`)
                 }
             } else {
                 // convert string list to array if string is not * (if * will be handled later)
@@ -373,13 +373,13 @@ module.exports = {
             // ensure that recipient names exist in global recipient list
             for (const recipientName of watcher.recipients)
                 if (!_settings.recipients[recipientName])
-                    throw `Recipient name ${recipientName} in watcher ${watcherName} is not defined under global recipients.`
+                    throw `Recipient name ${recipientName} in watcher ${watcherId} is not defined under global recipients.`
 
             // ensure test exists - we cannot verify cmd as that's entirely up to user, and must fail at watcher execute level
             if (watcher.test && !fs.existsSync(`${__dirname}/../tests/${watcher.test}.js`))
-                throw `ERROR: watcher "${watcherName}" specifies non-existent test "${watcher.test}".`
+                throw `ERROR: watcher "${watcherId}" specifies non-existent test "${watcher.test}".`
         
-            _settings.watchers[watcherName] = watcher
+            _settings.watchers[watcherId] = watcher
         }
         
         // validate SMTP if enabled

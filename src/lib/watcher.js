@@ -8,7 +8,7 @@ module.exports = class {
         const logger = require('./logger')
 
         this.config = config
-        this.log = logger.instanceWatcher(config.__name)
+        this.log = logger.instanceWatcher(config.__id)
         this.errorMessage = this.config.__errorMessage || ''
         
         // true when this watcher is running a test. Prevents concurrent tests if a test takes longer than
@@ -40,7 +40,7 @@ module.exports = class {
     async start(){
         const CronJob = require('cron').CronJob,
             history = require('./history'),
-            thisExistingStatus = await history.getStatus(this.config.__safeName)
+            thisExistingStatus = await history.getStatus(this.config.__safeId)
 
             if (!this.config.cmd){
                 // get test to run, if none is set, fall back to httpCheck as default
@@ -66,7 +66,7 @@ module.exports = class {
         if (thisExistingStatus && thisExistingStatus.status)
             this.status = thisExistingStatus.status
 
-        this.log.info(`Starting watcher "${this.config.name || this.config.__name}"`)
+        this.log.info(`Starting watcher "${this.config.name || this.config.__id}"`)
         this.cron = new CronJob(this.config.interval, this.tick.bind(this), null, true, null, null, true /*tick immediately on itit*/)
         this.calculateNextRun()
     }
@@ -100,7 +100,7 @@ module.exports = class {
                     return
     
                 if (this.busy){
-                    this.log.info(`${this.config.__name} check was busy from previous run, skipping`);
+                    this.log.info(`${this.config.__id} check was busy from previous run, skipping`);
                     return
                 }
         
@@ -172,7 +172,7 @@ module.exports = class {
             if (ex.type === 'awdtest.fail'){
                 // Tests are expected to throw the 'awdtest.fail' error explicitly if whatever condition they test for isn't met, so we can 
                 // treat this as an "expected" fail
-                this.log.info(`Watcher "${this.config.__name}" test "${ex.test}" failed.`, ex.text)
+                this.log.info(`Watcher "${this.config.__id}" test "${ex.test}" failed.`, ex.text)
                 this.errorMessage = ex.text 
             } else {
                 // oops, something unplanned happened.
@@ -186,14 +186,14 @@ module.exports = class {
         // write state of watcher to filesystem
         let status = null
         if (this.status === 'up')
-            status = await history.writePassing(this.config.__safeName, this.lastRun)
+            status = await history.writePassing(this.config.__safeId, this.lastRun)
         else if (this.status === 'down') 
-            status = await history.writeFailing(this.config.__safeName, this.lastRun, this.errorMessage)
+            status = await history.writeFailing(this.config.__safeId, this.lastRun, this.errorMessage)
 
         // send alerts if status changed
         if (status.changed){
             this.enteredStatusTime = this.lastRun
-            this.log.info(`Status changed, "${this.config.__name}" is ${this.status}.`)
+            this.log.info(`Status changed, "${this.config.__id}" is ${this.status}.`)
             this.queueAlerts()
         }
     }
@@ -230,13 +230,13 @@ module.exports = class {
                         dir = path.join(settings.queue, transportName, receiverNameBase64)
 
                     await fs.ensureDir(dir)
-                    await fs.writeJson(path.join(dir, this.config.__safeName), {
+                    await fs.writeJson(path.join(dir, this.config.__safeId), {
                         status : this.status
                     })
 
-                    this.log.info(`queued alert to ${recipient[transportName]} via transport ${transportName} for process ${this.config.__name}. `)
+                    this.log.info(`queued alert to ${recipient[transportName]} via transport ${transportName} for process ${this.config.__id}. `)
                 } catch (ex) {
-                    this.log.error(`Error queuing alert to ${recipient[transportName]} via transport ${transportName} for process ${this.config.__name} : `, ex)
+                    this.log.error(`Error queuing alert to ${recipient[transportName]} via transport ${transportName} for process ${this.config.__id} : `, ex)
                 }
             }
         }

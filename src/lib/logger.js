@@ -31,10 +31,10 @@ module.exports = {
 
             for(const name in settings.watchers) {
                 const watcher = settings.watchers[name],
-                    logpath = path.join(settings.logs, watcher.__safeName, 'logs')
+                    logpath = path.join(settings.logs, watcher.__safeId, 'logs')
     
                 fs.ensureDirSync(logpath)
-                _watcherLogs[watcher.__name] = winstonWrapper.new(logpath, settings.logLevel).log
+                _watcherLogs[watcher.__id] = winstonWrapper.new(logpath, settings.logLevel).log
             }
         }
 

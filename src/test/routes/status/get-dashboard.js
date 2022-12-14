@@ -14,7 +14,7 @@ describe('routes/status/get', async()=>{
         ctx.inject.object('./../lib/daemon', {
             watchers : [ { 
                 status : 'up', 
-                config : { __name: 'mywatcher', __hasErrors : false },
+                config : { __id: 'mywatcher', __hasErrors : false },
                 calculateDisplayTimes(){}
             }]
         })

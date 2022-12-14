@@ -6,7 +6,7 @@
         {{#if watchers}}
             <x-columns>
                 {{#each watchers}}
-                    <a data-watcher="{{config.__name}}" href="{{../rootpath}}watcher/{{config.__name}}" target="_PARENT">
+                    <a data-watcher="{{config.__id}}" href="{{../rootpath}}watcher/{{config.__id}}" target="_PARENT">
                         <x-card class="watcher watcher--{{status}} {{#if config.__hasErrors}}watcher--configErrors{{/if}}">
                             <div class="cell cell-header">
                                 {{config.name}} 
