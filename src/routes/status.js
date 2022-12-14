@@ -63,7 +63,8 @@ module.exports = express => {
 
             for (let watcher of watchers)
                 out.push({
-                    name: watcher.config.__id,
+                    id : watcher.config.__id,
+                    name : watcher.config.name,
                     status : watcher.status,
                     errors : watcher.config.__hasErrors,
                     timeInState : watcher.timeInState,
@@ -76,8 +77,8 @@ module.exports = express => {
             /* istanbul ignore next : too fiddly to hit */
             out.sort((a,b)=> 
                 a.status === 'down' && b.status !== 'down' ? -1 :
-                b.status === 'down' && a.status !== 'down' ? 1 : 
-                    0
+                b.status === 'down' && a.status !== 'down' ? 1
+                    : 0
             ) 
 
             // then by name within status

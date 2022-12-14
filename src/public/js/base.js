@@ -124,7 +124,7 @@ window.awd.update = ()=>{
             let allWatchers = []
 
             for(let watcherdata of data.watchers){
-                const watcher = document.querySelector(`[data-watcher="${watcherdata.name}"]`),
+                const watcher = document.querySelector(`[data-watcher="${watcherdata.id}"]`),
                     card = watcher.querySelector('.watcher')
 
                 allWatchers.push({

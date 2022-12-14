@@ -38,9 +38,10 @@ module.exports = express => {
             hasFailing = watchers.filter(watcher => watcher.status === 'down').length > 0
 
             // sort by status
-            watchers.sort((a,b)=> a.status === 'down' && b.status !== 'down' ? -1 :
+            watchers.sort((a,b)=> 
+                a.status === 'down' && b.status !== 'down' ? -1 :
                 b.status === 'down' && a.status !== 'down' ? 1
-                : 0
+                    : 0
             ) 
 
             // then by name
