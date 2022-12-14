@@ -172,16 +172,22 @@ module.exports =  {
             message += `SUCCESS : All watchers are up. `
 
         if (delta.actualFailingCount)
-            message += `WARNING : ${delta.actualFailingCount} watcher${this.plural(delta.actualFailingCount,'','s')} ${this.plural(delta.actualFailingCount)} down. `
+            message += `WARNING : ${delta.actualFailingCount} watcher${this.plural(delta.actualFailingCount,'','s')} ${delta.actualFailingCount === 1 ? 'is' : 'are'} down`
 
-        if (delta.failingDelta.length)    
-            message += `Latest fail${this.plural(delta.failingDelta,'','s')} ${this.plural(delta.failingDelta)} ${delta.failingDelta.join(', ')}. `
+        if (!delta.failingDelta.length && delta.failingOther.length)
+            message += `: ${delta.failingOther.join(', ')}. `
+        else if (delta.failingOther.length || delta.failingDelta.length) {
+            message += '. '
 
-        if (delta.failingOther.length)    
-            message += `Still failing: ${delta.failingOther.join(', ')}. `
+            if (delta.failingOther.length)    
+                message += `${delta.failingOther.join(', ')} ${delta.failingOther.length === 1 ? 'was' : 'were'} already down. `
+            
+            if (delta.failingDelta.length)    
+                message += `${delta.failingDelta.join(', ')} recently failed. `
+        }
 
         if (delta.passingDelta.length)
-            message += `${delta.passingDelta.join(', ')} ${this.plural(delta.passingDelta)} up again. `
+            message += `${delta.passingDelta.join(', ')} ${delta.passingDelta.length === 1 ? 'is' : 'are'} up again. `
 
         return message
     },
