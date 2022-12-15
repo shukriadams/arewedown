@@ -149,6 +149,7 @@ if [ $DOCKERPUSH -eq 1 ]; then
         if [ ! -z $MINOR_TAG ]; then
             docker push shukriadams/arewedown:$MINOR_TAG-$ARCH
         fi
+        echo "Container image pushed"
     else
         echo "hash already exists, skipping push. Use --force to override"
     fi
