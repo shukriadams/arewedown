@@ -234,15 +234,15 @@ module.exports = {
         for (const name in _settings.watchers){
             const property = _settings.watchers[name]
 
-            if (allowedTypes.includes(typeof property))
+            if (allowedTypes.includes(typeof property)){
                 watcherGlobalOverrides[name] = property
+                delete _settings.watchers[name]
+            }
         }
 
         // apply default watcher settings
         for (const watcherId in _settings.watchers){
             let watcher = _settings.watchers[watcherId]
-            
-            watcher = Object.assign(watcherGlobalOverrides, watcher)
 
             // apply default watcher settings
             watcher = Object.assign({
@@ -285,7 +285,12 @@ module.exports = {
                 enabled : true,
         
             }, watcher)
-        
+            
+            // apply defaults
+            for (let prop in watcherGlobalOverrides)
+                if (watcher[prop] === undefined)
+                    watcher[prop] = watcherGlobalOverrides[prop]
+
             // remove if disabled
             if (!watcher.enabled){
                 delete _settings.watchers[watcherId]
