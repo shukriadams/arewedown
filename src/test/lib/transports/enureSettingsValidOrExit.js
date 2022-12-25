@@ -1,7 +1,7 @@
-describe('lib/transports/validateAll', async()=>{
+describe('lib/transports/enureSettingsValidOrExit', async()=>{
 
 
-    it('lib/transports/validateAll::happy::should not test disabled test', async() => {
+    it('lib/transports/enureSettingsValidOrExit::happy::should not test disabled test', async() => {
 
         const ctx = require(_$t+'context')
 
@@ -14,12 +14,12 @@ describe('lib/transports/validateAll', async()=>{
         })
 
         const transports = require(_$+'lib/transports')
-        await transports.validateAll()
+        await transports.enureSettingsValidOrExit()
         // no assert, coverage only
     })
 
 
-    it('lib/transports/validateAll::unhappy::should not throw exception if transport does not have ensureSettingsOrExit method', async() => {
+    it('lib/transports/enureSettingsValidOrExit::unhappy::should not throw exception if transport does not have validateSettings method', async() => {
         const ctx = require(_$t+'context')
 
         ctx.settings({
@@ -31,17 +31,17 @@ describe('lib/transports/validateAll', async()=>{
         })
 
         ctx.inject.virtual('./testTransport', {
-            // no ensureSettingsOrExit method here 
+            // no validateSettings method here 
         })
 
         const transports = require(_$+'lib/transports'),
-            exception = await ctx.assert.throws(async() => await transports.validateAll() )
+            exception = await ctx.assert.throws(async() => await transports.enureSettingsValidOrExit() )
             
-        ctx.assert.includes(exception, 'missing expected method "ensureSettingsOrExit"')
+        ctx.assert.includes(exception, 'missing expected method "validateSettings"')
     })
 
     
-    it('lib/transports/validateAll::happy::validates transport', async() => {
+    it('lib/transports/enureSettingsValidOrExit::happy::validates transport', async() => {
         let ctx = require(_$t+'context'),
             validated = false
 
@@ -54,13 +54,13 @@ describe('lib/transports/validateAll', async()=>{
         })
 
         ctx.inject.virtual('./testTransport', {
-            ensureSettingsOrExit(){
+            validateSettings(){
                 validated = true
             }
         })
 
         const transports = require(_$+'lib/transports')
-        await transports.validateAll()
+        await transports.enureSettingsValidOrExit()
         ctx.assert.true(validated)
     })
 

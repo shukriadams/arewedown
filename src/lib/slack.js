@@ -108,7 +108,7 @@ module.exports = {
     /**
      * 
      */
-    async ensureSettingsOrExit(){
+    async validateSettings(){
         const settings = require('./settings').get(),
             log = require('./../lib/logger').instance(),
             slackConfig = settings.transports.slack,

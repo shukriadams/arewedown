@@ -32,7 +32,7 @@ module.exports = {
         await fs.ensureDir(settings.logs)
         await fs.ensureDir(settings.queue)
         await transports.ensureQueue()
-        await transports.validateAll()
+        await transports.enureSettingsValidOrExit()
         
         express.set('json spaces', 4)
 

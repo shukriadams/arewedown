@@ -93,7 +93,7 @@ module.exports = {
      * Basic self-test of SMTP connection settings, invoked on app start. This does not send mails, 
      * it connects with the given credentials. Use the "test" function on this class for detailed testing.
      */
-    async ensureSettingsOrExit(){
+    async validateSettings(){
         const settings = require('./settings').get(),
             log = require('./../lib/logger').instance(),
             smtpConfig = settings.transports.smtp,

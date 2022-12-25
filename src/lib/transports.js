@@ -37,9 +37,20 @@ module.exports = {
         const fs = require('fs-extra'),
             path = require('path'),
             settings = require('./settings').get()
+            
 
-        for (let transportName in transportHandlers)
-            await fs.ensureDir(path.join(settings.queue, transportName))
+        for (let transportName in transportHandlers){
+            let queuePath
+            try
+            {
+                queuePath = path.join(settings.queue, transportName)
+                await fs.ensureDir(queuePath)
+            } 
+            catch (ex)
+            {
+                console.log(`Error creating queue dir ${queuePath}`)
+            }
+        }
     },
 
 
@@ -47,15 +58,21 @@ module.exports = {
      * validate active transport's settings by attempting to contact provider. throws unhandled exception on fail, this should
      * intentionally take application down 
      */
-         async validateAll(){
-            const settings = require('./settings').get()
+         async enureSettingsValidOrExit(){
+            const settings = require('./settings').get(),
+                process = require('process')
     
             for (const transportName in settings.transports){
                 const transport = require(`./${transportName}`)
-                if (!transport.ensureSettingsOrExit)
-                    throw `transport method "${transportName}" missing expected method "ensureSettingsOrExit"`
-    
-                await transport.ensureSettingsOrExit()
+                try {
+                    await transport.validateSettings()
+                } 
+                catch (ex)
+                {
+                    console.log(ex)
+                    console.log('ERROR : transport validation failed, app will exit')
+                    process.exit(1)
+                }
             }
         }
 }

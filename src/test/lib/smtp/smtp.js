@@ -25,14 +25,14 @@ describe('lib/smtp', async()=>{
         await smtp.send('mail@example.com', { failing : [], passing: [] })
     })
 
-    it('lib/smtp/ensureSettingsOrExit::cover', async()=>{
+    it('lib/smtp/validateSettings::cover', async()=>{
         const ctx = createTestStructures(),
             smtp = ctx.clone(require(_$+'lib/smtp'))
             
-        await smtp.ensureSettingsOrExit()
+        await smtp.validateSettings()
     })
 
-    it('lib/smtp/ensureSettingsOrExit::unhappy::throw exception on settings check', async()=>{
+    it('lib/smtp/validateSettings::unhappy::throw exception on settings check', async()=>{
         const ctx = createTestStructures(),
             smtp = ctx.clone(require(_$+'lib/smtp'))
             
@@ -42,10 +42,10 @@ describe('lib/smtp', async()=>{
             }
         })
 
-        await ctx.assert.throws(async() => await smtp.ensureSettingsOrExit() )
+        await ctx.assert.throws(async() => await smtp.validateSettings() )
     })
 
-    it('lib/smtp/ensureSettingsOrExit::unhappy::throw exception on send', async()=>{
+    it('lib/smtp/validateSettings::unhappy::throw exception on send', async()=>{
         const ctx = createTestStructures(),
             smtp = ctx.clone(require(_$+'lib/smtp'))
 

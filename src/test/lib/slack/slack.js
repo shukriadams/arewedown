@@ -26,14 +26,14 @@ describe('lib/slack', async()=>{
         return ctx
     }
 
-    it('lib/slack/ensureSettingsOrExit:happy', async()=>{
+    it('lib/slack/validateSettings:happy', async()=>{
         const ctx = createTestStructures(),
             slack = ctx.clone(require(_$+'lib/slack'))
 
-        await slack.ensureSettingsOrExit()
+        await slack.validateSettings()
     })
 
-    it('lib/slack/ensureSettingsOrExit:coverage conversation not ok', async()=>{
+    it('lib/slack/validateSettings:coverage conversation not ok', async()=>{
         const ctx = createTestStructures()
         ctx.inject.object('@slack/bolt', {
             App : class {
@@ -50,10 +50,10 @@ describe('lib/slack', async()=>{
         })
 
         const slack = ctx.clone(require(_$+'lib/slack'))
-        await ctx.assert.throws(async() => await slack.ensureSettingsOrExit() )
+        await ctx.assert.throws(async() => await slack.validateSettings() )
     })
 
-    it('lib/slack/ensureSettingsOrExit:coverage conversation throws generic error', async()=>{
+    it('lib/slack/validateSettings:coverage conversation throws generic error', async()=>{
         const ctx = createTestStructures()
         ctx.inject.object('@slack/bolt', {
             App : class {
@@ -68,10 +68,10 @@ describe('lib/slack', async()=>{
         })
 
         const slack = ctx.clone(require(_$+'lib/slack'))
-        await ctx.assert.throws(async() => await slack.ensureSettingsOrExit() )
+        await ctx.assert.throws(async() => await slack.validateSettings() )
     })
 
-    it('lib/slack/ensureSettingsOrExit:coverage conversation throws auth error', async()=>{
+    it('lib/slack/validateSettings:coverage conversation throws auth error', async()=>{
         const ctx = createTestStructures()
         ctx.inject.object('@slack/bolt', {
             App : class {
@@ -88,7 +88,7 @@ describe('lib/slack', async()=>{
         })
 
         const slack = ctx.clone(require(_$+'lib/slack'))
-        await ctx.assert.throws(async() => await slack.ensureSettingsOrExit() )
+        await ctx.assert.throws(async() => await slack.() )
     })
 
 
