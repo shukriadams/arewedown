@@ -17,29 +17,6 @@ describe('lib/transports/enureSettingsValidOrExit', async()=>{
         await transports.enureSettingsValidOrExit()
         // no assert, coverage only
     })
-
-
-    it('lib/transports/enureSettingsValidOrExit::unhappy::should not throw exception if transport does not have validateSettings method', async() => {
-        const ctx = require(_$t+'context')
-
-        ctx.settings({
-            transports: {
-                testTransport : {
-                    enabled : true
-                }
-            }
-        })
-
-        ctx.inject.virtual('./testTransport', {
-            // no validateSettings method here 
-        })
-
-        const transports = require(_$+'lib/transports'),
-            exception = await ctx.assert.throws(async() => await transports.enureSettingsValidOrExit() )
-            
-        ctx.assert.includes(exception, 'missing expected method "validateSettings"')
-    })
-
     
     it('lib/transports/enureSettingsValidOrExit::happy::validates transport', async() => {
         let ctx = require(_$t+'context'),
@@ -53,15 +30,50 @@ describe('lib/transports/enureSettingsValidOrExit', async()=>{
             }
         })
 
-        ctx.inject.virtual('./testTransport', {
-            validateSettings(){
-                validated = true
+        const transports = require(_$+'lib/transports')
+        // mock in a handler for testTransport
+        transports.transportHandlers = {
+            testTransport : {
+                validateSettings(){
+                    validated = true
+                }
+            }
+        }
+        
+        await transports.enureSettingsValidOrExit()
+        ctx.assert.true(validated)
+    })
+
+    it('lib/transports/enureSettingsValidOrExit::cover::exception', async() => {
+        let ctx = require(_$t+'context')
+
+        ctx.settings({
+            transports: {
+                testTransport : {
+                    enabled : true
+                }
             }
         })
 
         const transports = require(_$+'lib/transports')
+
+        // mock in a handler for testTransport
+        transports.transportHandlers = {
+            testTransport : {
+                validateSettings(){
+                    throw 'error'
+                }
+            }
+        }
+
+        // prevent process exit
+        transports._getProcess = ()=>{
+            return {
+                exit(){}
+            }
+        }
+        
         await transports.enureSettingsValidOrExit()
-        ctx.assert.true(validated)
     })
 
 })

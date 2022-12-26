@@ -87,17 +87,16 @@ describe('lib/slack', async()=>{
             }
         })
 
-        const slack = ctx.clone(require(_$+'lib/slack'))
-        await ctx.assert.throws(async() => await slack.() )
+        const slack = require(_$+'lib/slack')
+        await ctx.assert.throws(async() => await slack.validateSettings() )
     })
 
 
     
     it('lib/slack/send:happy', async()=>{
-        const ctx = createTestStructures(),
-            slack = ctx.clone(require(_$+'lib/slack'))
-
-        await slack.send('slackid', { failingDelta : [], passingDelta: [], failingOther: [] })
+        createTestStructures()
+        const slack = require(_$+'lib/slack')
+        await slack.send('slackid', { failingDelta : [], passingDelta: [], actualFailingCount: [] })
     })
 
     it('lib/slack/send:unhappy throws generic error', async()=>{
@@ -115,7 +114,7 @@ describe('lib/slack', async()=>{
         })
         
         const slack = ctx.clone(require(_$+'lib/slack'))
-        const ex = await ctx.assert.throws(async() => await slack.send('slackid', { failingDelta : [], passingDelta: [], failingOther: [] }))
+        const ex = await ctx.assert.throws(async() => await slack.send('slackid', { failingDelta : [], passingDelta: [], failingOther: [], actualFailingCount : [] }))
         ctx.assert.equal(ex, 'error')
     })
 
@@ -137,8 +136,8 @@ describe('lib/slack', async()=>{
             }
         })
         
-        const slack = ctx.clone(require(_$+'lib/slack'))
-        await ctx.assert.throws(async() => await slack.send('slackid', { failingDelta : [], passingDelta: [], failingOther: [] }) )
+        const slack = require(_$+'lib/slack')
+        await ctx.assert.throws(async() => await slack.send('slackid', { failingDelta : [], passingDelta: [], failingOther: [], actualFailingCount : [] }) )
     })
 
     it('lib/slack/delete:happy', async()=>{

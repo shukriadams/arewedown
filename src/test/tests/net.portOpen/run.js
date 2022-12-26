@@ -8,7 +8,7 @@ describe('tests/net.portOpen/run', async()=>{
         })
 
         const test = require(_$+'tests/net.portOpen')
-        await ctx.assert.throws(async() => await test.run({ host: '127.0.0.1', port: 1234 }) )
+        await test.run({ host: '127.0.0.1', port: 1234 })
     })
 
     it('tests/net.portOpen/run::unhappy port closed', async() => {

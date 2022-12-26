@@ -1,17 +1,16 @@
-let transportHandlers = null
-
 module.exports = {
 
+    transportHandlers : null,
 
     /**
      * Private use only.
      */
     _ensureHandlers(){
-        if (transportHandlers == null){
-            const smtp = require('./smtp'),
+        if (this.transportHandlers == null){
+            const smtp = require('./smtp/smtp'),
                 slack = require('./slack')
     
-            transportHandlers = {
+            this.transportHandlers = {
                 smtp,
                 slack
             }
@@ -25,7 +24,7 @@ module.exports = {
     getTransportHandlers(){
         this._ensureHandlers()
 
-        return transportHandlers
+        return this.transportHandlers
     },
 
 
@@ -33,46 +32,54 @@ module.exports = {
      * 
      */
     async ensureQueue(){
-        this._ensureHandlers()
         const fs = require('fs-extra'),
             path = require('path'),
             settings = require('./settings').get()
-            
 
-        for (let transportName in transportHandlers){
+        this._ensureHandlers()
+
+        for (let transportName in this.transportHandlers){
             let queuePath
-            try
-            {
+
+            try {
                 queuePath = path.join(settings.queue, transportName)
                 await fs.ensureDir(queuePath)
-            } 
-            catch (ex)
-            {
+            } catch (ex) {
                 console.log(`Error creating queue dir ${queuePath}`)
             }
         }
     },
 
+    /**
+     * For testing - need to be able to shim process safely without monkeypatching
+     * actual process 
+     */
+    _getProcess(){
+        const process = require('process')
+        return process
+    },
 
     /**
      * validate active transport's settings by attempting to contact provider. throws unhandled exception on fail, this should
      * intentionally take application down 
      */
-         async enureSettingsValidOrExit(){
-            const settings = require('./settings').get(),
-                process = require('process')
-    
-            for (const transportName in settings.transports){
-                const transport = require(`./${transportName}`)
-                try {
-                    await transport.validateSettings()
-                } 
-                catch (ex)
-                {
-                    console.log(ex)
-                    console.log('ERROR : transport validation failed, app will exit')
-                    process.exit(1)
-                }
+    async enureSettingsValidOrExit(){
+        const settings = require('./settings').get(),
+            process = this._getProcess()
+
+        this._ensureHandlers()
+
+        for (const transportName in settings.transports){
+            const transport = this.transportHandlers[transportName]
+
+            try {
+                await transport.validateSettings()
+            } catch (ex) {
+                /* ignore coverage, process.exit makes this tricky to test */
+                console.log(ex)
+                console.log('ERROR : transport validation failed, app will exit')
+                process.exit(1)
             }
         }
+    }
 }

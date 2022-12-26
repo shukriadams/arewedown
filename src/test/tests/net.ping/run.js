@@ -5,7 +5,7 @@ describe('tests/net.ping/run', async()=>{
         ctx.inject.object('ping', { promise : { probe(){ return { alive : true } } } })
         const test = require(_$+'tests/net.ping')
             
-        await ctx.assert.throws(async() => await test.run({ host: '127.0.0.1' }) )
+        await test.run({ host: '127.0.0.1' })
     })
 
     it('tests/net.ping/run::unhappy ping failed', async() => {

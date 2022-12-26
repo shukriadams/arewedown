@@ -48,6 +48,28 @@ describe('daemon/generateContent', async()=>{
          ctx.assert.includes(message, 'SUCCESS')
      })
 
+     it('daemon/generateContent::happy::some previous fails, no delta', async() => {
+        const ctx = require(_$t+'context'),
+             daemon = ctx.clone(require(_$+'lib/daemon')),
+             message = daemon.generateContent({ 
+                failingDelta : [], 
+                passingDelta : [],
+                failingOther : [''],
+                actualPassingCount : 3,
+                actualFailingCount: 1, 
+             })
+             
+         ctx.assert.includes(message, 'WARNING')
+         ctx.assert.includes(message, '1')
+     })
+
+     it('daemon/generateContent::happy::array', async() => {
+        const ctx = require(_$t+'context'),
+            daemon = require(_$+'lib/daemon')
+
+        ctx.assert.equal(daemon.plural(['1']), 'is')
+     })
+
      it('daemon/generateContent::happy::some failing passing', async() => {
         const ctx = require(_$t+'context'),
              daemon = ctx.clone(require(_$+'lib/daemon')),

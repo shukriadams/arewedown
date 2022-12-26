@@ -1,8 +1,20 @@
 describe('routes/diagnostics/get', async()=>{
 
     it('routes/diagnostics/get::happy', async() => {
-        const ctx =  require(_$t+'context'),
-            route = ctx.express.captureRoutes(_$+'routes/diagnostics')
+        const ctx =  require(_$t+'context')
+
+        ctx.settings({ 
+            recipients : {
+                myuser : 'mysmtpsetting'
+            },
+            transports : { 
+                smtp : { 
+                    server : 'server', port : 'port', secure : true, user: 'user', pass : 'pass', from : 'from', mock: true, diagnostics: true 
+                }
+            } 
+        })
+
+        const route = ctx.express.captureRoutes(_$+'routes/diagnostics')
         ctx.express.req.params.transport = 'smtp'
         ctx.express.req.params.recipient = 'myuser'
 
@@ -40,7 +52,13 @@ describe('routes/diagnostics/get', async()=>{
     it('routes/diagnostics/get::unhappy::diagnostics disabled', async() => {
         const ctx =  require(_$t+'context')
         
-        ctx.settings({ transports : { smtp : { server : 'server', port : 'port', secure : true, user: 'user', pass : 'pass', from : 'from', diagnostics: false  } } })
+        ctx.settings({ 
+            transports : { 
+                smtp : { 
+                    server : 'server', port : 'port', secure : true, user: 'user', pass : 'pass', from : 'from', diagnostics: false 
+                }
+            } 
+        })
 
         const route = ctx.express.captureRoutes(_$+'routes/diagnostics')
         
@@ -58,7 +76,6 @@ describe('routes/diagnostics/get', async()=>{
             recipients : {
                 myuser : 'mysmtpsetting'
             }
-
         })
         
         ctx.express.req.params.transport = 'smtp'

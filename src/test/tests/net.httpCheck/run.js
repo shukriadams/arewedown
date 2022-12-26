@@ -34,7 +34,6 @@ describe('tests/net.httpCheck/run', async()=>{
         })
 
         const test = require(_$+'tests/net.httpCheck')
-        
-        await ctx.assert.throws(async() => await test.run({ host : 'http://example.com' }) )
+        await test.run({ host : 'http://example.com' }) 
     })
 })

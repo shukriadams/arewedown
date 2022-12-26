@@ -1,60 +1,64 @@
-describe('lib/smtp', async()=>{
+describe('lib/smtp/smtp', async()=>{
 
     const createTestStructures =()=>{
         const ctx = require(_$t+'context')
-        ctx.settings({ transports : { smtp : { server : 'server', port : 'port', secure : true, user: 'user', pass : 'pass', from : 'from'  } } })
-        ctx.inject.class('smtp-client', {
-            SMTPClient : class {
-                connect(){}
-                greet(){}
-                authPlain(){}
-                mail(){}
-                rcpt(){}
-                data(){}
-                quit(){}
-            }
+
+        ctx.settings({ 
+            transports : { 
+                smtp : { 
+                    server : 'server', 
+                    port : 'port', 
+                    secure : true, 
+                    user: 'user', 
+                    pass : 'pass', 
+                    from : 'from'  
+                } 
+            } 
         })
+
+        ctx.inject.class('./smtpClient', 
+            class {
+                send(){}
+                test(){}
+            }
+        )
+
         return ctx
     }
 
-    it('lib/smtp/send::happy', async()=>{
-        const ctx = createTestStructures(),
-            smtp = ctx.clone(require(_$+'lib/smtp'))
-
-        // no result to test, coverage only
+    it('lib/smtp/smtp/send::happy coverage', async()=>{
+        createTestStructures()
+        const smtp = require(_$+'lib/smtp/smtp')
         await smtp.send('mail@example.com', { failing : [], passing: [] })
     })
 
-    it('lib/smtp/validateSettings::cover', async()=>{
-        const ctx = createTestStructures(),
-            smtp = ctx.clone(require(_$+'lib/smtp'))
-            
+    it('lib/smtp/smtp/validateSettings::cover', async()=>{
+        createTestStructures()
+        const smtp = require(_$+'lib/smtp/smtp')
         await smtp.validateSettings()
     })
 
-    it('lib/smtp/validateSettings::unhappy::throw exception on settings check', async()=>{
-        const ctx = createTestStructures(),
-            smtp = ctx.clone(require(_$+'lib/smtp'))
-            
-        ctx.inject.class('smtp-client', {
-            SMTPClient : class {
-                connect(){ throw 'error'}
-            }
-        })
+    it('lib/smtp/smtp/validateSettings::unhappy::exception on settings check', async()=>{
+        const ctx = createTestStructures()
 
-        await ctx.assert.throws(async() => await smtp.validateSettings() )
+        ctx.inject.class('./smtpClient', 
+            class {
+                test(){
+                    throw 'forced exception'
+                }
+            }
+        )
+
+        const smtp = require(_$+'lib/smtp/smtp')
+
+        await ctx.assert.throws(async() =>
+            await smtp.validateSettings()
+        )
     })
 
-    it('lib/smtp/validateSettings::unhappy::throw exception on send', async()=>{
-        const ctx = createTestStructures(),
-            smtp = ctx.clone(require(_$+'lib/smtp'))
-
-        ctx.inject.class('smtp-client', {
-            SMTPClient : class {
-                connect(){ throw 'error'}
-            }
-        })
-
+    it('lib/smtp/smtp/validateSettings::unhappy::exception on send', async()=>{
+        createTestStructures()
+        const smtp = require(_$+'lib/smtp/smtp')
         await smtp.send('mail@example.com', { failing : [], passing: [] })
     })
 })

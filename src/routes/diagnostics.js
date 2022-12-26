@@ -22,18 +22,15 @@ module.exports = express => {
                 return res.end(`Recipient ${req.params.recipient} does not exist or is disable`)
 
             const result = await transportHandler.test(recipient[req.params.transport])
-            res.end(`${result}`)
-
-        } 
-        
-        catch (ex)
-        {
+            /* istanbul ignore next : cover not working for this line */
+            res.end(result)
+        } catch (ex) {
             /* istanbul ignore next : cover not working for these 3 lines */
             log.error(ex)
             /* istanbul ignore next : cover not working for these 3 lines */
             res.status(500)
             /* istanbul ignore next : cover not working for these 3 lines */
-            res.end('Something went wrong - check logs for details.')
+            res.end(`An error occurred : ${JSON.stringify(ex)}`)
         }
     })
 }

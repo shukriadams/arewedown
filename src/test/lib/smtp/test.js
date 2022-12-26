@@ -1,14 +1,26 @@
 describe('lib/smtp/test', async()=>{
 
-    it('lib/slack/test::cover::happy path', async()=>{
+    it('lib/smtp/test::cover::happy path', async()=>{
         const ctx = require(_$t+'context')
-        ctx.settings({ transports : { smtp : { server : 'server', port : 'port', secure : true, user: 'user', pass : 'pass', from : 'from'  } } })
+        ctx.settings({ 
+            transports : { 
+                smtp : { 
+                    server : 'server', 
+                    port : 'port', 
+                    secure : true, 
+                    user: 'user', 
+                    pass : 'pass', 
+                    from : 'from'  
+                } 
+            } 
+        })
 
-        const smtp = require(_$+'lib/smtp')
+        // stub out send
+        ctx.inject.class('./smtpClient', class {
+            send(){}
+        })
 
-        // hide method
-        smtp._send =()=>{}
-
+        const smtp = require(_$+'lib/smtp/smtp')
         await smtp.test()
     })
 

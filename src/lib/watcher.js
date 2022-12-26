@@ -217,8 +217,7 @@ module.exports = class {
                 continue
             }
 
-            for (const 
-                recipientName of this.config.recipients){
+            for (const recipientName of this.config.recipients){
                 const recipient = settings.recipients[recipientName]
 
                 if (!recipient[transportName])
