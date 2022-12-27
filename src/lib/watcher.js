@@ -220,7 +220,8 @@ module.exports = class {
             for (const recipientName of this.config.recipients){
                 const recipient = settings.recipients[recipientName]
 
-                if (!recipient[transportName])
+                // invalid user or user does not have transport enabled
+                if (!recipient || !recipient[transportName])
                     continue
 
                 try {

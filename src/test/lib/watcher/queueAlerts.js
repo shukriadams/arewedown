@@ -85,7 +85,7 @@ describe('lib/watcher/queueAlerts', async()=>{
         await watcher.queueAlerts()
     })
 
-    it('lib/watcher/queueAlerts::happy::invalid recipient', async()=>{
+    it('lib/watcher/queueAlerts::cover::invalid recipient', async()=>{
         createTestStructures()
         const Watcher = require(_$+'lib/watcher'),
             watcher = new Watcher({
