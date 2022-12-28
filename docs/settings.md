@@ -50,12 +50,11 @@ where `recipient-node` is the recipient node in AWD's config with an `smtp:email
 
 ### Slack Transport
 
-Alerts can be sent to a Slack user or a Slack Channel. 
+Alerts can be sent to a Slack user or channel using a custom app that acts as a bot - check out [apps dashboard](https://api.slack.com/apps). 
 
-- Your Slack app needs four scopes, `channels:read, groups:read, mpim:read, im:read, chat:write`. To post to channels you also need to manually add your
-  app to the channel in question, via the Slack app.
+- Your Slack app needs four scopes, `channels:read, groups:read, mpim:read, im:read, chat:write`. To post to channels you also need to manually add your  app to the channel in question, via the Slack app.
 - Secret is also called "Signing Secret" is specific to your Slack app.
-- Token normally starts with `xox` and is specific to your app's integration into your workspace.
+- Token normally starts with `xox` and is specific to your app's integration into your workspace. To find the token, open "add features and functionality" then click on "permissions", then look for "Bot User OAuth Token".
 
         transports:
             slack:
@@ -76,11 +75,15 @@ To receive emails add `smtp` to a recipient and add email address to it
 
 ### Slack 
 
-To receive slack alerts add `slack` to a recipient and define either a slack user id or channel id.
+To receive Slack alerts add `slack` to a recipient (either a person or something imaginary for channel alerts) and define either a Slack userid or channelid.
 
     recipients:
+
         BobMcName:
-            slack: user/channelId
+            slack: <BobMcName's slack userId>
+
+        foo:
+            slack: <slack channelId>
 
 To get a user id, click on the user profile in the Slack desktop client, then look under "More". To find a channel id, open Slack in a browser and click on the channel you want to post to - the channel id is the second id in browser address bar https://app.slack.com/client/workspace-id/channel-id/user_profile/your-own-user-id
 
@@ -265,10 +268,8 @@ The following overridable default settings live in the root-level of settings.ym
     # Interval for dashboard timeout (milliseconds)
     dashboardLoadTimeout: 5000,
 
-    # Allows app to exit with an HTTP call. This is useful if you're changing configuration in settings.yml and
-    # don't want to restart the Docker/daemon process the app runs in
-    # If properly daemonized your app will restart instantly and with updated settings applied.
-    allowHttpExit: false
+    # Allows app to be restarted from user interface
+    UIRestart: false
 
     # Amount of data logged. Can be error, warn, info
     logLevel: warn

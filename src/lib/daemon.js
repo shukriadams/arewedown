@@ -180,14 +180,16 @@ module.exports =  {
             message += '. '
 
             if (delta.failingOther.length)    
-                message += `${delta.failingOther.join(', ')} ${delta.failingOther.length === 1 ? 'was' : 'were'} already down. `
+                message += `\n\n${delta.failingOther.join(', ')} ${delta.failingOther.length === 1 ? 'was' : 'were'} already down. `
             
             if (delta.failingDelta.length)    
-                message += `${delta.failingDelta.join(', ')} recently failed. `
+                message += `\n\n${delta.failingDelta.join(', ')} recently failed. `
         }
 
-        if (delta.passingDelta.length)
-            message += `${delta.passingDelta.join(', ')} ${delta.passingDelta.length === 1 ? 'is' : 'are'} up again. `
+        if (delta.passingDelta.length){
+
+            message += `\n\n${delta.passingDelta.join(', ')} ${delta.passingDelta.length === 1 ? 'is' : 'are'} up again. `
+        }
 
         return message
     },

@@ -27,10 +27,11 @@ module.exports = {
             const postResult = await slack.client.chat.postMessage({
                     token: slackConfig.token,
                     channel: slackConfig.testChannel,
+                    text : message,
                     attachments : [
                         {
-                            fallback : message,
-                            title : message
+                            title : message,
+                            title : 'Test'
                         }
                     ]                    
                 })
@@ -59,15 +60,24 @@ module.exports = {
                 token: slackConfig.token
             })
 
+        let color = `007a5a` // all good green
+
+        if (delta.actualFailingCount)
+            color = `D92424` // fail red
+
+        if (delta.actualFailingCount && delta.passingDelta.length)
+            color = `FA3C00` // fail but improving orange
+
         try {
             const postresult = await slack.client.chat.postMessage({
                     token: slackConfig.token,
                     channel: receiverTransmissionConfig, // user id or channel id
+                    text : ' ',
                     attachments : [
                         {
                             fallback : message,
-                            color : delta.actualFailingCount.length ? '#D92424' : '#007a5a',
-                            title : message
+                            title : message,
+                            color : `#${color}`
                         }
                     ]                    
                 })
@@ -86,7 +96,6 @@ module.exports = {
 
     /**
      * Deletes a message based on its slack api timestamp.
-     * 
      */
     async delete(target, ts){
         const settings = require('./settings').get(),

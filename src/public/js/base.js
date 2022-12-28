@@ -123,6 +123,7 @@ window.awd.update = ()=>{
     
             let allWatchers = []
 
+            // match incoming alert data with rendered alerts
             for(let watcherdata of data.watchers){
                 const watcher = document.querySelector(`[data-watcher="${watcherdata.id}"]`),
                     card = watcher.querySelector('.watcher')
@@ -159,6 +160,14 @@ window.awd.update = ()=>{
                     
                 watcher.querySelector('.watcher-errorMessage').innerHTML = watcherdata.errorMessage
             }
+
+
+            // remove rendered alerts that are not in incoming data
+            const rendereredWatchers = document.querySelectorAll(`[data-watcher]`)
+            for (const rendereredWatcher of rendereredWatchers)
+                if (!data.watchers.find(w => w.id === rendereredWatcher.getAttribute('data-watcher'))) 
+                    rendereredWatcher.parentNode.removeChild(rendereredWatcher)
+            
 
             let previousSibling = null
             for (let i = 0; i < allWatchers.length; i ++){
