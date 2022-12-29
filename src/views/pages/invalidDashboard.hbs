@@ -1,7 +1,7 @@
 {{#extend "layout"}}
     {{#content "body"}}
         <div class="dashboard-message">
-            <strong>"{{title}}"</strong> isn't a valid dashboard. Would you like to try <a href="/dashboard/{{dashboard.__safeId}}">{{dashboard.name}}</a> instead?
+            <strong>"{{title}}"</strong> isn't a valid dashboard. Would you like to try <a href="{{../rootpath}}dashboard/{{dashboard.__safeId}}">{{dashboard.name}}</a> instead?
         </div>
     {{/content}}
 {{/extend}}

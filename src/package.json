@@ -39,7 +39,7 @@
         "dotenv": "9.0.2",
         "ping": "0.4.1",
         "@slack/bolt": "3.4.0",
-        "timebelt": "https://github.com/shukriadams/timebelt.git#0.1.16",
+        "timebelt": "https://github.com/shukriadams/timebelt.git#0.1.17",
         "winston-wrapper": "https://github.com/shukriadams/winston-wrapper.git#0.1.0",
         "madscience-fsUtils": "https://github.com/shukriadams/node-fsUtils.git#0.0.12",
         "madscience-httputils": "https://github.com/shukriadams/node-httpUtils.git#0.0.8",

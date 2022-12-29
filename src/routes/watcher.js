@@ -125,7 +125,7 @@ module.exports = express => {
                 totalDownTime : timebelt.minutesToPeriodString(totalDownTime),
                 watcherRuntime : startDate ? timebelt.timespanString(new Date(), startDate, ' days', ' hours', ' minutes', ' seconds') : null,
                 page : arrayHelper.toPage(files, page, settings.pageSize),
-                baseurl : `/watcher/${watcher.__safeId}?`,
+                baseurl : `${settings.rootpath}watcher/${watcher.__safeId}?`,
                 rootpath: settings.rootpath
             }))
 
