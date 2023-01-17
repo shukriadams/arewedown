@@ -104,7 +104,6 @@ x-columns {
     background-color: var(--color-ebonyClay);
     position: relative;
     z-index: 1; /* menu in headers can float over body content */
-    overflow: hidden;
 }
 
 .layout-header a {
