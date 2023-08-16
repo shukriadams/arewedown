@@ -10,6 +10,7 @@ RUN apk update \
     && apk add sudo \
     && apk add git \
     && apk add curl \
+    && apk add netcat-openbsd \
     && apk add nodejs=12.22.1-r0 \
     && apk add npm=12.22.1-r0 \
     && mkdir -p /etc/arewedown \
